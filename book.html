@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="light" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tırnakçı Yönetim Paneli</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "inverse-primary": "#ebbbbb",
+                    "on-primary-container": "#533333",
+                    "on-secondary-fixed-variant": "#4c463e",
+                    "secondary-fixed-dim": "#cec5bb",
+                    "on-tertiary-fixed-variant": "#4b4642",
+                    "on-primary-fixed-variant": "#603e3e",
+                    "surface-container-high": "#eae7e7",
+                    "background": "#fcf9f8",
+                    "on-surface-variant": "#504444",
+                    "surface-container": "#f0eded",
+                    "on-primary": "#ffffff",
+                    "on-background": "#1b1c1c",
+                    "secondary-fixed": "#ebe1d6",
+                    "on-secondary-container": "#6a635b",
+                    "tertiary-fixed": "#eae1dc",
+                    "outline": "#827473",
+                    "surface-tint": "#7a5555",
+                    "on-surface": "#1b1c1c",
+                    "primary-fixed": "#ffdad9",
+                    "on-tertiary-container": "#403b38",
+                    "tertiary-container": "#aca5a0",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#635d5a",
+                    "surface-container-low": "#f6f3f2",
+                    "on-primary-fixed": "#2e1415",
+                    "outline-variant": "#d4c2c2",
+                    "tertiary-fixed-dim": "#cdc5c0",
+                    "secondary-container": "#ebe1d6",
+                    "inverse-on-surface": "#f3f0ef",
+                    "on-error": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed": "#1f1b18",
+                    "surface-container-highest": "#e5e2e1",
+                    "surface": "#fcf9f8",
+                    "primary": "#7a5555",
+                    "surface-dim": "#dcd9d9",
+                    "surface-bright": "#fcf9f8",
+                    "inverse-surface": "#303030",
+                    "secondary": "#645d55",
+                    "primary-fixed-dim": "#ebbbbb",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed": "#1f1b14",
+                    "on-secondary": "#ffffff",
+                    "primary-container": "#c89b9b",
+                    "surface-variant": "#e5e2e1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "margin-desktop": "64px",
+                    "sm": "12px",
+                    "gutter": "24px",
+                    "md": "24px",
+                    "lg": "48px",
+                    "base": "8px",
+                    "xl": "80px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "label-caps": [
+                            "Inter"
+                    ],
+                    "headline-md": [
+                            "Playfair Display"
+                    ],
+                    "headline-sm": [
+                            "Playfair Display"
+                    ],
+                    "display-lg": [
+                            "Playfair Display"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ],
+                    "display-lg-mobile": [
+                            "Playfair Display"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "0.1em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-md": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.3",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-sm": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.4",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg-mobile": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-[80px]">
+<!-- TopAppBar -->
+<header class="bg-surface/70 backdrop-blur-md text-primary font-headline-sm text-headline-sm tracking-widest docked full-width top-0 sticky z-50 shadow-sm flex justify-between items-center w-full px-margin-mobile h-16 border-b border-surface-container">
+<button class="hover:opacity-80 transition-opacity flex items-center justify-center p-2 rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+<span class="font-headline-sm text-headline-sm tracking-widest font-extrabold text-primary">L'ART DE L'ONGLE</span>
+<button class="hover:opacity-80 transition-opacity flex items-center justify-center p-2 rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+</header>
+<main class="p-margin-mobile flex flex-col gap-md">
+<!-- Header Section -->
+<section class="flex justify-between items-center mb-sm">
+<div>
+<h1 class="font-headline-sm text-headline-sm text-on-surface">Bugün, 24 Eki</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">3 Bekleyen Fiyat Onayı</p>
+</div>
+<div class="h-12 w-12 rounded-full bg-secondary-container overflow-hidden border border-outline-variant">
+<img alt="Profile" class="h-full w-full object-cover" data-alt="A close up portrait of a professional nail artist in a brightly lit modern salon. She has a subtle, confident smile. The lighting is soft and flattering, highlighting the luxurious, minimalist aesthetic of the 'L'ART DE L'ONGLE' brand. Soft nude and pastel tones dominate the background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDADqI1oW4-4RLu1D66Zwbap8cJtdYxpOcOiL7W6iBeZrhtEnuOgnok8P6EPU1mTeSqp6GeE1hpeqSN-zDW4Osuj9C2IvNPB0xMEanmTgmcAliMu9X5nHM9l52ITOzQ2WgbFuMnSUZsjWxyFILeJJ9i9-L05sYiJlCrKcyGEmWBLt0Pi4y806Bfs5sQtPECISc18y87GdSzcrjCDpWywlrukLLiDShBhmpTGxsmUxCtXDcUySScS-YapF_U_IhZOJaBOOs92gwwGIG3"/>
+</div>
+</section>
+<!-- Fiyat Onayları (Bento Grid) -->
+<section>
+<h2 class="font-label-caps text-label-caps text-on-surface-variant mb-base uppercase tracking-widest">Fiyat Onayları</h2>
+<div class="grid grid-cols-1 gap-base">
+<!-- Request Card 1 -->
+<div class="bg-surface-container-low rounded-xl p-sm border border-surface-container-high shadow-sm relative overflow-hidden">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-sm">
+<div class="h-10 w-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container font-headline-sm text-headline-sm">A</div>
+<div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface">Ayşe Y.</h3>
+<p class="font-label-caps text-label-caps text-secondary">Jel Protez + Nail Art</p>
+</div>
+</div>
+<span class="font-headline-sm text-headline-sm text-primary">₺850</span>
+</div>
+<div class="mb-sm rounded-lg overflow-hidden h-24 bg-surface-variant flex items-center justify-center border border-outline-variant/30">
+<img alt="Nail Art Reference" class="w-full h-full object-cover" data-alt="A close up photograph of elegant, minimalist nail art featuring a soft nude base with delicate, precise geometric white lines. The lighting is bright and editorial, reflecting a high-end luxury salon environment. The image is crisp, focusing entirely on the intricate details of the manicure." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNGdLs4C7tKMeoDOf3E9w8fPGWJ8rvK9wkoMpOjnXC2QCZfjrRr6aXA7scJPlmAMTnvgE5WXnliYXwAro3aTddk0TBKzVshimq5Fj6edg-jUw_PkC37X2oND0DBrI9eptq8rY4mDa6box3Mz243N5TzAI2w0PRj_zfZ5hi2unbUha3ux03zoUD3wqSTGaqHLQAw6ShgzqTYZglhH_rqt4iiN7EY_Yw5E2tXPNSy-qK9XopqWytYnOQvaCxn33VYHIhEHKpqHtpy2tY"/>
+</div>
+<div class="flex gap-sm">
+<button class="flex-1 py-2 px-4 rounded-full bg-error-container text-on-error-container font-label-caps text-label-caps hover:opacity-80 transition-opacity">Reddet</button>
+<button class="flex-1 py-2 px-4 rounded-full bg-primary text-on-primary font-label-caps text-label-caps hover:bg-surface-tint transition-colors">Onayla</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Takvim Yönetimi -->
+<section class="mt-md">
+<div class="flex justify-between items-center mb-base">
+<h2 class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Takvimim</h2>
+<button class="text-primary font-label-caps text-label-caps hover:opacity-80">Düzenle</button>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-sm border border-surface-container shadow-[0px_4px_12px_rgba(200,155,155,0.05)]">
+<!-- Days Scroll -->
+<div class="flex gap-sm overflow-x-auto pb-sm mb-sm no-scrollbar">
+<div class="flex flex-col items-center p-2 rounded-lg bg-surface-variant text-on-surface-variant min-w-[3rem]">
+<span class="font-label-caps text-label-caps">Pzt</span>
+<span class="font-body-md text-body-md">21</span>
+</div>
+<div class="flex flex-col items-center p-2 rounded-lg bg-surface-variant text-on-surface-variant min-w-[3rem]">
+<span class="font-label-caps text-label-caps">Sal</span>
+<span class="font-body-md text-body-md">22</span>
+</div>
+<div class="flex flex-col items-center p-2 rounded-lg bg-surface-variant text-on-surface-variant min-w-[3rem]">
+<span class="font-label-caps text-label-caps">Çar</span>
+<span class="font-body-md text-body-md">23</span>
+</div>
+<div class="flex flex-col items-center p-2 rounded-lg bg-primary text-on-primary min-w-[3rem] shadow-md">
+<span class="font-label-caps text-label-caps">Per</span>
+<span class="font-body-md text-body-md font-bold">24</span>
+</div>
+<div class="flex flex-col items-center p-2 rounded-lg bg-surface-variant text-on-surface-variant min-w-[3rem]">
+<span class="font-label-caps text-label-caps">Cum</span>
+<span class="font-body-md text-body-md">25</span>
+</div>
+</div>
+<!-- Time Slots -->
+<div class="space-y-sm">
+<div class="flex items-center gap-sm">
+<div class="w-16 text-right font-label-caps text-label-caps text-secondary">09:00</div>
+<div class="flex-1 bg-surface-variant h-10 rounded-lg border border-outline-variant/50 relative overflow-hidden flex items-center justify-center cursor-pointer hover:bg-surface-dim">
+<span class="material-symbols-outlined text-secondary opacity-50" style="font-variation-settings: 'FILL' 0;">add</span>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-16 text-right font-label-caps text-label-caps text-secondary">11:00</div>
+<div class="flex-1 bg-secondary-container h-12 rounded-lg border border-secondary/20 p-2 flex justify-between items-center">
+<div>
+<span class="font-label-caps text-label-caps text-on-secondary-container block">Elif K.</span>
+<span class="text-xs text-secondary">Kalıcı Oje</span>
+</div>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-16 text-right font-label-caps text-label-caps text-secondary">14:00</div>
+<div class="flex-1 bg-error-container/50 h-10 rounded-lg border border-error/20 flex items-center justify-center cursor-not-allowed">
+<span class="font-label-caps text-label-caps text-error">Dolu / Kapalı</span>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-16 text-right font-label-caps text-label-caps text-secondary">16:30</div>
+<div class="flex-1 bg-surface-variant h-10 rounded-lg border border-outline-variant/50 relative overflow-hidden flex items-center justify-center cursor-pointer hover:bg-surface-dim">
+<span class="material-symbols-outlined text-secondary opacity-50" style="font-variation-settings: 'FILL' 0;">add</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-surface/80 backdrop-blur-xl docked full-width bottom-0 rounded-t-xl fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe shadow-[0px_-4px_20px_rgba(200,155,155,0.08)] border-t border-surface-container/50 md:hidden">
+<button class="flex flex-col items-center justify-center text-secondary opacity-60 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-label-caps text-label-caps mt-1">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary opacity-60 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">explore</span>
+<span class="font-label-caps text-label-caps mt-1">Discover</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary bg-primary-container/30 rounded-full px-4 py-1 scale-110 transition-transform duration-300 ease-out">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+<span class="font-label-caps text-label-caps mt-1">Bookings</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary opacity-60 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>
+<span class="font-label-caps text-label-caps mt-1">Profile</span>
+</button>
+</nav>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

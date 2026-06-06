@@ -857,12 +857,29 @@
                         }
                     })
                     .catch(error => {
-                        priceSpinner.innerHTML = '<span class="material-symbols-outlined text-red-600">error</span>';
-                        priceTitle.className = 'font-body-md font-semibold text-red-600';
-                        priceTitle.innerText = 'Analiz Başarısız';
-                        priceDesc.innerText = error.message || 'Lütfen API sunucusunun (çalıştır: uvicorn api:app --reload --port 8001) çalıştığından emin olun.';
+                        priceSpinner.innerHTML = '<span class="material-symbols-outlined text-amber-500">schedule</span>';
+                        priceTitle.className = 'font-body-md font-semibold text-amber-600';
+                        priceTitle.innerText = 'Yapay Zeka Uyanıyor...';
+                        priceDesc.innerHTML = 'Sunucu ilk istekte biraz zaman alıyor. <button id="retryBtn" class="underline font-semibold text-primary">Tekrar dene</button>';
                         const priceBreakdownEl = document.getElementById('priceBreakdown');
                         if (priceBreakdownEl) priceBreakdownEl.classList.add('hidden');
+
+                        // Auto retry after 8 seconds
+                        let countdown = 8;
+                        const timer = setInterval(() => {
+                            countdown--;
+                            const retryBtn = document.getElementById('retryBtn');
+                            if (retryBtn) retryBtn.innerText = `Tekrar dene (${countdown}s)`;
+                            if (countdown <= 0) {
+                                clearInterval(timer);
+                                fileInput.dispatchEvent(new Event('change'));
+                            }
+                        }, 1000);
+
+                        document.getElementById('retryBtn')?.addEventListener('click', () => {
+                            clearInterval(timer);
+                            fileInput.dispatchEvent(new Event('change'));
+                        });
                     });
             }
 

@@ -66,17 +66,14 @@ use App\Http\Controllers\FrontendController;
 // Dynamic Storefront/Vitrin Route (evaluated last so as not to intercept static routes)
 Route::get('/{slug}', [FrontendController::class, 'show'])->name('storefront.show');
 
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-
 Route::get('/gizli-admin-kur', function () {
     try {
-        $user = User::updateOrCreate(
+        // use eklemeden doğrudan tam yolu veriyoruz
+        $user = \App\Models\User::updateOrCreate(
             ['email' => 'ilaydadeger67@gmail.com'],
             [
                 'name' => 'İlayda',
-                // Şifreyi koda yazmıyoruz, sunucudan gizlice çekiyoruz!
-                'password' => Hash::make(env('ADMIN_SIFRE')),
+                'password' => \Illuminate\Support\Facades\Hash::make(env('ADMIN_SIFRE')),
                 'role' => 'super_admin'
             ]
         );
@@ -86,4 +83,3 @@ Route::get('/gizli-admin-kur', function () {
         return 'Bir hata oluştu: ' . $e->getMessage();
     }
 });
-

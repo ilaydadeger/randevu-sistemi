@@ -32,7 +32,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'E-posta veya şifre hatalı. Lütfen tekrar deneyin.',
         ])->onlyInput('email');
     }
 

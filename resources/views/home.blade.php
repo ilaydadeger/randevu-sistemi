@@ -853,7 +853,7 @@
                                 priceBreakdownEl.classList.remove('hidden');
                             }
                         } else {
-                            throw new Error(data.message || 'Analiz sırasında bir hata oluştu.');
+                            throw new Error((data.debug_error ? 'DEBUG: ' + data.debug_error : '') || data.message || 'Analiz sırasında bir hata oluştu.');
                         }
                     })
                     .catch(error => {

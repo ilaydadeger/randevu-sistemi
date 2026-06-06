@@ -860,26 +860,37 @@
                         console.error("===== HATA DETAYI =====", error.message || error);
                         priceSpinner.innerHTML = '<span class="material-symbols-outlined text-amber-500">schedule</span>';
                         priceTitle.className = 'font-body-md font-semibold text-amber-600';
-                        priceTitle.innerText = 'Yapay Zeka Uyanıyor...';
-                        priceDesc.innerHTML = 'Sunucu ilk istekte biraz zaman alıyor. <button id="retryBtn" class="underline font-semibold text-primary">Tekrar dene</button>';
+                        priceTitle.innerText = 'Yapay Zeka Uyandırılıyor...';
+                        priceDesc.innerHTML = 'Sunucu ilk istekte biraz zaman alıyor. Çok fazla deneme yapmak engellenmenize (HTTP 429) sebep olabilir.<br><button id="retryBtn" class="underline font-semibold text-primary mt-2" disabled>Lütfen Bekleyin (15s)</button>';
                         const priceBreakdownEl = document.getElementById('priceBreakdown');
                         if (priceBreakdownEl) priceBreakdownEl.classList.add('hidden');
 
-                        // Auto retry after 8 seconds
-                        let countdown = 8;
+                        // Sadece manuel tekrar dene butonu koyalım, spam'i önlemek için 15 saniye bekletelim
+                        let cooldown = 15;
+                        const retryBtn = document.getElementById('retryBtn');
+                        
                         const timer = setInterval(() => {
-                            countdown--;
-                            const retryBtn = document.getElementById('retryBtn');
-                            if (retryBtn) retryBtn.innerText = `Tekrar dene (${countdown}s)`;
-                            if (countdown <= 0) {
+                            cooldown--;
+                            if (retryBtn) retryBtn.innerText = `Lütfen Bekleyin (${cooldown}s)`;
+                            
+                            if (cooldown <= 0) {
                                 clearInterval(timer);
-                                fileInput.dispatchEvent(new Event('change'));
+                                if (retryBtn) {
+                                    retryBtn.innerText = "Tekrar Dene";
+                                    retryBtn.disabled = false;
+                                    retryBtn.classList.remove('text-on-surface-variant');
+                                    retryBtn.classList.add('text-primary');
+                                }
                             }
                         }, 1000);
 
-                        document.getElementById('retryBtn')?.addEventListener('click', () => {
-                            clearInterval(timer);
-                            fileInput.dispatchEvent(new Event('change'));
+                        retryBtn?.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            if (!retryBtn.disabled) {
+                                retryBtn.disabled = true;
+                                retryBtn.innerText = "Deneniyor...";
+                                fileInput.dispatchEvent(new Event('change'));
+                            }
                         });
                     });
             }

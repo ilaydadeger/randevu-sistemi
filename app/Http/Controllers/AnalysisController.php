@@ -31,10 +31,13 @@ class AnalysisController extends Controller
                 throw new \Exception('API yanıt vermedi (HTTP ' . $response->status() . ')');
             }
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('AI API Hatası: ' . $e->getMessage());
+            
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Yapay zeka servisi şu an ulaşılamıyor. Lütfen birkaç dakika sonra tekrar deneyin.'
+                    'message' => 'Yapay zeka servisi şu an ulaşılamıyor. Lütfen birkaç dakika sonra tekrar deneyin.',
+                    'debug_error' => $e->getMessage() // Geçici olarak debug için ekliyoruz
                 ], 503);
             }
             return back()->with('error', 'Yapay zeka servisi ulaşılamıyor: ' . $e->getMessage());

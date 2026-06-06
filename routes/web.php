@@ -65,3 +65,11 @@ use App\Http\Controllers\FrontendController;
 
 // Dynamic Storefront/Vitrin Route (evaluated last so as not to intercept static routes)
 Route::get('/{slug}', [FrontendController::class, 'show'])->name('storefront.show');
+
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/gizli-admin-kur', function () {
+    // Veritabanı seed işlemini zorunlu olarak çalıştırır
+    Artisan::call('db:seed', ['--force' => true]);
+    return 'Tebrikler! Veritabanı başarıyla dolduruldu ve Super Admin oluşturuldu. Artık giriş yapabilirsin.';
+});

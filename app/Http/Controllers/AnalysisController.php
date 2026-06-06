@@ -25,7 +25,7 @@ class AnalysisController extends Controller
                 'file',
                 file_get_contents($resim->path()),
                 $resim->getClientOriginalName()
-            )->post(env('AI_API_URL') . '/analiz');
+            )->post(config('services.ai.url') . '/analiz');
 
             if (!$response->successful()) {
                 throw new \Exception('API yanıt vermedi (HTTP ' . $response->status() . ')');

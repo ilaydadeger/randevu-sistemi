@@ -857,6 +857,7 @@
                         }
                     })
                     .catch(error => {
+                        console.error("===== HATA DETAYI =====", error.message || error);
                         priceSpinner.innerHTML = '<span class="material-symbols-outlined text-amber-500">schedule</span>';
                         priceTitle.className = 'font-body-md font-semibold text-amber-600';
                         priceTitle.innerText = 'Yapay Zeka Uyanıyor...';

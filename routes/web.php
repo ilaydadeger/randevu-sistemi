@@ -66,20 +66,40 @@ use App\Http\Controllers\FrontendController;
 // Dynamic Storefront/Vitrin Route (evaluated last so as not to intercept static routes)
 Route::get('/{slug}', [FrontendController::class, 'show'])->name('storefront.show');
 
-Route::get('/gizli-admin-kur', function () {
-    try {
-        // use eklemeden doğrudan tam yolu veriyoruz
-        $user = \App\Models\User::updateOrCreate(
-            ['email' => 'ilaydadeger67@gmail.com'],
-            [
-                'name' => 'İlayda',
-                'password' => \Illuminate\Support\Facades\Hash::make(env('ADMIN_SIFRE')),
-                'role' => 'super_admin'
-            ]
-        );
-
-        return 'Harika! Admin hesabı başarıyla oluşturuldu. Şimdi /login sayfasına gidip giriş yapabilirsin.';
-    } catch (\Exception $e) {
-        return 'Bir hata oluştu: ' . $e->getMessage();
+Route::match(['get', 'post'], '/gizli-admin-kur', function (\Illuminate\Http\Request $request) {
+    // GET: show admin login form
+    if ($request->isMethod('get')) {
+        return <<<HTML
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Super Admin Giriş</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-background flex items-center justify-center min-h-screen">
+    <form method="POST" action="/gizli-admin-kur" class="bg-surface-container p-6 rounded shadow-md w-96">
+        <h2 class="text-center text-xl font-bold mb-4">Super Admin Giriş</h2>
+        <label class="block mb-2">E-posta</label>
+        <input type="email" name="email" required class="w-full border p-2 rounded mb-4" value="admin@admin.com" />
+        <label class="block mb-2">Şifre</label>
+        <input type="password" name="password" required class="w-full border p-2 rounded mb-4" />
+        <button type="submit" class="w-full bg-primary text-on-primary py-2 rounded">Giriş Yap</button>
+    </form>
+</body>
+</html>
+HTML;
     }
+
+    // POST: process login
+    $credentials = $request->only('email', 'password');
+    if (\Illuminate\Support\Facades\Auth::attempt($credentials)) {
+        $user = \Illuminate\Support\Facades\Auth::user();
+        if ($user->role === 'super_admin') {
+            return redirect('/admin'); // or any admin dashboard
+        }
+        // Not super admin: logout and error
+        \Illuminate\Support\Facades\Auth::logout();
+    }
+    return back()->withErrors(['email' => 'Geçersiz Super Admin kimlik bilgileri.']);
 });

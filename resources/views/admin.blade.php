@@ -126,6 +126,20 @@
                 <div class="flex-grow min-w-0">
                     <h4 class="font-headline-sm text-lg text-on-surface truncate">{{ $tech->name }}</h4>
                     <p class="text-sm text-on-surface-variant truncate">{{ $tech->email }}</p>
+                    @if($tech->slug)
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-xs text-primary truncate font-mono">{{ config('app.url') }}/{{ $tech->slug }}</span>
+                        <button
+                            onclick="navigator.clipboard.writeText('{{ config('app.url') }}/{{ $tech->slug }}').then(() => { this.innerHTML='<span class=\'material-symbols-outlined text-sm text-green-600\'>check</span>'; setTimeout(() => { this.innerHTML='<span class=\'material-symbols-outlined text-sm\'>content_copy</span>'; }, 1500); })"
+                            class="shrink-0 text-on-surface-variant hover:text-primary transition-colors"
+                            title="Linki kopyala">
+                            <span class="material-symbols-outlined text-sm">content_copy</span>
+                        </button>
+                        <a href="{{ config('app.url') }}/{{ $tech->slug }}" target="_blank" class="shrink-0 text-on-surface-variant hover:text-primary transition-colors" title="Sayfayı aç">
+                            <span class="material-symbols-outlined text-sm">open_in_new</span>
+                        </a>
+                    </div>
+                    @endif
                 </div>
                 <div class="flex gap-2">
                     <button @click="selectedUser = { id: {{ $tech->id }}, name: '{{ addslashes($tech->name) }}', email: '{{ addslashes($tech->email) }}' }; editModalOpen = true" class="p-2.5 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-high outline-none focus:ring-2 focus:ring-primary/50">

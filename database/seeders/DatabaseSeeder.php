@@ -22,5 +22,10 @@ class DatabaseSeeder extends Seeder
                 'role' => 'super_admin'
             ]
         );
+
+        // Hizmet kategorilerini ekle (updateOrCreate mantığıyla tekrarsız)
+        $this->call([
+            ServiceCategorySeeder::class,
+        ]);
     }
 }

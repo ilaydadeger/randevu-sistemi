@@ -21,5 +21,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Bağımlılıkları kur
 RUN composer install --no-dev --optimize-autoloader
 
-# KİLİT NOKTA: Uygulama başlarken önce migrate yap, seed et, sonra apache'yi çalıştır
-CMD php artisan migrate --force && php artisan db:seed --force && apache2-foreground
+# KİLİT NOKTA: Uygulama başlarken önce migrate yap, seed et, cache'le, sonra apache'yi çalıştır
+CMD php artisan migrate --force && php artisan db:seed --force && php artisan config:cache && php artisan route:cache && php artisan view:cache && apache2-foreground

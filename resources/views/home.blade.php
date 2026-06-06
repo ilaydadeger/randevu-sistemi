@@ -64,9 +64,11 @@
                 @endif
 
             </div>
+            @if($nailTech && $nailTech->bio)
             <p class="font-body-md text-body-md text-on-surface-variant max-w-sm mt-2">
-                {{ $nailTech->bio ?? 'Specializing in minimalist line art and glass-effect builder gels. Bringing editorial elegance to everyday wear.' }}
+                {{ $nailTech->bio }}
             </p>
+            @endif
         </section>
 
         @if($nailTech && ($nailTech->show_portfolio ?? true))

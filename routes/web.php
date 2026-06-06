@@ -32,19 +32,19 @@ Route::middleware(['auth', 'role:artist'])->prefix('panel')->group(function () {
     Route::get('/appointments', [NailTechController::class, 'appointments'])->name('panel.appointments');
     Route::get('/book', [NailTechController::class, 'book'])->name('panel.book');
     Route::post('/book/pricing', [NailTechController::class, 'updatePricing'])->name('panel.book.pricing');
-    
+
     Route::post('/schedule/toggle', [NailTechController::class, 'toggleScheduleBlock'])->name('panel.schedule.toggle');
     Route::post('/schedule/toggle-day', [NailTechController::class, 'toggleDayBlock'])->name('panel.schedule.toggle-day');
     Route::post('/schedule/save-day', [NailTechController::class, 'saveDayBlocks'])->name('panel.schedule.save-day');
     Route::post('/schedule/hours', [NailTechController::class, 'updateWorkHours'])->name('panel.schedule.hours');
-    
+
     Route::get('/profile', [NailTechController::class, 'profile'])->name('panel.profile');
     Route::post('/profile', [NailTechController::class, 'updateProfile'])->name('panel.profile.update');
-    
+
     Route::post('/appointments/{id}/status', [NailTechController::class, 'updateAppointmentStatus'])->name('panel.appointments.status');
     Route::post('/appointments/{id}/price', [NailTechController::class, 'updateAppointmentPrice'])->name('panel.appointments.price');
     Route::get('/api/updates', [NailTechController::class, 'getRealtimeUpdates'])->name('panel.api.updates');
-    
+
     // Notes CRUD Routes
     Route::post('/notes', [NailTechController::class, 'storeNote'])->name('panel.notes.store');
     Route::post('/notes/{id}', [NailTechController::class, 'updateNote'])->name('panel.notes.update');
@@ -66,10 +66,24 @@ use App\Http\Controllers\FrontendController;
 // Dynamic Storefront/Vitrin Route (evaluated last so as not to intercept static routes)
 Route::get('/{slug}', [FrontendController::class, 'show'])->name('storefront.show');
 
-use Illuminate\Support\Facades\Artisan;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 Route::get('/gizli-admin-kur', function () {
-    // Veritabanı seed işlemini zorunlu olarak çalıştırır
-    Artisan::call('db:seed', ['--force' => true]);
-    return 'Tebrikler! Veritabanı başarıyla dolduruldu ve Super Admin oluşturuldu. Artık giriş yapabilirsin.';
+    try {
+        $user = User::updateOrCreate(
+            ['email' => 'ilaydadeger67@gmail.com'],
+            [
+                'name' => 'İlayda',
+                // Şifreyi koda yazmıyoruz, sunucudan gizlice çekiyoruz!
+                'password' => Hash::make(env('ADMIN_SIFRE')),
+                'role' => 'super_admin'
+            ]
+        );
+
+        return 'Harika! Admin hesabı başarıyla oluşturuldu. Şimdi /login sayfasına gidip giriş yapabilirsin.';
+    } catch (\Exception $e) {
+        return 'Bir hata oluştu: ' . $e->getMessage();
+    }
 });
+

@@ -41,7 +41,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->unique('slug');
             // Modify role to be an enum column
-            $table->enum('role', ['super_admin', 'artist'])->default('artist')->change();
+            $table->string('role')->default('artist')->change();
         });
 
         // 5. Update appointments table (Rename user_id to artist_id)

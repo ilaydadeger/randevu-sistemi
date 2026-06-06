@@ -70,6 +70,7 @@ class AnalysisController extends Controller
             'minimal_cizim' => $userPrices['Minimalist Çizim'] ?? 30,
             'ombre'         => $userPrices['French/Ombre']      ?? 40,
             'tas'           => $userPrices['3D Taş/Süsleme']    ?? 30,
+            'hamur'         => $userPrices['3D Taş/Süsleme']    ?? 30,
             'detayli_cizim' => $userPrices['Detaylı Çizim']     ?? 50,
         ];
 

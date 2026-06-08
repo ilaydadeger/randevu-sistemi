@@ -442,8 +442,9 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
+        // Alpine.data registrations must run BEFORE Alpine initializes.
+        // We listen for alpine:init which fires after Alpine loads but before it walks the DOM.
         document.addEventListener('alpine:init', () => {
             Alpine.data('galleryManager', (config) => ({
                 images: config.images || [],
@@ -923,4 +924,6 @@
                 });
             }
     </script>
+    {{-- Alpine must load AFTER the alpine:init listener is registered above --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
 @endpush

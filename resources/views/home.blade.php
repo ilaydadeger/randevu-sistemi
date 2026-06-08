@@ -803,6 +803,7 @@
                 priceSpinner.innerHTML = '<span class="material-symbols-outlined text-primary animate-spin">progress_activity</span>';
                 priceTitle.innerText = 'Görsel Analiz Ediliyor...';
                 priceTitle.className = 'font-body-md font-semibold text-primary';
+                priceDesc.classList.remove('hidden');
                 priceDesc.innerText = 'Yapay zeka asistanımız modelin zorluğunu ve malzeme maliyetini hesaplıyor.';
                 if (priceBreakdown) priceBreakdown.classList.add('hidden');
 
@@ -829,29 +830,15 @@
                         if (data.success) {
                             // Spinner güncelle
                             priceSpinner.innerHTML = '<span class="material-symbols-outlined text-green-600 dark:text-green-400">check_circle</span>';
-                            priceTitle.className = 'font-body-md font-semibold text-green-600 dark:text-green-400';
-                            priceTitle.innerText = `Tahmini Fiyat: ₺${data.nihai_fiyat}`;
+                            priceTitle.className = 'fiyat-gosterim font-body-md font-semibold text-green-600 dark:text-green-400';
+                            priceTitle.innerText = `Fiyat: ₺${data.nihai_fiyat}`;
 
                             // Fiyatı gizli input'a aktar (form ile gönderilecek)
                             const estPriceInput = document.getElementById('estimatedPriceInput');
                             if (estPriceInput) estPriceInput.value = data.nihai_fiyat;
 
-                            // Açıklama metni
-                            let detayMetni = `${data.gorunen_tirnak} tırnak algılandı.`;
-                            if (data.bulunan_sanatlar && Object.keys(data.bulunan_sanatlar).length > 0) {
-                                const sanatlar = Object.keys(data.bulunan_sanatlar).map(s => s.replace(/_/g, ' '));
-                                detayMetni += ` Tespit edilen ekstralar: ${sanatlar.join(', ')}.`;
-                            }
-                            priceDesc.innerText = detayMetni + ' (Kesin fiyat uzman onayı sonrasında netleşecektir.)';
-
-                            // Breakdown göster
-                            const priceBreakdownEl = document.getElementById('priceBreakdown');
-                            if (priceBreakdownEl) {
-                                document.getElementById('bdTemel').innerText  = `₺${data.temel_fiyat ?? '—'}`;
-                                document.getElementById('bdEkstra').innerText = `₺${data.ekstra_tahmini ?? 0}`;
-                                document.getElementById('bdToplam').innerText = `₺${data.nihai_fiyat}`;
-                                priceBreakdownEl.classList.remove('hidden');
-                            }
+                            // Açıklama metnini gizle
+                            priceDesc.classList.add('hidden');
                         } else {
                             throw new Error((data.debug_error ? 'DEBUG: ' + data.debug_error : '') || data.message || 'Analiz sırasında bir hata oluştu.');
                         }
@@ -861,6 +848,7 @@
                         priceSpinner.innerHTML = '<span class="material-symbols-outlined text-amber-500">schedule</span>';
                         priceTitle.className = 'font-body-md font-semibold text-amber-600';
                         priceTitle.innerText = 'Yapay Zeka Uyandırılıyor...';
+                        priceDesc.classList.remove('hidden');
                         priceDesc.innerHTML = 'Sunucu ilk istekte biraz zaman alıyor. Çok fazla deneme yapmak engellenmenize (HTTP 429) sebep olabilir.<br><button id="retryBtn" class="underline font-semibold text-primary mt-2" disabled>Lütfen Bekleyin (15s)</button>';
                         const priceBreakdownEl = document.getElementById('priceBreakdown');
                         if (priceBreakdownEl) priceBreakdownEl.classList.add('hidden');

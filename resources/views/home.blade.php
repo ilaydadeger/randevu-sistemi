@@ -43,6 +43,13 @@
 
         // Prepare hours from customizable work hours settings
         $hours = $nailTech->work_hours ?? ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+
+        $nailTechPrices = $nailTech ? $nailTech->userPrices()
+            ->join('service_categories', 'user_prices.service_category_id', '=', 'service_categories.id')
+            ->select('service_categories.name', 'user_prices.price')
+            ->get()
+            ->pluck('price', 'name')
+            ->toArray() : [];
     @endphp
 
     <main class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] mx-auto w-full"
@@ -271,30 +278,15 @@
 
                 {{-- AI Price Estimation Section --}}
                 <div id="priceEstimationSection"
-                    class="hidden bg-primary-container/20 rounded-xl p-4 border border-primary/20 flex flex-col gap-2">
+                    class="fiyat-kutusu hidden bg-primary-container/20 rounded-xl p-4 border border-primary/20 flex flex-col gap-2">
                     {{-- Loading / Status Row --}}
                     <div class="flex items-start gap-3">
                         <div id="priceSpinner" class="shrink-0 mt-0.5">
                             <span class="material-symbols-outlined text-primary animate-spin">progress_activity</span>
                         </div>
                         <div class="flex-1">
-                            <h4 id="priceTitle" class="font-body-md font-semibold text-primary">Görsel Analiz Ediliyor...</h4>
+                            <div id="priceTitle" class="fiyat-gosterim font-body-md font-semibold text-primary">Görsel Analiz Ediliyor...</div>
                             <p id="priceDesc" class="text-sm text-on-surface-variant mt-1">Yapay zeka asistanımız modelin zorluğunu ve malzeme maliyetini hesaplıyor.</p>
-                        </div>
-                    </div>
-                    {{-- Breakdown (gizli başlangıçta) --}}
-                    <div id="priceBreakdown" class="hidden border-t border-primary/10 pt-3 space-y-1.5 text-[11px] text-on-surface-variant">
-                        <div class="flex justify-between">
-                            <span>Temel işlem fiyatı</span>
-                            <span id="bdTemel" class="font-semibold text-on-surface"></span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>10 parmak ekstra tahmini</span>
-                            <span id="bdEkstra" class="font-semibold text-on-surface"></span>
-                        </div>
-                        <div class="flex justify-between border-t border-primary/10 pt-1.5 mt-1">
-                            <span class="font-bold text-primary text-xs">TAHMİNİ TOPLAM</span>
-                            <span id="bdToplam" class="font-bold text-primary text-xs"></span>
                         </div>
                     </div>
                 </div>
@@ -751,6 +743,7 @@
             const priceDesc = document.getElementById('priceDesc');
             const dropzone = document.getElementById('dropzone');
 
+
             // Drag and drop styles
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
                 dropzone.addEventListener(eventName, preventDefaults, false);
@@ -804,7 +797,7 @@
                 priceTitle.innerText = 'Görsel Analiz Ediliyor...';
                 priceTitle.className = 'font-body-md font-semibold text-primary';
                 priceDesc.classList.remove('hidden');
-                priceDesc.innerText = 'Yapay zeka asistanımız modelin zorluğunu ve malzeme maliyetini hesaplıyor.';
+                priceDesc.innerText = 'Yapay zeka asistanımız modelin zorluğunu ve malzeme maliyetini hesaplor.';
                 if (priceBreakdown) priceBreakdown.classList.add('hidden');
 
                 const formData = new FormData();
@@ -831,11 +824,17 @@
                             // Spinner güncelle
                             priceSpinner.innerHTML = '<span class="material-symbols-outlined text-green-600 dark:text-green-400">check_circle</span>';
                             priceTitle.className = 'fiyat-gosterim font-body-md font-semibold text-green-600 dark:text-green-400';
-                            priceTitle.innerText = `Fiyat: ₺${data.nihai_fiyat}`;
+                            
+                            priceTitle.innerHTML = `
+                                <div class="flex flex-col gap-1.5 py-1 text-sm font-semibold">
+                                    <div>Kalıcı Oje: <span class="font-bold">₺${data.nihai_ko}</span></div>
+                                    <div>Jel Protez: <span class="font-bold">₺${data.nihai_jp}</span></div>
+                                </div>
+                            `;
 
-                            // Fiyatı gizli input'a aktar (form ile gönderilecek)
+                            // Fiyatı gizli input'a aktar (form ile gönderilecek varsayılan)
                             const estPriceInput = document.getElementById('estimatedPriceInput');
-                            if (estPriceInput) estPriceInput.value = data.nihai_fiyat;
+                            if (estPriceInput) estPriceInput.value = data.nihai_ko;
 
                             // Açıklama metnini gizle
                             priceDesc.classList.add('hidden');

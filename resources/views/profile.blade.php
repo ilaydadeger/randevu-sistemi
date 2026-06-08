@@ -535,6 +535,71 @@
                 },
 
                 async updateAppointmentStatus(id, status) {
+                    const appointment = this.pendingApprovals.find(a => a.id === id);
+                    if (!appointment) return;
+
+                    if (status === 'cancelled') {
+                        const confirmCancel = await Swal.fire({
+                            title: 'Randevuyu Reddet',
+                            text: 'Bu randevu talebini reddetmek istediğinize emin misiniz?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Evet, Reddet',
+                            cancelButtonText: 'Vazgeç',
+                            customClass: {
+                                popup: 'rounded-2xl border border-outline-variant/30 bg-surface-container-lowest text-on-surface font-body-md shadow-xl',
+                                title: 'text-on-surface font-headline-sm !pt-4',
+                                confirmButton: 'bg-error-container text-on-error-container rounded-full px-6 py-2.5 font-label-caps text-xs font-bold hover:opacity-85 transition-opacity mx-1',
+                                cancelButton: 'bg-surface-container text-on-surface rounded-full px-6 py-2.5 font-label-caps text-xs font-bold hover:bg-surface-container-high transition-colors mx-1'
+                            },
+                            buttonsStyling: false
+                        });
+
+                        if (!confirmCancel.isConfirmed) return;
+                    }
+
+                    let finalPrice = null;
+                    if (status === 'approved') {
+                        const { value: priceResult } = await Swal.fire({
+                            title: 'Randevuyu Onayla',
+                            html: `
+                                <div class="text-left font-body-md space-y-3 mt-3">
+                                    <p class="text-xs text-on-surface-variant">Randevuyu onaylıyorsunuz. Yapay zekanın oluşturduğu tahmini fiyatı aşağıdan düzenleyebilirsiniz:</p>
+                                    <div class="flex items-center gap-2 bg-surface-container-low p-3 rounded-xl border border-outline-variant/30">
+                                        <span class="font-bold text-xs text-on-surface font-label-caps shrink-0">FİYAT:</span>
+                                        <div class="relative flex-1">
+                                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant font-bold text-sm">₺</span>
+                                            <input id="swal-price-input" type="number" min="0" step="any" 
+                                                class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg pl-7 pr-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary" 
+                                                value="${appointment.price}">
+                                        </div>
+                                    </div>
+                                </div>
+                            `,
+                            showCancelButton: true,
+                            confirmButtonText: 'Onayla',
+                            cancelButtonText: 'Vazgeç',
+                            customClass: {
+                                popup: 'rounded-2xl border border-outline-variant/30 bg-surface-container-lowest text-on-surface font-body-md shadow-xl',
+                                title: 'text-on-surface font-headline-sm !pt-4',
+                                confirmButton: 'bg-primary text-on-primary rounded-full px-6 py-2.5 font-label-caps text-xs font-bold hover:bg-surface-tint transition-colors mx-1',
+                                cancelButton: 'bg-surface-container text-on-surface rounded-full px-6 py-2.5 font-label-caps text-xs font-bold hover:bg-surface-container-high transition-colors mx-1'
+                            },
+                            buttonsStyling: false,
+                            preConfirm: () => {
+                                const inputVal = document.getElementById('swal-price-input').value;
+                                if (inputVal === '' || isNaN(inputVal) || parseFloat(inputVal) < 0) {
+                                    Swal.showValidationMessage('Lütfen geçerli bir tutar girin.');
+                                    return false;
+                                }
+                                return parseFloat(inputVal);
+                            }
+                        });
+
+                        if (priceResult === undefined) return; // cancelled
+                        finalPrice = priceResult;
+                    }
+
                     const card = document.getElementById('appointment-card-' + id);
                     if (card) {
                         const buttons = card.querySelectorAll('button');
@@ -542,6 +607,11 @@
                     }
 
                     try {
+                        const payload = { status: status };
+                        if (finalPrice !== null) {
+                            payload.price = finalPrice;
+                        }
+
                         const response = await fetch(`/panel/appointments/${id}/status`, {
                             method: 'POST',
                             headers: {
@@ -549,7 +619,7 @@
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                 'Accept': 'application/json'
                             },
-                            body: JSON.stringify({ status: status })
+                            body: JSON.stringify(payload)
                         });
 
                         const data = await response.json();

@@ -28,9 +28,21 @@
 
             <div class="fiyat-kutusu bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8 relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
-                <h2 class="fiyat-gosterim text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mt-2">
-                    Fiyat: ₺{{ number_format($nihai_fiyat, 0, ',', '.') }}
-                </h2>
+                <div class="fiyat-gosterim flex flex-col gap-3 py-2 text-center">
+                    <div>
+                        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1">Kalıcı Oje</span>
+                        <span class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                            ₺{{ number_format($nihai_ko, 0, ',', '.') }}
+                        </span>
+                    </div>
+                    <div class="border-t border-gray-100 my-1"></div>
+                    <div>
+                        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1">Jel Protez</span>
+                        <span class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                            ₺{{ number_format($nihai_jp, 0, ',', '.') }}
+                        </span>
+                    </div>
+                </div>
             </div>
 
             <a href="{{ route('tirnak.analiz') }}" class="inline-flex w-full justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-all transform hover:-translate-y-1">

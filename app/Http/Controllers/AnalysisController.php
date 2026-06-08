@@ -60,9 +60,9 @@ class AnalysisController extends Controller
             ->pluck('price', 'name')
             ->toArray();
 
-        // 5. Temel işlem fiyatı (Jel Protez veya Kalıcı Oje) — tırnakçının belirlediği fiyat
-        // Tırnakçı fiyat girmemişse varsayılan 500 TL
-        $temel_islem_fiyati = $userPrices['Jel Protez'] ?? ($userPrices['Kalıcı Oje'] ?? 500);
+        // 5. Temel işlem fiyatları (Kalıcı Oje ve Jel Protez)
+        $base_price_ko = $userPrices['Kalıcı Oje'] ?? 500;
+        $base_price_jp = $userPrices['Jel Protez'] ?? 500;
 
         // 6. Ekstra sanat fiyatları — Python'ın sanat adını veritabanı adıyla eşleştiriyoruz
         // Tırnakçı bu fiyatları "Fiyatlarım" sayfasından girebilir, girmemişse varsayılanlar kullanılır
@@ -128,28 +128,35 @@ class AnalysisController extends Controller
             $shape_price = $userPrices[$detected_shape] ?? 0;
         }
 
-        // 10. Nihai fiyat = Temel fiyat + 10 parmak ekstra tahmini + uzunluk + şekil
-        $genel_toplam = $temel_islem_fiyati + $on_parmak_tahmini_ekstra + $length_price + $shape_price;
+        // 10. Nihai fiyatları hesaplıyoruz (Kalıcı Oje ve Jel Protez için ayrı ayrı)
+        $toplam_ko = $base_price_ko + $on_parmak_tahmini_ekstra + $length_price + $shape_price;
+        $toplam_jp = $base_price_jp + $on_parmak_tahmini_ekstra + $length_price + $shape_price;
 
         // 5'in katlarına yuvarla (örn: 833 → 835)
-        $nihai_fiyat = (int) (ceil($genel_toplam / 5) * 5);
+        $nihai_ko = (int) (ceil($toplam_ko / 5) * 5);
+        $nihai_jp = (int) (ceil($toplam_jp / 5) * 5);
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'success'             => true,
-                'nihai_fiyat'         => $nihai_fiyat,
-                'temel_fiyat'         => $temel_islem_fiyati,
+                'nihai_ko'            => $nihai_ko,
+                'nihai_jp'            => $nihai_jp,
+                'base_price_ko'       => $base_price_ko,
+                'base_price_jp'       => $base_price_jp,
                 'ekstra_tahmini'      => (int) round($on_parmak_tahmini_ekstra),
                 'gorunen_tirnak'      => $gorunen_tirnak,
                 'bulunan_sanatlar'    => $detaylar,
                 'bulunan_sanat_detay' => $bulunan_sanat_detaylari,
                 'detected_length'     => $detected_length,
                 'detected_shape'      => $detected_shape,
+                'length_price'        => $length_price,
+                'shape_price'         => $shape_price,
             ]);
         }
 
         return view('frontend.sonuc', [
-            'nihai_fiyat'      => $nihai_fiyat,
+            'nihai_ko'         => $nihai_ko,
+            'nihai_jp'         => $nihai_jp,
             'gorunen_tirnak'   => $gorunen_tirnak,
             'bulunan_sanatlar' => $detaylar
         ]);

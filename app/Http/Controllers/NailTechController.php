@@ -81,7 +81,7 @@ class NailTechController extends Controller
     {
         $user = auth()->user();
         
-        $categories = \App\Models\ServiceCategory::all()->groupBy('group_name');
+        $categories = \App\Models\ServiceCategory::where('name', '!=', 'Düz Renk')->get()->groupBy('group_name');
         $userPrices = $user->userPrices->keyBy('service_category_id');
         
         return view('book', compact('categories', 'userPrices'));
@@ -196,6 +196,7 @@ class NailTechController extends Controller
     {
         $request->validate([
             'status' => 'required|in:approved,cancelled,completed',
+            'price' => 'nullable|numeric|min:0',
         ]);
 
         $appointment = \App\Models\Appointment::findOrFail($id);
@@ -210,7 +211,13 @@ class NailTechController extends Controller
         $previousStatus = $appointment->status;
         $newStatus      = $request->status;
 
-        $appointment->update(['status' => $newStatus]);
+        // Save price if present in request
+        if ($request->has('price') && !is_null($request->price)) {
+            $appointment->estimated_price = $request->price;
+        }
+
+        $appointment->status = $newStatus;
+        $appointment->save();
 
         // ── SMS Gönderimi ─────────────────────────────────────────────────
         // Durum değişikliği onay veya iptal ise müşteriye SMS gönder.

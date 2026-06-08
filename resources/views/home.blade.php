@@ -278,7 +278,7 @@
 
                 {{-- AI Price Estimation Section --}}
                 <div id="priceEstimationSection"
-                    class="fiyat-kutusu hidden bg-primary-container/20 rounded-xl p-4 border border-primary/20 flex flex-col gap-2">
+                    class="fiyat-kutusu hidden bg-primary-container/20 rounded-xl p-4 border border-primary/20 flex flex-col gap-3">
                     {{-- Loading / Status Row --}}
                     <div class="flex items-start gap-3">
                         <div id="priceSpinner" class="shrink-0 mt-0.5">
@@ -287,6 +287,25 @@
                         <div class="flex-1">
                             <div id="priceTitle" class="fiyat-gosterim font-body-md font-semibold text-primary">Görsel Analiz Ediliyor...</div>
                             <p id="priceDesc" class="text-sm text-on-surface-variant mt-1">Yapay zeka asistanımız modelin zorluğunu ve malzeme maliyetini hesaplıyor.</p>
+                        </div>
+                    </div>
+
+                    {{-- Premium Service Selector (Shown on success) --}}
+                    <div id="serviceSelectorContainer" class="hidden flex flex-col gap-2 pt-2 border-t border-primary/10">
+                        <span class="text-[10px] font-bold text-on-surface-variant font-label-caps tracking-wider">İŞLEM TİPİ</span>
+                        <div class="flex gap-2 bg-surface-container-low p-1 rounded-full border border-outline-variant/30">
+                            <button type="button" id="btnKO" onclick="selectService('ko')"
+                                class="flex-1 py-2 rounded-full font-label-caps text-xs font-bold transition-all bg-primary text-on-primary shadow-sm focus:outline-none">
+                                KALICI OJE
+                            </button>
+                            <button type="button" id="btnJP" onclick="selectService('jp')"
+                                class="flex-1 py-2 rounded-full font-label-caps text-xs font-bold transition-all text-on-surface-variant hover:text-on-surface focus:outline-none">
+                                JEL PROTEZ
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center mt-1 bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/20 shadow-sm">
+                            <span class="text-xs font-bold text-on-surface-variant font-label-caps tracking-wider">TOPLAM TUTAR:</span>
+                            <span id="singleTotalPrice" class="text-2xl font-black text-primary">₺0</span>
                         </div>
                     </div>
                 </div>
@@ -789,6 +808,30 @@
                 }
             });
 
+            window.nihaiKO = 0;
+            window.nihaiJP = 0;
+            window.currentSelectedService = 'ko';
+
+            window.selectService = function(service) {
+                window.currentSelectedService = service;
+                const btnKO = document.getElementById('btnKO');
+                const btnJP = document.getElementById('btnJP');
+                const totalPriceEl = document.getElementById('singleTotalPrice');
+                const estPriceInput = document.getElementById('estimatedPriceInput');
+
+                if (service === 'ko') {
+                    btnKO.className = 'flex-1 py-2 rounded-full font-label-caps text-xs font-bold transition-all bg-primary text-on-primary shadow-sm focus:outline-none';
+                    btnJP.className = 'flex-1 py-2 rounded-full font-label-caps text-xs font-bold transition-all text-on-surface-variant hover:text-on-surface focus:outline-none';
+                    if (totalPriceEl) totalPriceEl.innerText = `₺${window.nihaiKO}`;
+                    if (estPriceInput) estPriceInput.value = window.nihaiKO;
+                } else {
+                    btnJP.className = 'flex-1 py-2 rounded-full font-label-caps text-xs font-bold transition-all bg-primary text-on-primary shadow-sm focus:outline-none';
+                    btnKO.className = 'flex-1 py-2 rounded-full font-label-caps text-xs font-bold transition-all text-on-surface-variant hover:text-on-surface focus:outline-none';
+                    if (totalPriceEl) totalPriceEl.innerText = `₺${window.nihaiJP}`;
+                    if (estPriceInput) estPriceInput.value = window.nihaiJP;
+                }
+            };
+
             function simulateAIPrice(file) {
                 const priceBreakdown = document.getElementById('priceBreakdown');
                 priceSection.classList.remove('hidden');
@@ -797,7 +840,7 @@
                 priceTitle.innerText = 'Görsel Analiz Ediliyor...';
                 priceTitle.className = 'font-body-md font-semibold text-primary';
                 priceDesc.classList.remove('hidden');
-                priceDesc.innerText = 'Yapay zeka asistanımız modelin zorluğunu ve malzeme maliyetini hesaplor.';
+                priceDesc.innerText = 'Yapay zeka asistanımız modelin zorluğunu ve malzeme maliyetini hesaplıyor.';
                 if (priceBreakdown) priceBreakdown.classList.add('hidden');
 
                 const formData = new FormData();
@@ -824,17 +867,17 @@
                             // Spinner güncelle
                             priceSpinner.innerHTML = '<span class="material-symbols-outlined text-green-600 dark:text-green-400">check_circle</span>';
                             priceTitle.className = 'fiyat-gosterim font-body-md font-semibold text-green-600 dark:text-green-400';
-                            
-                            priceTitle.innerHTML = `
-                                <div class="flex flex-col gap-1.5 py-1 text-sm font-semibold">
-                                    <div>Kalıcı Oje: <span class="font-bold">₺${data.nihai_ko}</span></div>
-                                    <div>Jel Protez: <span class="font-bold">₺${data.nihai_jp}</span></div>
-                                </div>
-                            `;
+                            priceTitle.innerText = 'Analiz Tamamlandı!';
 
-                            // Fiyatı gizli input'a aktar (form ile gönderilecek varsayılan)
-                            const estPriceInput = document.getElementById('estimatedPriceInput');
-                            if (estPriceInput) estPriceInput.value = data.nihai_ko;
+                            window.nihaiKO = data.nihai_ko;
+                            window.nihaiJP = data.nihai_jp;
+
+                            const selectorContainer = document.getElementById('serviceSelectorContainer');
+                            if (selectorContainer) {
+                                selectorContainer.classList.remove('hidden');
+                            }
+
+                            window.selectService(window.currentSelectedService);
 
                             // Açıklama metnini gizle
                             priceDesc.classList.add('hidden');
@@ -897,6 +940,13 @@
                             confirmButtonColor: '#7a5555'
                         });
                         return;
+                    }
+
+                    // Append selected service type to client name so the artist can see it clearly
+                    const nameInput = appointmentForm.querySelector('input[name="client_name"]');
+                    const selectedServiceLabel = window.currentSelectedService === 'jp' ? 'Jel Protez' : 'Kalıcı Oje';
+                    if (nameInput && !nameInput.value.includes('(')) {
+                        nameInput.value = `${nameInput.value} (${selectedServiceLabel})`;
                     }
 
                     // Immediately show loading popup in the middle of the screen

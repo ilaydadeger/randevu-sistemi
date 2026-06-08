@@ -94,9 +94,22 @@ class AnalysisController extends Controller
 
         // 8. 10 parmak tahmini ekstra maliyeti hesaplıyoruz
         // Formül: (görünen ekstra maliyet / görünen tırnak sayısı) × 10
+        // Tırnak sayısı olarak sadece temel tırnak formlarının sayısını (görünen parmak sayısını) almalıyız
+        $gorunen_parmak_sayisi = count($veri['temel_detaylar'] ?? []);
+        if ($gorunen_parmak_sayisi <= 0) {
+            $detay_count = 0;
+            foreach ($detaylar as $detay_adi => $adet) {
+                $detay_count += $adet;
+            }
+            $gorunen_parmak_sayisi = ($veri['toplam_tirnak'] ?? 0) - $detay_count;
+            if ($gorunen_parmak_sayisi <= 0) {
+                $gorunen_parmak_sayisi = 1;
+            }
+        }
+
         $on_parmak_tahmini_ekstra = 0;
-        if ($gorunen_tirnak > 0) {
-            $parmak_basi_ortalama = $gorunen_ekstra_maliyet / $gorunen_tirnak;
+        if ($gorunen_parmak_sayisi > 0) {
+            $parmak_basi_ortalama = $gorunen_ekstra_maliyet / $gorunen_parmak_sayisi;
             $on_parmak_tahmini_ekstra = $parmak_basi_ortalama * 10;
         }
 

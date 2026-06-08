@@ -81,7 +81,21 @@ class NailTechController extends Controller
     {
         $user = auth()->user();
         
-        $categories = \App\Models\ServiceCategory::where('name', '!=', 'Düz Renk')->get()->groupBy('group_name');
+        $categories = \App\Models\ServiceCategory::where('name', '!=', 'Düz Renk')
+            ->get()
+            ->groupBy('group_name');
+
+        $order = [
+            'Temel İşlem' => 1,
+            'Nail Art Karmaşıklığı' => 2,
+            'Uzunluk' => 3,
+            'Şekil' => 4,
+        ];
+
+        $categories = $categories->sortBy(function ($value, $key) use ($order) {
+            return $order[$key] ?? 99;
+        });
+
         $userPrices = $user->userPrices->keyBy('service_category_id');
         
         return view('book', compact('categories', 'userPrices'));

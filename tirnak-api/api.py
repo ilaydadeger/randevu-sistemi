@@ -36,11 +36,9 @@ async def tirnak_analiz_et(file: UploadFile = File(...)):
         class_id = int(box.cls[0])
         class_name = model.names[class_id]
 
-        # Her tespit edilen nesne toplam tırnak sayısına katkıda bulunur
-        bulunan_sayilar["toplam_tirnak"] += 1
-
-        # Eğer bulduğu etiket temel tırnaklardan biriyse sadece temel listeye ekle
+        # Eğer bulduğu etiket temel tırnaklardan biriyse
         if class_name in temel_tirnaklar: 
+            bulunan_sayilar["toplam_tirnak"] += 1
             bulunan_sayilar["temel_detaylar"].append(class_name)
         # Değilse (taş, çizim, ombre vb.) ekstra ücretli detaylara ekle
         else:

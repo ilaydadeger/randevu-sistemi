@@ -63,6 +63,9 @@ Route::middleware(['auth', 'role:super_admin'])->prefix('admin')->group(function
 
 use App\Http\Controllers\FrontendController;
 
+// Randevu Durum Takip Sayfası
+Route::get('/randevu-takip/{tracking_code}', [AppointmentController::class, 'track'])->name('appointment.track');
+
 // Dynamic Storefront/Vitrin Route (evaluated last so as not to intercept static routes)
 Route::get('/{slug}', [FrontendController::class, 'show'])->name('storefront.show');
 

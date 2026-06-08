@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\SmsService;
 
 class NailTechController extends Controller
 {
@@ -82,6 +81,9 @@ class NailTechController extends Controller
         $user = auth()->user();
         
         $categories = \App\Models\ServiceCategory::where('name', '!=', 'Düz Renk')
+            ->where('name', '!=', 'Kalıcı Oje')
+            ->where('group_name', '!=', 'Uzunluk')
+            ->where('group_name', '!=', 'Şekil')
             ->get()
             ->groupBy('group_name');
 
@@ -233,32 +235,6 @@ class NailTechController extends Controller
         $appointment->status = $newStatus;
         $appointment->save();
 
-        // ── SMS Gönderimi ─────────────────────────────────────────────────
-        // Durum değişikliği onay veya iptal ise müşteriye SMS gönder.
-        // client_phone, Appointment modelindeki 'encrypted' cast sayesinde
-        // burada otomatik olarak çözülmüş (açık metin) hâlde gelir.
-        if (in_array($newStatus, ['approved', 'cancelled']) && $previousStatus !== $newStatus) {
-            $nailTech  = auth()->user();
-            $salonName = $nailTech->salon_name ?? $nailTech->name ?? 'Salon';
-            $smsService = new SmsService();
-
-            if ($newStatus === 'approved') {
-                $smsService->sendApproval(
-                    phone:      $appointment->client_phone,  // cast: otomatik çözülmüş
-                    clientName: $appointment->client_name,
-                    salonName:  $salonName,
-                    price:      floatval($appointment->estimated_price)
-                );
-            } elseif ($newStatus === 'cancelled') {
-                $smsService->sendRejection(
-                    phone:      $appointment->client_phone,  // cast: otomatik çözülmüş
-                    clientName: $appointment->client_name,
-                    salonName:  $salonName
-                );
-            }
-        }
-        // ─────────────────────────────────────────────────────────────────
-
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json(['success' => true, 'message' => 'Randevu durumu güncellendi.']);
         }
@@ -400,13 +376,13 @@ class NailTechController extends Controller
                                  ->get()
                                  ->map(function($a) {
                                      return [
-                                         'id' => $a->id,
-                                         'client_name' => $a->client_name,
-                                         'client_phone' => $a->client_phone,
+                                         'id'             => $a->id,
+                                         'client_name'    => $a->client_name,
+                                         'tracking_code'  => $a->tracking_code,
                                          'date_formatted' => \Carbon\Carbon::parse($a->appointment_date)->locale('tr')->translatedFormat('d M, Y'),
                                          'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
-                                         'price' => floatval($a->estimated_price),
-                                         'image_url' => $a->image_path ? asset('storage/' . $a->image_path) : null,
+                                         'price'          => floatval($a->estimated_price),
+                                         'image_url'      => $a->image_path ? asset('storage/' . $a->image_path) : null,
                                      ];
                                  });
 
@@ -418,12 +394,12 @@ class NailTechController extends Controller
                                   ->get()
                                   ->map(function($a) {
                                       return [
-                                          'id' => $a->id,
-                                          'client_name' => $a->client_name,
-                                          'client_phone' => $a->client_phone,
+                                          'id'             => $a->id,
+                                          'client_name'    => $a->client_name,
+                                          'tracking_code'  => $a->tracking_code,
                                           'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
-                                          'price' => floatval($a->estimated_price),
-                                          'image_url' => $a->image_path ? asset('storage/' . $a->image_path) : null,
+                                          'price'          => floatval($a->estimated_price),
+                                          'image_url'      => $a->image_path ? asset('storage/' . $a->image_path) : null,
                                       ];
                                   });
 

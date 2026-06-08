@@ -93,25 +93,14 @@ class AnalysisController extends Controller
         }
 
         // 8. 10 parmak tahmini ekstra maliyeti hesaplıyoruz
-        // Formül: (görünen ekstra maliyet / görünen tırnak sayısı) × 10
-        // Tırnak sayısı olarak sadece temel tırnak formlarının sayısını (görünen parmak sayısını) almalıyız
-        $gorunen_parmak_sayisi = count($veri['temel_detaylar'] ?? []);
-        if ($gorunen_parmak_sayisi <= 0) {
-            $detay_count = 0;
-            foreach ($detaylar as $detay_adi => $adet) {
-                $detay_count += $adet;
-            }
-            $gorunen_parmak_sayisi = ($veri['toplam_tirnak'] ?? 0) - $detay_count;
-            if ($gorunen_parmak_sayisi <= 0) {
-                $gorunen_parmak_sayisi = 1;
+        // Görselde algılanan tüm benzersiz nail art kategorilerinin birim fiyatları toplanır ve 10 ile çarpılır.
+        $toplam_birim_fiyat = 0;
+        foreach ($detaylar as $sanat_adi => $adet) {
+            if ($adet > 0 && isset($sanat_fiyat_haritasi[$sanat_adi])) {
+                $toplam_birim_fiyat += $sanat_fiyat_haritasi[$sanat_adi];
             }
         }
-
-        $on_parmak_tahmini_ekstra = 0;
-        if ($gorunen_parmak_sayisi > 0) {
-            $parmak_basi_ortalama = $gorunen_ekstra_maliyet / $gorunen_parmak_sayisi;
-            $on_parmak_tahmini_ekstra = $parmak_basi_ortalama * 10;
-        }
+        $on_parmak_tahmini_ekstra = $toplam_birim_fiyat * 10;
 
         // 9. Uzunluk ve Şekil fiyatlandırması (tırnakçı fiyatlandırmadan hariç bırakmadıysa)
         $user = \App\Models\User::find($nailTechId);
@@ -132,22 +121,15 @@ class AnalysisController extends Controller
         }
 
         $length_price = 0;
-        if ($user && !$user->exclude_length_pricing && $detected_length) {
-            $length_price = $userPrices[$detected_length] ?? 0;
-        }
-
         $shape_price = 0;
-        if ($user && !$user->exclude_shape_pricing && $detected_shape) {
-            $shape_price = $userPrices[$detected_shape] ?? 0;
-        }
 
         // 10. Nihai fiyatları hesaplıyoruz (Kalıcı Oje ve Jel Protez için ayrı ayrı)
         $toplam_ko = $base_price_ko + $on_parmak_tahmini_ekstra + $length_price + $shape_price;
         $toplam_jp = $base_price_jp + $on_parmak_tahmini_ekstra + $length_price + $shape_price;
 
-        // 5'in katlarına yuvarla (örn: 833 → 835)
-        $nihai_ko = (int) (ceil($toplam_ko / 5) * 5);
-        $nihai_jp = (int) (ceil($toplam_jp / 5) * 5);
+        // 50'nin katlarına yuvarla (örn: 725 → 750, 751 → 800)
+        $nihai_ko = (int) (ceil($toplam_ko / 50) * 50);
+        $nihai_jp = (int) (ceil($toplam_jp / 50) * 50);
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([

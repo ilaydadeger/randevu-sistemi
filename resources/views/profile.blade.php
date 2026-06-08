@@ -51,8 +51,7 @@
                                     <span class="font-headline-sm text-base font-bold leading-none" x-text="appointment.time_formatted"></span>
                                 </div>
                                 <div class="flex flex-col">
-                                    <h3 class="font-body-md text-body-md font-semibold text-on-surface" x-text="appointment.client_name"></h3>
-                                    <p class="text-xs text-on-surface-variant" x-text="appointment.client_phone"></p>
+                                <h3 class="font-body-md text-body-md font-semibold text-on-surface" x-text="appointment.client_name"></h3>
                                 </div>
                             </div>
                             <div class="flex items-center gap-sm shrink-0">
@@ -94,6 +93,13 @@
                                             <span x-text="appointment.date_formatted"></span> - 
                                             <span x-text="appointment.time_formatted"></span>
                                         </p>
+                                        <template x-if="appointment.tracking_code">
+                                            <a :href="'/randevu-takip/' + appointment.tracking_code"
+                                               target="_blank"
+                                               class="text-[10px] text-on-surface-variant/60 hover:text-primary transition-colors underline underline-offset-2 font-mono">
+                                                Takip Linki ↗
+                                            </a>
+                                        </template>
                                     </div>
                                 </div>
                                 <span class="font-headline-sm text-headline-sm text-primary" x-text="'₺' + appointment.price"></span>
@@ -330,23 +336,23 @@
                 modalImageUrl: '',
                 pendingApprovals: {!! json_encode($pendingApprovals->map(function($a) {
                     return [
-                        'id' => $a->id,
-                        'client_name' => $a->client_name,
-                        'client_phone' => $a->client_phone,
+                        'id'             => $a->id,
+                        'client_name'    => $a->client_name,
+                        'tracking_code'  => $a->tracking_code,
                         'date_formatted' => \Carbon\Carbon::parse($a->appointment_date)->locale('tr')->translatedFormat('d M, Y'),
                         'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
-                        'price' => floatval($a->estimated_price),
-                        'image_url' => $a->image_path ? asset('storage/' . $a->image_path) : null,
+                        'price'          => floatval($a->estimated_price),
+                        'image_url'      => $a->image_path ? asset('storage/' . $a->image_path) : null,
                     ];
                 })) !!},
                 todayAppointments: {!! json_encode($todayAppointments->map(function($a) {
                     return [
-                        'id' => $a->id,
-                        'client_name' => $a->client_name,
-                        'client_phone' => $a->client_phone,
+                        'id'             => $a->id,
+                        'client_name'    => $a->client_name,
+                        'tracking_code'  => $a->tracking_code,
                         'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
-                        'price' => floatval($a->estimated_price),
-                        'image_url' => $a->image_path ? asset('storage/' . $a->image_path) : null,
+                        'price'          => floatval($a->estimated_price),
+                        'image_url'      => $a->image_path ? asset('storage/' . $a->image_path) : null,
                     ];
                 })) !!},
 

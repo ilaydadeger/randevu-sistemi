@@ -290,43 +290,21 @@
                         </div>
                     </div>
 
-                    {{-- Premium Service Selector (Shown on success) --}}
+                    {{-- Price Display (Shown on success) --}}
                     <div id="serviceSelectorContainer" class="hidden flex flex-col gap-2 pt-2 border-t border-primary/10">
-                        <span class="text-[10px] font-bold text-on-surface-variant font-label-caps tracking-wider">İŞLEM TİPİ</span>
-                        <div class="flex gap-2 bg-surface-container-low p-1 rounded-full border border-outline-variant/30">
-                            <button type="button" id="btnKO" onclick="selectService('ko')"
-                                class="flex-1 py-2 rounded-full font-label-caps text-xs font-bold transition-all bg-primary text-on-primary shadow-sm focus:outline-none">
-                                KALICI OJE
-                            </button>
-                            <button type="button" id="btnJP" onclick="selectService('jp')"
-                                class="flex-1 py-2 rounded-full font-label-caps text-xs font-bold transition-all text-on-surface-variant hover:text-on-surface focus:outline-none">
-                                JEL PROTEZ
-                            </button>
-                        </div>
-                        <div class="flex justify-between items-center mt-1 bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/20 shadow-sm">
-                            <span class="text-xs font-bold text-on-surface-variant font-label-caps tracking-wider">TOPLAM TUTAR:</span>
+                        <div class="flex justify-between items-center bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/20 shadow-sm">
+                            <span class="text-xs font-bold text-on-surface-variant font-label-caps tracking-widest">Protez Tırnak Toplam Fiyat:</span>
                             <span id="singleTotalPrice" class="text-2xl font-black text-primary">₺0</span>
                         </div>
                     </div>
                 </div>
 
                 {{-- Client Details --}}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-xs">
-                        <label class="font-label-caps text-label-caps text-on-surface-variant">AD SOYAD</label>
-                        <input type="text" name="client_name" required
-                            class="w-full bg-surface-container-low border-0 border-b-2 border-surface-variant focus:border-primary focus:ring-0 px-4 py-3 text-on-surface rounded-t-DEFAULT"
-                            placeholder="Adınız Soyadınız">
-                    </div>
-                    <div class="space-y-xs">
-                        <label class="font-label-caps text-label-caps text-on-surface-variant">TELEFON</label>
-                        <input type="tel" name="client_phone" required
-                            class="w-full bg-surface-container-low border-0 border-b-2 border-surface-variant focus:border-primary focus:ring-0 px-4 py-3 text-on-surface rounded-t-DEFAULT"
-                            placeholder="05XX XXX XX XX">
-                        <p class="text-[10px] text-on-surface-variant/80 mt-1">
-                            * Randevu onay veya ret bildiriminin size SMS olarak ulaşması için gereklidir.
-                        </p>
-                    </div>
+                <div class="space-y-xs">
+                    <label class="font-label-caps text-label-caps text-on-surface-variant">AD SOYAD</label>
+                    <input type="text" name="client_name" required
+                        class="w-full bg-surface-container-low border-0 border-b-2 border-surface-variant focus:border-primary focus:ring-0 px-4 py-3 text-on-surface rounded-t-DEFAULT"
+                        placeholder="Adınız Soyadınız">
                 </div>
 
                 {{-- Calendar Slot Picker --}}
@@ -808,28 +786,13 @@
                 }
             });
 
-            window.nihaiKO = 0;
             window.nihaiJP = 0;
-            window.currentSelectedService = 'ko';
 
-            window.selectService = function(service) {
-                window.currentSelectedService = service;
-                const btnKO = document.getElementById('btnKO');
-                const btnJP = document.getElementById('btnJP');
+            window.updatePriceDisplay = function() {
                 const totalPriceEl = document.getElementById('singleTotalPrice');
                 const estPriceInput = document.getElementById('estimatedPriceInput');
-
-                if (service === 'ko') {
-                    btnKO.className = 'flex-1 py-2 rounded-full font-label-caps text-xs font-bold transition-all bg-primary text-on-primary shadow-sm focus:outline-none';
-                    btnJP.className = 'flex-1 py-2 rounded-full font-label-caps text-xs font-bold transition-all text-on-surface-variant hover:text-on-surface focus:outline-none';
-                    if (totalPriceEl) totalPriceEl.innerText = `₺${window.nihaiKO}`;
-                    if (estPriceInput) estPriceInput.value = window.nihaiKO;
-                } else {
-                    btnJP.className = 'flex-1 py-2 rounded-full font-label-caps text-xs font-bold transition-all bg-primary text-on-primary shadow-sm focus:outline-none';
-                    btnKO.className = 'flex-1 py-2 rounded-full font-label-caps text-xs font-bold transition-all text-on-surface-variant hover:text-on-surface focus:outline-none';
-                    if (totalPriceEl) totalPriceEl.innerText = `₺${window.nihaiJP}`;
-                    if (estPriceInput) estPriceInput.value = window.nihaiJP;
-                }
+                if (totalPriceEl) totalPriceEl.innerText = `₺${window.nihaiJP}`;
+                if (estPriceInput) estPriceInput.value = window.nihaiJP;
             };
 
             function simulateAIPrice(file) {
@@ -869,7 +832,6 @@
                             priceTitle.className = 'fiyat-gosterim font-body-md font-semibold text-green-600 dark:text-green-400';
                             priceTitle.innerText = 'Analiz Tamamlandı!';
 
-                            window.nihaiKO = data.nihai_ko;
                             window.nihaiJP = data.nihai_jp;
 
                             const selectorContainer = document.getElementById('serviceSelectorContainer');
@@ -877,7 +839,7 @@
                                 selectorContainer.classList.remove('hidden');
                             }
 
-                            window.selectService(window.currentSelectedService);
+                            window.updatePriceDisplay();
 
                             // Açıklama metnini gizle
                             priceDesc.classList.add('hidden');
@@ -944,9 +906,8 @@
 
                     // Append selected service type to client name so the artist can see it clearly
                     const nameInput = appointmentForm.querySelector('input[name="client_name"]');
-                    const selectedServiceLabel = window.currentSelectedService === 'jp' ? 'Jel Protez' : 'Kalıcı Oje';
                     if (nameInput && !nameInput.value.includes('(')) {
-                        nameInput.value = `${nameInput.value} (${selectedServiceLabel})`;
+                        nameInput.value = `${nameInput.value} (Protez Tırnak)`;
                     }
 
                     // Immediately show loading popup in the middle of the screen
@@ -962,30 +923,6 @@
                 });
             }
 
-            // Check for success session
-            @if(session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Randevu Talebiniz Gönderildi!',
-                    html: `
-                                            <p class="mb-4">Randevu talebiniz uzmana iletilmiştir.</p>
-                                            <div class="bg-surface-container p-3 rounded-lg border border-outline-variant inline-block text-left w-full">
-                                                <span class="text-xs text-outline block mb-1 uppercase font-bold tracking-wider">Takip Kodunuz:</span>
-                                                <code class="text-primary font-mono font-bold break-all select-all">{{ session('tracking_code') }}</code>
-                                            </div>
-                                            <p class="text-sm text-on-surface-variant mt-4">Bu kodu kullanarak sisteme giriş yapmadan randevu durumunuzu sorgulayabilirsiniz. Lütfen kodu kopyalayıp saklayın.</p>
-                                        `,
-                    confirmButtonText: 'Kodu Kopyala & Kapat',
-                    confirmButtonColor: '#7a5555',
-                    customClass: {
-                        popup: 'rounded-2xl',
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        navigator.clipboard.writeText("{{ session('tracking_code') }}");
-                    }
-                });
             @endif
-                });
     </script>
 @endpush

@@ -48,7 +48,7 @@
                         @foreach($groupCategories as $category)
                             <div class="flex items-center justify-between gap-4">
                                 <label for="price_{{ $category->id }}" class="font-body-md text-on-surface-variant flex-1">
-                                    {{ $category->name }}
+                                    {{ $category->name === 'Jel Protez' ? 'Protez Tırnak' : $category->name }}
                                 </label>
 
                                 <div class="relative w-1/3 min-w-[120px]">

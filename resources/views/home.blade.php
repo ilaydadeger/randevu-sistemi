@@ -903,11 +903,6 @@
                         return;
                     }
 
-                    // Append selected service type to client name so the artist can see it clearly
-                    const nameInput = appointmentForm.querySelector('input[name="client_name"]');
-                    if (nameInput && !nameInput.value.includes('(')) {
-                        nameInput.value = `${nameInput.value} (Protez Tırnak)`;
-                    }
 
                     // Immediately show loading popup in the middle of the screen
                     Swal.fire({

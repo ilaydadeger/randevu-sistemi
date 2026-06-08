@@ -354,22 +354,25 @@
         <hr class="divider">
 
         {{-- Tracking Code Pill --}}
-        <div class="tracking-pill">
-            <span class="tracking-label">Takip Kodu</span>
-            <span class="tracking-code" id="tCode">{{ $appointment->tracking_code }}</span>
-            <button class="copy-btn" onclick="copyCode()" title="Kopyala">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-                </svg>
-            </button>
+        {{-- Tracking Link Pill --}}
+        <div class="tracking-pill cursor-pointer hover:bg-surface-variant/20 transition-colors" onclick="copyLink()" title="Linki Kopyala">
+            <span class="tracking-label">Takip Linki</span>
+            <div class="flex items-center gap-2">
+                <span class="tracking-code !text-on-surface-variant text-[0.65rem] lowercase">Sayfa linkini kopyala</span>
+                <button class="copy-btn pointer-events-none">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                    </svg>
+                </button>
+            </div>
         </div>
 
     </div>
 
     <p class="footer-note">Bu linki saklayarak durumunuzu istediğiniz zaman kontrol edebilirsiniz.</p>
 
-    <div class="toast" id="toast">Kod kopyalandı!</div>
+    <div class="toast" id="toast">Link kopyalandı!</div>
 
     <script>
         const TRACKING_CODE = '{{ $appointment->tracking_code }}';
@@ -377,8 +380,8 @@
         let   currentStatus = '{{ $status }}';
         let   pollTimer     = null;
 
-        function copyCode() {
-            navigator.clipboard.writeText(TRACKING_CODE).then(() => {
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
                 const t = document.getElementById('toast');
                 t.classList.add('show');
                 setTimeout(() => t.classList.remove('show'), 2000);

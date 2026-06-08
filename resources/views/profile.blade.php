@@ -93,13 +93,6 @@
                                             <span x-text="appointment.date_formatted"></span> - 
                                             <span x-text="appointment.time_formatted"></span>
                                         </p>
-                                        <template x-if="appointment.tracking_code">
-                                            <a :href="'/randevu-takip/' + appointment.tracking_code"
-                                               target="_blank"
-                                               class="text-[10px] text-on-surface-variant/60 hover:text-primary transition-colors underline underline-offset-2 font-mono">
-                                                Takip Linki ↗
-                                            </a>
-                                        </template>
                                     </div>
                                 </div>
                                 <span class="font-headline-sm text-headline-sm text-primary" x-text="'₺' + appointment.price"></span>

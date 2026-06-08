@@ -285,8 +285,8 @@
                             <span class="material-symbols-outlined text-primary animate-spin">progress_activity</span>
                         </div>
                         <div class="flex-1">
-                            <div id="priceTitle" class="fiyat-gosterim font-body-md font-semibold text-primary">Görsel Analiz Ediliyor...</div>
-                            <p id="priceDesc" class="text-sm text-on-surface-variant mt-1">Yapay zeka asistanımız modelin zorluğunu ve malzeme maliyetini hesaplıyor.</p>
+                            <div id="priceTitle" class="fiyat-gosterim font-body-md font-semibold text-primary">Fiyat Oluşturuluyor...</div>
+                            <p id="priceDesc" class="hidden text-sm text-on-surface-variant mt-1"></p>
                         </div>
                     </div>
 
@@ -800,10 +800,9 @@
                 priceSection.classList.remove('hidden');
                 priceSection.classList.add('animate-in', 'fade-in', 'slide-in-from-bottom-2');
                 priceSpinner.innerHTML = '<span class="material-symbols-outlined text-primary animate-spin">progress_activity</span>';
-                priceTitle.innerText = 'Görsel Analiz Ediliyor...';
+                priceTitle.innerText = 'Fiyat Oluşturuluyor...';
                 priceTitle.className = 'font-body-md font-semibold text-primary';
-                priceDesc.classList.remove('hidden');
-                priceDesc.innerText = 'Yapay zeka asistanımız modelin zorluğunu ve malzeme maliyetini hesaplıyor.';
+                priceDesc.classList.add('hidden');
                 if (priceBreakdown) priceBreakdown.classList.add('hidden');
 
                 const formData = new FormData();
@@ -830,7 +829,7 @@
                             // Spinner güncelle
                             priceSpinner.innerHTML = '<span class="material-symbols-outlined text-green-600 dark:text-green-400">check_circle</span>';
                             priceTitle.className = 'fiyat-gosterim font-body-md font-semibold text-green-600 dark:text-green-400';
-                            priceTitle.innerText = 'Analiz Tamamlandı!';
+                            priceTitle.innerText = 'Fiyat Oluşturuldu!';
 
                             window.nihaiJP = data.nihai_jp;
 

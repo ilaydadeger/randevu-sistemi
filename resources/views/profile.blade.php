@@ -58,7 +58,7 @@
                                 <span class="font-headline-sm text-base text-primary" x-text="'₺' + appointment.price"></span>
                                 <template x-if="appointment.image_url">
                                     <div class="w-10 h-10 rounded-lg overflow-hidden border border-outline-variant/30 cursor-pointer" @click="openImageModal(appointment.image_url)">
-                                        <img alt="Nail Reference" class="w-full h-full object-cover" :src="appointment.image_url" />
+                                        <img alt="Nail Reference" class="w-full h-full object-cover" :src="appointment.image_url" @error="$el.parentElement.style.display = 'none'" />
                                     </div>
                                 </template>
                             </div>
@@ -99,7 +99,7 @@
                             </div>
                             <template x-if="appointment.image_url">
                                 <div class="mb-sm rounded-lg overflow-hidden h-24 bg-surface-variant flex items-center justify-center border border-outline-variant/30 cursor-pointer" @click="openImageModal(appointment.image_url)">
-                                    <img alt="Nail Art Reference" class="w-full h-full object-cover" :src="appointment.image_url" />
+                                    <img alt="Nail Art Reference" class="w-full h-full object-cover" :src="appointment.image_url" @error="$el.parentElement.style.display = 'none'" />
                                 </div>
                             </template>
                             <div class="flex gap-sm">
@@ -330,7 +330,7 @@
                 pendingApprovals: {!! json_encode($pendingApprovals->map(function($a) {
                     return [
                         'id'             => $a->id,
-                        'client_name'    => $a->client_name,
+                        'client_name'    => str_replace(' (Protez Tırnak)', '', $a->client_name),
                         'tracking_code'  => $a->tracking_code,
                         'date_formatted' => \Carbon\Carbon::parse($a->appointment_date)->locale('tr')->translatedFormat('d M, Y'),
                         'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
@@ -341,7 +341,7 @@
                 todayAppointments: {!! json_encode($todayAppointments->map(function($a) {
                     return [
                         'id'             => $a->id,
-                        'client_name'    => $a->client_name,
+                        'client_name'    => str_replace(' (Protez Tırnak)', '', $a->client_name),
                         'tracking_code'  => $a->tracking_code,
                         'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                         'price'          => floatval($a->estimated_price),

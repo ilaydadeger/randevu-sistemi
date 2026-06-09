@@ -137,7 +137,7 @@
 
                     <template x-if="appointment.image_url">
                         <div class="mb-sm rounded-lg overflow-hidden h-24 bg-surface-variant flex items-center justify-center border border-outline-variant/30 cursor-pointer" @click="openImageModal(appointment.image_url)">
-                            <img alt="Nail Art Reference" class="w-full h-full object-cover" :src="appointment.image_url" />
+                            <img alt="Nail Art Reference" class="w-full h-full object-cover" :src="appointment.image_url" @error="$el.parentElement.style.display = 'none'" />
                         </div>
                     </template>
 
@@ -199,7 +199,7 @@
 
                     <template x-if="appointment.image_url">
                         <div class="mt-sm rounded-lg overflow-hidden h-24 bg-surface-variant flex items-center justify-center border border-outline-variant/30 cursor-pointer" @click="openImageModal(appointment.image_url)">
-                            <img alt="Nail Art Reference" class="w-full h-full object-cover" :src="appointment.image_url" />
+                            <img alt="Nail Art Reference" class="w-full h-full object-cover" :src="appointment.image_url" @error="$el.parentElement.style.display = 'none'" />
                         </div>
                     </template>
                 </div>
@@ -237,7 +237,7 @@
 
                     <template x-if="appointment.image_url">
                         <div class="mt-sm rounded-lg overflow-hidden h-24 bg-surface-variant flex items-center justify-center border border-outline-variant/30 cursor-pointer" @click="openImageModal(appointment.image_url)">
-                            <img alt="Nail Art Reference" class="w-full h-full object-cover opacity-80" :src="appointment.image_url" />
+                            <img alt="Nail Art Reference" class="w-full h-full object-cover opacity-80" :src="appointment.image_url" @error="$el.parentElement.style.display = 'none'" />
                         </div>
                     </template>
                 </div>
@@ -615,7 +615,7 @@
                 'date' => $a->appointment_date,
                 'date_formatted' => strtoupper(\Carbon\Carbon::parse($a->appointment_date)->locale('tr')->translatedFormat('d M')),
                 'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
-                'client_name' => $a->client_name,
+                'client_name' => str_replace(' (Protez Tırnak)', '', $a->client_name),
                 'tracking_code_short' => substr($a->tracking_code, 0, 4),
                 'image_url' => $a->image_path ? asset('storage/' . $a->image_path) : null,
             ])) !!},
@@ -625,7 +625,7 @@
                 'date' => $a->appointment_date,
                 'date_formatted' => strtoupper(\Carbon\Carbon::parse($a->appointment_date)->locale('tr')->translatedFormat('d M')),
                 'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
-                'client_name' => $a->client_name,
+                'client_name' => str_replace(' (Protez Tırnak)', '', $a->client_name),
                 'tracking_code_short' => substr($a->tracking_code, 0, 4),
                 'image_url' => $a->image_path ? asset('storage/' . $a->image_path) : null,
             ])) !!},
@@ -635,7 +635,7 @@
                 'date' => $a->appointment_date,
                 'date_formatted' => strtoupper(\Carbon\Carbon::parse($a->appointment_date)->locale('tr')->translatedFormat('d M')),
                 'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
-                'client_name' => $a->client_name,
+                'client_name' => str_replace(' (Protez Tırnak)', '', $a->client_name),
                 'tracking_code_short' => substr($a->tracking_code, 0, 4),
                 'image_url' => $a->image_path ? asset('storage/' . $a->image_path) : null,
             ])) !!},

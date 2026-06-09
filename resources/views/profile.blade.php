@@ -130,7 +130,7 @@
                                     <span class="spinner hidden material-symbols-outlined animate-spin text-sm">progress_activity</span>
                                     Reddet
                                 </button>
-                                <button @click="updateAppointmentStatus(appointment.id, 'approved')"
+                                <button @click="openApproveModal(appointment)"
                                     class="flex-1 py-2 px-4 rounded-full bg-primary text-on-primary font-label-caps text-label-caps hover:bg-surface-tint transition-colors flex justify-center items-center gap-2">
                                     <span class="spinner hidden material-symbols-outlined animate-spin text-sm">progress_activity</span>
                                     Onayla
@@ -325,6 +325,117 @@
         </section>
     </main>
 
+
+    {{-- Approve / Reschedule Modal --}}
+    <div x-cloak x-show="approveModalOpen" class="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-on-surface/40 backdrop-blur-sm" x-transition.opacity>
+        <div class="relative bg-surface-container-lowest rounded-2xl w-full max-w-lg shadow-xl overflow-y-auto max-h-[90vh]" @click.away="approveModalOpen = false">
+            <div class="p-4 border-b border-outline-variant/30 flex items-center justify-between sticky top-0 bg-surface-container-lowest z-10">
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Randevuyu Onayla</h3>
+                <button @click="approveModalOpen = false" class="text-on-surface-variant hover:text-error transition-colors p-1 rounded-full">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-6">
+                <p class="text-xs text-on-surface-variant">
+                    Müşterinin seçtiği tarih ve saati veya fiyatı değiştirebilirsiniz. Değiştirirseniz müşteriye yeni tarihli bir onay iletilecektir.
+                </p>
+                
+                {{-- Price Input --}}
+                <div class="flex items-center gap-2 bg-surface-container-low p-3 rounded-xl border border-outline-variant/30">
+                    <span class="font-bold text-xs text-on-surface font-label-caps shrink-0">FİYAT:</span>
+                    <div class="relative flex-1">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant font-bold text-sm">₺</span>
+                        <input x-model="activeApprovePrice" type="number" min="0" step="any" 
+                            class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg pl-7 pr-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary">
+                    </div>
+                </div>
+
+                {{-- Selected Slot Preview --}}
+                <div class="p-sm bg-primary-container/20 border border-primary/20 rounded-xl flex items-center gap-2 text-primary font-medium text-xs">
+                    <span class="material-symbols-outlined text-[18px]">event_available</span>
+                    <span>Randevu Zamanı: <span class="font-bold" x-text="formatDate(selectedDate) + ' - Saat ' + selectedTime"></span></span>
+                </div>
+
+                {{-- Mini Calendar --}}
+                <div class="bg-surface-container-low rounded-xl p-4 border border-outline-variant/30">
+                    <!-- Month / Year -->
+                    <div class="relative flex items-center justify-center mb-4">
+                        <button type="button" @click="prevMonth()" x-show="shouldShowPrevArrow()"
+                            class="absolute left-0 p-1 rounded-full bg-surface-container hover:bg-surface-variant transition-colors flex items-center justify-center w-7 h-7 z-10">
+                            <span class="material-symbols-outlined text-sm font-bold">chevron_left</span>
+                        </button>
+                        <div class="font-label-caps text-label-caps text-primary tracking-widest text-center text-xs font-bold" x-text="monthName"></div>
+                        <button type="button" @click="nextMonth()" x-show="shouldShowNextArrow()"
+                            class="absolute right-0 p-1 rounded-full bg-surface-container hover:bg-surface-variant transition-colors flex items-center justify-center w-7 h-7 z-10">
+                            <span class="material-symbols-outlined text-sm font-bold">chevron_right</span>
+                        </button>
+                    </div>
+
+                    <!-- Days Header -->
+                    <div class="grid grid-cols-7 gap-1 text-center mb-2">
+                        <div class="font-label-caps text-[10px] text-on-surface-variant">Pz</div>
+                        <div class="font-label-caps text-[10px] text-on-surface-variant">Pt</div>
+                        <div class="font-label-caps text-[10px] text-on-surface-variant">Sa</div>
+                        <div class="font-label-caps text-[10px] text-on-surface-variant">Ça</div>
+                        <div class="font-label-caps text-[10px] text-on-surface-variant">Pe</div>
+                        <div class="font-label-caps text-[10px] text-on-surface-variant">Cu</div>
+                        <div class="font-label-caps text-[10px] text-on-surface-variant">Ct</div>
+                    </div>
+
+                    <!-- Calendar Grid -->
+                    <div class="grid grid-cols-7 gap-1 text-center font-body-md text-sm">
+                        <template x-for="day in daysInGrid" :key="day.dateStr">
+                            <div @click="selectDay(day)" :class="{
+                                        'text-on-surface-variant opacity-30 cursor-not-allowed': !day.isSelectable,
+                                        'rounded-full bg-error/10 text-error/60 border border-error/20 line-through cursor-not-allowed': day.isSelectable && isDayFullyBooked(day.dateStr) && selectedDate !== day.dateStr,
+                                        'rounded-full hover:bg-surface-container cursor-pointer transition-colors': day.isSelectable && !isDayFullyBooked(day.dateStr) && selectedDate !== day.dateStr,
+                                        'rounded-full bg-primary text-on-primary shadow-sm cursor-pointer font-semibold': day.isSelectable && selectedDate === day.dateStr
+                                    }"
+                                class="py-1 relative select-none flex items-center justify-center w-8 h-8 mx-auto transition-colors">
+                                <span x-text="day.dayNum"></span>
+                            </div>
+                        </template>
+                    </div>
+
+                    {{-- Time Slots --}}
+                    <div class="mt-4 border-t border-outline-variant/20 pt-4" x-show="selectedDate">
+                        <div class="font-label-caps text-[10px] text-on-surface-variant mb-3 font-bold tracking-wider"
+                            x-text="formatFriendlySelectedDate() + ' UYGUN SAATLER'"></div>
+
+                        <div class="flex flex-wrap gap-2">
+                            <template x-for="slot in getAvailableSlotsForSelectedDate()" :key="slot.key">
+                                <button type="button"
+                                    @click="if (slot.isAvailable) { selectedTime = slot.hour; activeSlotKey = slot.key; }"
+                                    :disabled="!slot.isAvailable && selectedTime !== slot.hour" 
+                                    :class="{
+                                            'bg-surface-variant/20 text-on-surface-variant/30 border border-outline-variant/10 cursor-not-allowed opacity-50': !slot.isAvailable && selectedTime !== slot.hour,
+                                            'border border-outline-variant font-body-md text-xs text-on-surface hover:bg-surface-container transition-colors': slot.isAvailable && selectedTime !== slot.hour,
+                                            'bg-secondary text-on-secondary font-body-md text-xs shadow-sm transition-colors': selectedTime === slot.hour
+                                        }"
+                                    class="px-3 py-1.5 rounded-full transition-colors whitespace-nowrap">
+                                    <span x-text="formatTimeLabel(slot.hour)"></span>
+                                </button>
+                            </template>
+                            <template x-if="getAvailableSlotsForSelectedDate().filter(s => s.isAvailable || s.hour === selectedTime).length === 0">
+                                <div class="text-[10px] text-on-surface-variant italic">Bu tarihte uygun saat yok.</div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="p-4 border-t border-outline-variant/30 flex gap-2 justify-end bg-surface-container-lowest sticky bottom-0 z-10">
+                <button @click="approveModalOpen = false" class="px-6 py-2 rounded-full font-label-caps text-xs bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors">Vazgeç</button>
+                <button @click="confirmApprove()" class="px-6 py-2 rounded-full font-label-caps text-xs bg-primary text-on-primary hover:bg-surface-tint transition-colors flex gap-2 items-center">
+                    <span x-show="isApproving" class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span>
+                    Kaydet
+                </button>
+            </div>
+        </div>
+    </div>
+
     {{-- Fullscreen Design Image Modal --}}
     <div x-cloak x-show="imageModalOpen" class="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" x-transition.opacity>
         <div class="relative max-w-lg max-h-[80vh] w-full" @click.away="imageModalOpen = false">
@@ -357,11 +468,33 @@
                 isLoading: false,
                 imageModalOpen: false,
                 modalImageUrl: '',
+
+                isApproving: false,
+                approveModalOpen: false,
+                activeApproveId: null,
+                activeApprovePrice: 0,
+                
+                blockedSlots: {!! json_encode($blockedSlots) !!},
+                occupiedSlots: {!! json_encode($occupiedSlots) !!},
+                hours: {!! json_encode($hours) !!},
+                todayStr: '{{ now()->toDateString() }}',
+
+                selectedDate: '',
+                selectedTime: '',
+                activeSlotKey: '',
+
+                currentYear: null,
+                currentMonth: null,
+                monthName: '',
+                daysInGrid: [],
+
                 pendingApprovals: {!! json_encode($pendingApprovals->map(function($a) {
                     return [
                         'id'             => $a->id,
                         'client_name'    => str_replace(' (Protez Tırnak)', '', $a->client_name),
                         'tracking_code'  => $a->tracking_code,
+                        'date'           => $a->appointment_date,
+                        'time'           => $a->appointment_time,
                         'date_formatted' => \Carbon\Carbon::parse($a->appointment_date)->locale('tr')->translatedFormat('d M, Y'),
                         'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                         'price'          => floatval($a->estimated_price),
@@ -565,6 +698,204 @@
                         });
                     } finally {
                         this.isLoading = false;
+                    }
+                },
+
+                
+                generateGrid() {
+                    const firstDayOfMonth = new Date(this.currentYear, this.currentMonth, 1);
+                    const lastDayOfMonth = new Date(this.currentYear, this.currentMonth + 1, 0);
+                    this.monthName = firstDayOfMonth.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' }).toUpperCase();
+                    const days = [];
+                    const startDayOfWeek = firstDayOfMonth.getDay();
+                    const prevMonthLastDay = new Date(this.currentYear, this.currentMonth, 0).getDate();
+                    
+                    for (let i = startDayOfWeek - 1; i >= 0; i--) {
+                        const d = prevMonthLastDay - i;
+                        let pm = this.currentMonth - 1;
+                        let py = this.currentYear;
+                        if (pm < 0) { pm = 11; py--; }
+                        const dateStr = `${py}-${String(pm + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                        days.push({ dateStr: dateStr, dayNum: d, isSelectable: false });
+                    }
+
+                    const today = new Date(this.todayStr);
+                    const maxAllowedDate = new Date(today);
+                    maxAllowedDate.setDate(today.getDate() + 90);
+
+                    const totalDays = lastDayOfMonth.getDate();
+                    for (let d = 1; d <= totalDays; d++) {
+                        const dateStr = `${this.currentYear}-${String(this.currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                        const dateObj = new Date(this.currentYear, this.currentMonth, d);
+                        const isSelectable = dateObj >= new Date(today.getFullYear(), today.getMonth(), today.getDate()) && dateObj <= new Date(maxAllowedDate.getFullYear(), maxAllowedDate.getMonth(), maxAllowedDate.getDate());
+                        days.push({ dateStr: dateStr, dayNum: d, isSelectable: isSelectable });
+                    }
+
+                    const totalCells = Math.ceil(days.length / 7) * 7;
+                    const leadingDaysNeeded = totalCells - days.length;
+                    for (let d = 1; d <= leadingDaysNeeded; d++) {
+                        let nm = this.currentMonth + 1;
+                        let ny = this.currentYear;
+                        if (nm > 11) { nm = 0; ny++; }
+                        const dateStr = `${ny}-${String(nm + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                        days.push({ dateStr: dateStr, dayNum: d, isSelectable: false });
+                    }
+
+                    this.daysInGrid = days;
+                },
+
+                prevMonth() {
+                    this.currentMonth--;
+                    if (this.currentMonth < 0) {
+                        this.currentMonth = 11;
+                        this.currentYear--;
+                    }
+                    this.generateGrid();
+                },
+
+                nextMonth() {
+                    this.currentMonth++;
+                    if (this.currentMonth > 11) {
+                        this.currentMonth = 0;
+                        this.currentYear++;
+                    }
+                    this.generateGrid();
+                },
+
+                shouldShowPrevArrow() {
+                    const viewDate = new Date(this.currentYear, this.currentMonth, 1);
+                    const today = new Date(this.todayStr);
+                    const limitDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    return viewDate > limitDate;
+                },
+
+                shouldShowNextArrow() {
+                    return true;
+                },
+
+                selectDay(day) {
+                    if (!day.isSelectable) return;
+                    if (this.isDayFullyBooked(day.dateStr) && this.selectedDate !== day.dateStr) return;
+                    this.selectedDate = day.dateStr;
+                    this.selectedTime = '';
+                    this.activeSlotKey = '';
+                },
+
+                isDayFullyBooked(dateStr) {
+                    const isAnyAvailable = this.hours.some(hour => {
+                        const key = dateStr + '_' + hour;
+                        const isBlocked = !!this.blockedSlots[key];
+                        const isOccupied = !!this.occupiedSlots[key];
+                        return !isBlocked && !isOccupied;
+                    });
+                    return !isAnyAvailable;
+                },
+
+                getAvailableSlotsForSelectedDate() {
+                    if (!this.selectedDate) return [];
+                    return this.hours.map(hour => {
+                        const key = this.selectedDate + '_' + hour;
+                        const isBlocked = !!this.blockedSlots[key];
+                        const isOccupied = !!this.occupiedSlots[key];
+                        
+                        let isAvailable = !isBlocked && !isOccupied;
+                        
+                        if (this.selectedDate === this.todayStr) {
+                            const now = new Date();
+                            const [h, m] = hour.split(':');
+                            const slotTime = new Date();
+                            slotTime.setHours(parseInt(h), parseInt(m), 0, 0);
+                            
+                            const bufferTime = new Date(now.getTime() + 60*60*1000);
+                            if (slotTime <= bufferTime) {
+                                isAvailable = false;
+                            }
+                        }
+                        
+                        return { key, hour, isAvailable };
+                    });
+                },
+
+                formatFriendlySelectedDate() {
+                    if (!this.selectedDate) return '';
+                    const d = new Date(this.selectedDate);
+                    return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+                },
+
+                formatDate(dateStr) {
+                    if (!dateStr) return '';
+                    const d = new Date(dateStr);
+                    return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+                },
+
+                formatTimeLabel(hour) {
+                    return hour;
+                },
+
+                openApproveModal(appointment) {
+                    this.activeApproveId = appointment.id;
+                    this.activeApprovePrice = appointment.price;
+                    this.selectedDate = appointment.date;
+                    this.selectedTime = appointment.time;
+                    
+                    const apptDate = new Date(appointment.date);
+                    this.currentYear = apptDate.getFullYear();
+                    this.currentMonth = apptDate.getMonth();
+                    this.generateGrid();
+                    
+                    this.approveModalOpen = true;
+                },
+
+                async confirmApprove() {
+                    if(this.activeApprovePrice === '' || isNaN(this.activeApprovePrice) || parseFloat(this.activeApprovePrice) < 0) {
+                        Toast.fire({ icon: 'error', title: 'Lütfen geçerli bir fiyat girin.' });
+                        return;
+                    }
+                    if(!this.selectedDate || !this.selectedTime) {
+                        Toast.fire({ icon: 'error', title: 'Lütfen tarih ve saat seçin.' });
+                        return;
+                    }
+                    
+                    this.isApproving = true;
+                    const id = this.activeApproveId;
+                    try {
+                        const payload = { 
+                            status: 'approved',
+                            price: parseFloat(this.activeApprovePrice),
+                            new_date: this.selectedDate,
+                            new_time: this.selectedTime
+                        };
+
+                        const response = await fetch(`/panel/appointments/${id}/status`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const data = await response.json();
+                        
+                        if (response.ok && data.success) {
+                            Toast.fire({ icon: 'success', title: data.message });
+                            const card = document.getElementById('appointment-card-' + id);
+                            if (card) {
+                                card.style.opacity = '0';
+                                card.style.transform = 'scale(0.95)';
+                                setTimeout(() => card.remove(), 500);
+                            }
+                            this.pendingApprovals = this.pendingApprovals.filter(a => a.id !== id);
+                            this.fetchUpdates();
+                            this.approveModalOpen = false;
+                        } else {
+                            Toast.fire({ icon: 'error', title: data.message || 'Hata oluştu.' });
+                        }
+                    } catch (error) {
+                        Toast.fire({ icon: 'error', title: 'Bağlantı hatası.' });
+                    } finally {
+                        this.isApproving = false;
                     }
                 },
 

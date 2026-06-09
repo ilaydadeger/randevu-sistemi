@@ -119,8 +119,27 @@ class NailTechController extends Controller
                                  ->get();
 
         $unreadNotifications = $user->unreadNotifications;
+
+        // Hesaplamalar
+        $blockedSlots = [];
+        $occupiedSlots = [];
+        $scheduleBlocks = $user->scheduleBlocks()->get();
+        foreach ($scheduleBlocks as $block) {
+            $blockedSlots[$block->blocked_date . '_' . substr($block->blocked_time, 0, 5)] = true;
+        }
+
+        $allAppointments = $user->appointments()
+            ->whereIn('status', ['pending', 'approved'])
+            ->where('appointment_date', '>=', today()->toDateString())
+            ->get();
+
+        foreach ($allAppointments as $appt) {
+            $occupiedSlots[$appt->appointment_date . '_' . substr($appt->appointment_time, 0, 5)] = true;
+        }
+
+        $hours = $user->work_hours ?? ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
                                  
-        return view('profile', compact('user', 'todayAppointments', 'pendingApprovals', 'unreadNotifications'));
+        return view('profile', compact('user', 'todayAppointments', 'pendingApprovals', 'unreadNotifications', 'blockedSlots', 'occupiedSlots', 'hours'));
     }
 
     public function updateProfile(Request $request)
@@ -214,6 +233,8 @@ class NailTechController extends Controller
         $request->validate([
             'status' => 'required|in:approved,cancelled,completed',
             'price' => 'nullable|numeric|min:0',
+            'new_date' => 'nullable|date',
+            'new_time' => 'nullable|string',
         ]);
 
         $appointment = \App\Models\Appointment::findOrFail($id);
@@ -231,6 +252,15 @@ class NailTechController extends Controller
         // Save price if present in request
         if ($request->has('price') && !is_null($request->price)) {
             $appointment->estimated_price = $request->price;
+        }
+
+        // Handle Reschedule
+        if ($newStatus === 'approved' && $request->filled('new_date') && $request->filled('new_time')) {
+            if ($appointment->appointment_date !== $request->new_date || $appointment->appointment_time !== $request->new_time) {
+                $appointment->appointment_date = $request->new_date;
+                $appointment->appointment_time = $request->new_time;
+                $appointment->is_rescheduled_by_artist = true;
+            }
         }
 
         $appointment->status = $newStatus;
@@ -390,6 +420,8 @@ class NailTechController extends Controller
                                          'id'             => $a->id,
                                          'client_name'    => $a->client_name,
                                          'tracking_code'  => $a->tracking_code,
+                                         'date'           => $a->appointment_date,
+                                         'time'           => $a->appointment_time,
                                          'date_formatted' => \Carbon\Carbon::parse($a->appointment_date)->locale('tr')->translatedFormat('d M, Y'),
                                          'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                                          'price'          => floatval($a->estimated_price),

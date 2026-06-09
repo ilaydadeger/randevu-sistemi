@@ -57,6 +57,9 @@ class AppointmentController extends Controller
             return response()->json([
                 'status'          => $appointment->status,
                 'estimated_price' => $appointment->estimated_price,
+                'is_rescheduled'  => $appointment->is_rescheduled_by_artist,
+                'date_formatted'  => \Carbon\Carbon::parse($appointment->appointment_date)->locale('tr')->translatedFormat('d M Y'),
+                'time_formatted'  => \Carbon\Carbon::parse($appointment->appointment_time)->format('H:i'),
             ]);
         }
 

@@ -335,6 +335,14 @@
             <p class="headline">Randevunuz Onaylandı! 🎉</p>
             <p class="body-text">Sizi bekliyoruz. Aşağıda randevu detaylarınızı görebilirsiniz.</p>
             <div class="info-grid">
+                @if($appointment->is_rescheduled_by_artist)
+                <div class="info-cell" style="grid-column: 1 / -1; background: rgba(245,200,66,0.15); border-color: rgba(245,200,66,0.4);">
+                    <div style="font-size: 0.8rem; font-weight: bold; color: var(--pending); display: flex; align-items: center; gap: 8px;">
+                        <span class="material-symbols-outlined" style="font-size: 1.1rem;">info</span>
+                        Tırnak uzmanı randevu tarihinizi/saatinizi güncelledi. Yeni zamanınız aşağıdadır:
+                    </div>
+                </div>
+                @endif
                 <div class="info-cell">
                     <div class="info-label">Tarih</div>
                     <div class="info-value" id="appointmentDate">
@@ -448,8 +456,21 @@
                             if (priceEl) priceEl.textContent = '₺' + Number(data.estimated_price).toLocaleString('tr-TR');
                         }
 
+                        // Update rescheduled UI if necessary
+                        if (data.is_rescheduled) {
+                            const dateEl = document.getElementById('appointmentDate');
+                            const timeEl = document.getElementById('appointmentTime');
+                            if (dateEl) dateEl.textContent = data.date_formatted;
+                            if (timeEl) timeEl.textContent = data.time_formatted;
+                            
+                            // Let the page refresh to show the info box properly, or manually inject it.
+                            // Simply reloading is often cleaner for large UI shifts during polling, 
+                            // but we can just reload the page to ensure all variables reflect correctly:
+                            window.location.reload();
+                        }
+
                         // Stop polling if no longer pending
-                        if (data.status !== 'pending') {
+                        if (data.status !== 'pending' && !data.is_rescheduled) {
                             clearInterval(pollTimer);
                             pollTimer = null;
                         }

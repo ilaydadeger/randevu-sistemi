@@ -261,6 +261,16 @@ class NailTechController extends Controller
             'estimated_price' => $appointment->estimated_price
         ]);
     }
+    public function resetAppointments(Request $request)
+    {
+        $user = auth()->user();
+        \App\Models\Appointment::where('artist_id', $user->id)->delete();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Tüm randevular ve kazanç bilgileri başarıyla sıfırlandı.',
+        ]);
+    }
 
     public function toggleScheduleBlock(Request $request)
     {

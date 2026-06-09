@@ -43,6 +43,7 @@ Route::middleware(['auth', 'role:artist'])->prefix('panel')->group(function () {
 
     Route::post('/appointments/{id}/status', [NailTechController::class, 'updateAppointmentStatus'])->name('panel.appointments.status');
     Route::post('/appointments/{id}/price', [NailTechController::class, 'updateAppointmentPrice'])->name('panel.appointments.price');
+    Route::post('/appointments/reset', [NailTechController::class, 'resetAppointments'])->name('panel.appointments.reset');
     Route::get('/api/updates', [NailTechController::class, 'getRealtimeUpdates'])->name('panel.api.updates');
 
     // Notes CRUD Routes

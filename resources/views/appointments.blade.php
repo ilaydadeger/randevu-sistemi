@@ -59,13 +59,17 @@
     <div x-show="tab === 'appointments'" x-transition.opacity class="flex flex-col gap-md mt-2">
         
         {{-- Earnings & Filters Dashboard --}}
-        <div class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-sm">
+        <div class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-sm relative">
             <div>
                 <span class="font-label-caps text-label-caps text-on-surface-variant text-[11px] font-bold tracking-wider">TOPLAM KAZANÇ</span>
                 <div class="font-headline-md text-headline-md text-primary mt-1" x-text="'₺' + totalEarnings">₺0</div>
             </div>
             
-            <div class="flex gap-1 bg-surface-container p-1 rounded-full text-[11px]">
+            <button type="button" @click="resetAllAppointments" class="absolute top-4 right-4 text-error hover:text-error/80 hover:bg-error/10 p-2 rounded-full transition-colors flex items-center justify-center" title="Tüm Randevuları ve Kazancı Sıfırla">
+                <span class="material-symbols-outlined text-[20px]">delete_sweep</span>
+            </button>
+
+            <div class="flex gap-1 bg-surface-container p-1 rounded-full text-[11px] mt-2 sm:mt-0">
                 <button type="button" @click="earningsFilter = 'week'; calculateEarnings();" 
                     :class="earningsFilter === 'week' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-on-surface'"
                     class="px-3 py-1.5 rounded-full font-bold font-label-caps transition-all">BU HAFTA</button>
@@ -1319,6 +1323,58 @@
                         title: 'Bağlantı hatası.',
                         iconColor: '#ba1a1a'
                     });
+                }
+            },
+
+            async resetAllAppointments() {
+                const result = await Swal.fire({
+                    title: 'Tüm Randevuları Sıfırla',
+                    text: 'Dikkat! Bu işlem onaylanmış, beklemede veya iptal edilmiş TÜM randevuları ve toplam kazanç verisini veritabanından kalıcı olarak silecektir. Emin misiniz?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ba1a1a',
+                    cancelButtonColor: '#7a5555',
+                    confirmButtonText: 'Evet, Hepsini Sil',
+                    cancelButtonText: 'İptal'
+                });
+
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch('{{ route("panel.appointments.reset") }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.success) {
+                            Toast.fire({
+                                icon: 'success',
+                                title: data.message,
+                                iconColor: '#7a5555'
+                            });
+                            this.upcomingAppointments = [];
+                            this.completedAppointments = [];
+                            this.cancelledAppointments = [];
+                            this.totalEarnings = 0;
+                            setTimeout(() => { window.location.reload(); }, 1500);
+                        } else {
+                            Toast.fire({
+                                icon: 'error',
+                                title: data.message || 'Bir hata oluştu.',
+                                iconColor: '#ba1a1a'
+                            });
+                        }
+                    } catch (error) {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Bağlantı hatası.',
+                            iconColor: '#ba1a1a'
+                        });
+                    }
                 }
             }
         }));

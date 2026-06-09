@@ -297,7 +297,7 @@
                             <span class="text-xs font-bold text-on-surface-variant font-label-caps tracking-widest">Protez Tırnak Toplam Fiyat:</span>
                             <span id="singleTotalPrice" class="text-2xl font-black text-primary">₺0</span>
                         </div>
-                        <p class="text-xs text-on-surface-variant/60 text-center italic mt-1">* Tırnak uzmanı randevu sırasında bu fiyat üzerinde değişiklik yapabilir.</p>
+                        <p class="text-[11px] text-on-surface-variant/60 text-center italic mt-1">* Sadece tahmini fiyattır. Tırnak uzmanı randevu sırasında bu fiyat üzerinde değişiklik yapabilir.</p>
                     </div>
                 </div>
 

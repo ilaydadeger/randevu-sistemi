@@ -140,20 +140,18 @@ class NailTechController extends Controller
         $user->bio = $request->bio;
         $user->show_portfolio = $request->boolean('show_portfolio');
         
+        $cloudinary = new \Cloudinary\Cloudinary(env('CLOUDINARY_URL'));
+
         // Handle profile photo removal
         if ($request->boolean('remove_profile_photo')) {
             if ($user->profile_photo_path) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->profile_photo_path);
                 $user->profile_photo_path = null;
             }
         } elseif ($request->hasFile('profile_photo')) {
-            // Delete old photo if exists
-            if ($user->profile_photo_path) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->profile_photo_path);
-            }
-            
-            $path = $request->file('profile_photo')->store('profile-photos', 'public');
-            $user->profile_photo_path = $path;
+            $upload = $cloudinary->uploadApi()->upload($request->file('profile_photo')->getRealPath(), [
+                'folder' => 'profile-photos'
+            ]);
+            $user->profile_photo_path = $upload['secure_url'];
         }
         
         // Handle portfolio images
@@ -163,14 +161,13 @@ class NailTechController extends Controller
             
             if ($request->boolean($removeField)) {
                 if ($user->$field) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($user->$field);
                     $user->$field = null;
                 }
             } elseif ($request->hasFile($field)) {
-                if ($user->$field) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($user->$field);
-                }
-                $user->$field = $request->file($field)->store('portfolio', 'public');
+                $upload = $cloudinary->uploadApi()->upload($request->file($field)->getRealPath(), [
+                    'folder' => 'portfolio'
+                ]);
+                $user->$field = $upload['secure_url'];
             }
         }
         
@@ -382,7 +379,7 @@ class NailTechController extends Controller
                                          'date_formatted' => \Carbon\Carbon::parse($a->appointment_date)->locale('tr')->translatedFormat('d M, Y'),
                                          'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                                          'price'          => floatval($a->estimated_price),
-                                         'image_url'      => $a->image_path ? asset('storage/' . $a->image_path) : null,
+                                         'image_url'      => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
                                      ];
                                  });
 
@@ -399,7 +396,7 @@ class NailTechController extends Controller
                                           'tracking_code'  => $a->tracking_code,
                                           'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                                           'price'          => floatval($a->estimated_price),
-                                          'image_url'      => $a->image_path ? asset('storage/' . $a->image_path) : null,
+                                          'image_url'      => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
                                       ];
                                   });
 

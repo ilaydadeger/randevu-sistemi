@@ -16,7 +16,7 @@
                 <div class="h-12 w-12 rounded-full bg-secondary-container overflow-hidden border border-outline-variant cursor-pointer hover:opacity-85 transition-opacity"
                     @click="toggleEdit()">
                     <template x-if="userData.profile_photo_path">
-                        <img :src="'/storage/' + userData.profile_photo_path" alt="Profile"
+                        <img :src="(userData.profile_photo_path.startsWith('http') ? userData.profile_photo_path : '/storage/' + userData.profile_photo_path)" alt="Profile"
                             class="h-full w-full object-cover" />
                     </template>
                 </div>
@@ -149,7 +149,7 @@
                         @click="$refs.photoInput.click()">
                         <template
                             x-if="formData.preview_photo || (userData.profile_photo_path && !formData.remove_profile_photo)">
-                            <img :src="formData.preview_photo || '/storage/' + userData.profile_photo_path"
+                            <img :src="formData.preview_photo || (userData.profile_photo_path.startsWith('http') ? userData.profile_photo_path : '/storage/' + userData.profile_photo_path)"
                                 alt="Profil Fotoğrafı" class="w-full h-full object-cover">
                         </template>
                         <template
@@ -214,7 +214,7 @@
                                 @click="$refs.portfolio1Input.click()">
                                 <template
                                     x-if="formData.preview_portfolio_1 || (userData.portfolio_image_1 && !formData.remove_portfolio_image_1)">
-                                    <img :src="formData.preview_portfolio_1 || '/storage/' + userData.portfolio_image_1"
+                                    <img :src="formData.preview_portfolio_1 || (userData.portfolio_image_1.startsWith('http') ? userData.portfolio_image_1 : '/storage/' + userData.portfolio_image_1)"
                                         class="w-full h-full object-cover">
                                 </template>
                                 <template
@@ -236,7 +236,7 @@
                                 @click="$refs.portfolio2Input.click()">
                                 <template
                                     x-if="formData.preview_portfolio_2 || (userData.portfolio_image_2 && !formData.remove_portfolio_image_2)">
-                                    <img :src="formData.preview_portfolio_2 || '/storage/' + userData.portfolio_image_2"
+                                    <img :src="formData.preview_portfolio_2 || (userData.portfolio_image_2.startsWith('http') ? userData.portfolio_image_2 : '/storage/' + userData.portfolio_image_2)"
                                         class="w-full h-full object-cover">
                                 </template>
                                 <template
@@ -258,7 +258,7 @@
                                 @click="$refs.portfolio3Input.click()">
                                 <template
                                     x-if="formData.preview_portfolio_3 || (userData.portfolio_image_3 && !formData.remove_portfolio_image_3)">
-                                    <img :src="formData.preview_portfolio_3 || '/storage/' + userData.portfolio_image_3"
+                                    <img :src="formData.preview_portfolio_3 || (userData.portfolio_image_3.startsWith('http') ? userData.portfolio_image_3 : '/storage/' + userData.portfolio_image_3)"
                                         class="w-full h-full object-cover">
                                 </template>
                                 <template

@@ -19,7 +19,11 @@ class AppointmentController extends Controller
         $imagePath = null;
         $estimatedPrice = 0;
         if ($request->hasFile('design_image')) {
-            $imagePath = $request->file('design_image')->store('appointments', 'public');
+            $cloudinary = new \Cloudinary\Cloudinary(env('CLOUDINARY_URL'));
+            $upload = $cloudinary->uploadApi()->upload($request->file('design_image')->getRealPath(), [
+                'folder' => 'appointments'
+            ]);
+            $imagePath = $upload['secure_url'];
             $estimatedPrice = floatval($request->input('estimated_price', 0));
             if ($estimatedPrice <= 0) {
                 $estimatedPrice = 500;

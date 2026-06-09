@@ -191,6 +191,14 @@
                         placeholder="Uzmanlık alanlarınızdan bahsedin..."></textarea>
                 </div>
 
+                {{-- Adres --}}
+                <div class="space-y-xs">
+                    <label class="font-label-caps text-label-caps text-on-surface-variant">AÇIK ADRES</label>
+                    <textarea x-model="formData.address" rows="2"
+                        class="w-full bg-surface-container-low border-0 border-b-2 border-surface-variant focus:border-primary focus:ring-0 px-4 py-3 text-on-surface rounded-t-DEFAULT"
+                        placeholder="Randevusu onaylanan müşterilerin görmesi için açık adresiniz."></textarea>
+                </div>
+
                 {{-- Portföy Görünürlüğü --}}
                 <div class="flex items-center justify-between p-sm bg-surface-container-low rounded-xl border border-outline-variant/30 my-4">
                     <div class="flex flex-col gap-xxs pr-4">
@@ -379,6 +387,7 @@
                     name: {!! json_encode($user->name) !!},
                     salon_name: {!! json_encode($user->salon_name ?? "") !!},
                     bio: {!! json_encode($user->bio ?? "") !!},
+                    address: {!! json_encode($user->address ?? "") !!},
                     profile_photo_path: {!! json_encode($user->profile_photo_path ?? "") !!},
                     portfolio_image_1: {!! json_encode($user->portfolio_image_1 ?? "") !!},
                     portfolio_image_2: {!! json_encode($user->portfolio_image_2 ?? "") !!},
@@ -389,6 +398,7 @@
                     name: {!! json_encode($user->name) !!},
                     salon_name: {!! json_encode($user->salon_name ?? "") !!},
                     bio: {!! json_encode($user->bio ?? "") !!},
+                    address: {!! json_encode($user->address ?? "") !!},
                     show_portfolio: {{ $user->show_portfolio ? 'true' : 'false' }},
                     preview_photo: null,
                     file: null,
@@ -441,6 +451,7 @@
                         this.formData.name = this.userData.name;
                         this.formData.salon_name = this.userData.salon_name;
                         this.formData.bio = this.userData.bio;
+                        this.formData.address = this.userData.address;
                         this.formData.show_portfolio = this.userData.show_portfolio;
                         this.formData.preview_photo = null;
                         this.formData.file = null;
@@ -460,6 +471,7 @@
                     formPayload.append('name', this.formData.name || '');
                     formPayload.append('salon_name', this.formData.salon_name || '');
                     formPayload.append('bio', this.formData.bio || '');
+                    formPayload.append('address', this.formData.address || '');
                     formPayload.append('show_portfolio', this.formData.show_portfolio ? '1' : '0');
 
                     if (this.formData.remove_profile_photo) {
@@ -492,6 +504,7 @@
                             this.userData.name = this.formData.name;
                             this.userData.salon_name = this.formData.salon_name;
                             this.userData.bio = this.formData.bio;
+                            this.userData.address = this.formData.address;
                             this.userData.show_portfolio = !!data.user.show_portfolio;
                             this.userData.profile_photo_path = data.user.profile_photo_path;
                             this.userData.portfolio_image_1 = data.user.portfolio_image_1;

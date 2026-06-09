@@ -339,6 +339,12 @@
                     </div>
                 </div>
                 @endif
+                @if($artist && $artist->address)
+                <div class="info-cell" style="grid-column: 1 / -1;">
+                    <div class="info-label">Açık Adres</div>
+                    <div class="info-value" style="font-size: 0.85rem; font-weight: normal; color: var(--muted); white-space: pre-wrap; line-height: 1.5;">{{ $artist->address }}</div>
+                </div>
+                @endif
             </div>
         </div>
 

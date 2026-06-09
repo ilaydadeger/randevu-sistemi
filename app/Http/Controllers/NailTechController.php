@@ -128,6 +128,7 @@ class NailTechController extends Controller
             'name' => 'nullable|string|max:255',
             'salon_name' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
+            'address' => 'nullable|string',
             'profile_photo' => 'nullable|image|max:5120', // 5MB max
             'portfolio_image_1' => 'nullable|image|max:5120',
             'portfolio_image_2' => 'nullable|image|max:5120',
@@ -138,6 +139,7 @@ class NailTechController extends Controller
         $user->name = $request->name;
         $user->salon_name = $request->salon_name;
         $user->bio = $request->bio;
+        $user->address = $request->address;
         $user->show_portfolio = $request->boolean('show_portfolio');
         
         $cloudinary = new \Cloudinary\Cloudinary(env('CLOUDINARY_URL'));

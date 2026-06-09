@@ -58,7 +58,7 @@
                                 <span class="font-headline-sm text-base text-primary" x-text="'₺' + appointment.price"></span>
                                 <template x-if="appointment.image_url">
                                     <div class="w-10 h-10 rounded-lg overflow-hidden border border-outline-variant/30 cursor-pointer" @click="openImageModal(appointment.image_url)">
-                                        <img alt="Nail Reference" class="w-full h-full object-cover" :src="appointment.image_url" @error="$el.parentElement.style.display = 'none'" />
+                                        <img alt="Nail Reference" class="w-full h-full object-cover" :src="appointment.image_url" x-on:error="$el.parentElement.style.display = 'none'" />
                                     </div>
                                 </template>
                             </div>
@@ -99,7 +99,7 @@
                             </div>
                             <template x-if="appointment.image_url">
                                 <div class="mb-sm rounded-lg overflow-hidden h-24 bg-surface-variant flex items-center justify-center border border-outline-variant/30 cursor-pointer" @click="openImageModal(appointment.image_url)">
-                                    <img alt="Nail Art Reference" class="w-full h-full object-cover" :src="appointment.image_url" @error="$el.parentElement.style.display = 'none'" />
+                                    <img alt="Nail Art Reference" class="w-full h-full object-cover" :src="appointment.image_url" x-on:error="$el.parentElement.style.display = 'none'" />
                                 </div>
                             </template>
                             <div class="flex gap-sm">

@@ -137,7 +137,7 @@
 
                     <template x-if="appointment.image_url">
                         <div class="mb-sm rounded-lg overflow-hidden h-24 bg-surface-variant flex items-center justify-center border border-outline-variant/30 cursor-pointer" @click="openImageModal(appointment.image_url)">
-                            <img alt="Nail Art Reference" class="w-full h-full object-cover" :src="appointment.image_url" @error="$el.parentElement.style.display = 'none'" />
+                            <img alt="Nail Art Reference" class="w-full h-full object-cover" :src="appointment.image_url" x-on:error="$el.parentElement.style.display = 'none'" />
                         </div>
                     </template>
 
@@ -199,7 +199,7 @@
 
                     <template x-if="appointment.image_url">
                         <div class="mt-sm rounded-lg overflow-hidden h-24 bg-surface-variant flex items-center justify-center border border-outline-variant/30 cursor-pointer" @click="openImageModal(appointment.image_url)">
-                            <img alt="Nail Art Reference" class="w-full h-full object-cover" :src="appointment.image_url" @error="$el.parentElement.style.display = 'none'" />
+                            <img alt="Nail Art Reference" class="w-full h-full object-cover" :src="appointment.image_url" x-on:error="$el.parentElement.style.display = 'none'" />
                         </div>
                     </template>
                 </div>
@@ -237,7 +237,7 @@
 
                     <template x-if="appointment.image_url">
                         <div class="mt-sm rounded-lg overflow-hidden h-24 bg-surface-variant flex items-center justify-center border border-outline-variant/30 cursor-pointer" @click="openImageModal(appointment.image_url)">
-                            <img alt="Nail Art Reference" class="w-full h-full object-cover opacity-80" :src="appointment.image_url" @error="$el.parentElement.style.display = 'none'" />
+                            <img alt="Nail Art Reference" class="w-full h-full object-cover opacity-80" :src="appointment.image_url" x-on:error="$el.parentElement.style.display = 'none'" />
                         </div>
                     </template>
                 </div>

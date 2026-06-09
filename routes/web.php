@@ -50,6 +50,8 @@ Route::middleware(['auth', 'role:artist'])->prefix('panel')->group(function () {
     Route::post('/notes', [NailTechController::class, 'storeNote'])->name('panel.notes.store');
     Route::post('/notes/{id}', [NailTechController::class, 'updateNote'])->name('panel.notes.update');
     Route::delete('/notes/{id}', [NailTechController::class, 'deleteNote'])->name('panel.notes.delete');
+
+    Route::post('/notifications/{id}/dismiss', [NailTechController::class, 'dismissNotification'])->name('panel.notifications.dismiss');
 });
 
 use App\Http\Controllers\AdminController;
@@ -66,6 +68,7 @@ use App\Http\Controllers\FrontendController;
 
 // Randevu Durum Takip Sayfası
 Route::get('/randevu-takip/{tracking_code}', [AppointmentController::class, 'track'])->name('appointment.track');
+Route::post('/randevu-takip/{tracking_code}/cancel', [AppointmentController::class, 'cancelByClient'])->name('appointment.cancel');
 
 // Dynamic Storefront/Vitrin Route (evaluated last so as not to intercept static routes)
 Route::get('/{slug}', [FrontendController::class, 'show'])->name('storefront.show');

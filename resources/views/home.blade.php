@@ -259,6 +259,37 @@
                 @csrf
                 <input type="hidden" name="nail_tech_id" value="{{ $nailTech->id ?? 1 }}">
 
+                {{-- Service Type Selection --}}
+                <div class="space-y-2">
+                    <label class="font-label-caps text-label-caps text-on-surface-variant">İŞLEM TÜRÜ</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="relative flex cursor-pointer rounded-xl border p-4 hover:bg-surface-container-low transition-colors"
+                            :class="serviceType === 'yapim' ? 'border-primary bg-primary-container/10' : 'border-outline-variant'">
+                            <input type="radio" name="service_type" value="yapim" x-model="serviceType" class="peer sr-only">
+                            <div class="flex w-full items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined" :class="serviceType === 'yapim' ? 'text-primary' : 'text-on-surface-variant'">brush</span>
+                                    <span class="font-body-md font-semibold" :class="serviceType === 'yapim' ? 'text-primary' : 'text-on-surface'">Protez Tırnak Yapımı</span>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="relative flex cursor-pointer rounded-xl border p-4 hover:bg-surface-container-low transition-colors"
+                            :class="serviceType === 'cikarma' ? 'border-primary bg-primary-container/10' : 'border-outline-variant'">
+                            <input type="radio" name="service_type" value="cikarma" x-model="serviceType" class="peer sr-only">
+                            <div class="flex w-full items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface-variant'">backspace</span>
+                                    <span class="font-body-md font-semibold" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface'">Protez Tırnak Çıkarma</span>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                {{-- Yapım (Image Upload and AI Price Estimation) Section --}}
+                <div x-show="serviceType === 'yapim'" x-collapse class="space-y-6">
+
                 {{-- Image Upload (Drag & Drop) --}}
                 <div class="space-y-2">
                     <label class="font-label-caps text-label-caps text-on-surface-variant">TIRNAK MODELİ (GÖRSEL)</label>
@@ -304,6 +335,7 @@
                         </div>
                         <p class="text-[11px] text-on-surface-variant/60 text-center italic mt-1">* Sadece tahmini fiyattır. Tırnak uzmanı randevu sırasında bu fiyat üzerinde değişiklik yapabilir.</p>
                     </div>
+                </div>
                 </div>
 
                 {{-- Client Details --}}
@@ -525,6 +557,7 @@
                 selectedDate: '',
                 selectedTime: '',
                 activeSlotKey: '',
+                serviceType: 'yapim',
 
                 currentYear: null,
                 currentMonth: null,

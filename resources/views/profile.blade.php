@@ -23,6 +23,28 @@
             </section>
         </div>
 
+        {{-- Notifications Section --}}
+        @if(isset($unreadNotifications) && $unreadNotifications->count() > 0)
+        <div x-show="!isEditing" x-transition.opacity class="flex flex-col gap-2 mb-2">
+            @foreach($unreadNotifications as $notification)
+                <div id="notif-{{ $notification->id }}" class="bg-error/10 border border-error/20 rounded-xl p-3 flex items-start justify-between gap-3 shadow-sm relative">
+                    <div class="flex items-start gap-2">
+                        <span class="material-symbols-outlined text-error text-[20px] mt-0.5">event_busy</span>
+                        <div>
+                            <p class="font-body-md font-semibold text-on-surface">{{ $notification->data['message'] ?? 'Randevu iptal edildi.' }}</p>
+                            @if(isset($notification->data['date']) && isset($notification->data['time']))
+                                <p class="text-xs text-on-surface-variant mt-0.5">İptal Edilen Randevu: {{ \Carbon\Carbon::parse($notification->data['date'])->translatedFormat('d M Y') }} - {{ \Carbon\Carbon::parse($notification->data['time'])->format('H:i') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                    <button type="button" @click="dismissNotification('{{ $notification->id }}')" class="text-on-surface-variant hover:text-error p-1 rounded-full transition-colors flex shrink-0" title="Bildirimi Kapat">
+                        <span class="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                </div>
+            @endforeach
+        </div>
+        @endif
+
         {{-- VIEW 2: Edit Header --}}
         <div x-show="isEditing" x-transition.opacity class="flex justify-between items-center mb-sm">
             <div class="flex flex-col gap-xs">
@@ -672,8 +694,30 @@
                             iconColor: '#ba1a1a'
                         });
                     }
+                },
+                
+                async dismissNotification(id) {
+                    try {
+                        const response = await fetch(`/panel/notifications/${id}/dismiss`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            const el = document.getElementById('notif-' + id);
+                            if (el) {
+                                el.style.opacity = '0';
+                                setTimeout(() => el.remove(), 300);
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Bildirim kapatılamadı', error);
+                    }
                 }
-            }));
-        });
+            }))
+        })
     </script>
 @endpush

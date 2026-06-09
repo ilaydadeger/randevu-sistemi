@@ -117,8 +117,10 @@ class NailTechController extends Controller
                                  ->where('status', 'pending')
                                  ->orderBy('created_at', 'desc')
                                  ->get();
+
+        $unreadNotifications = $user->unreadNotifications;
                                  
-        return view('profile', compact('user', 'todayAppointments', 'pendingApprovals'));
+        return view('profile', compact('user', 'todayAppointments', 'pendingApprovals', 'unreadNotifications'));
     }
 
     public function updateProfile(Request $request)
@@ -590,6 +592,17 @@ class NailTechController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Not başarıyla silindi.'
+        ]);
+    }
+
+    public function dismissNotification($id)
+    {
+        $notification = auth()->user()->notifications()->findOrFail($id);
+        $notification->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bildirim silindi.'
         ]);
     }
 }

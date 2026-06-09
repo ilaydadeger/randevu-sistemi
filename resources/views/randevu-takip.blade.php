@@ -230,21 +230,37 @@
             text-align: center;
         }
 
-        /* ── Retry button ── */
-        .retry-btn {
+        /* ── Retry / Cancel Buttons ── */
+        .retry-btn, .cancel-btn {
             display: inline-block;
             margin-top: 1.5rem;
-            padding: 0.65rem 1.5rem;
-            border-radius: 999px;
-            font-size: 0.78rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 99px;
+            font-size: 0.8rem;
             font-weight: 600;
             text-decoration: none;
-            background: rgba(255,255,255,0.06);
-            color: var(--text);
-            border: 1px solid var(--border);
-            transition: background 0.2s, border-color 0.2s;
+            transition: transform 0.2s, background 0.3s;
+            cursor: pointer;
+            border: none;
         }
-        .retry-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+        .retry-btn {
+            background: var(--text);
+            color: var(--bg);
+        }
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            background: #fff;
+        }
+        .cancel-btn {
+            background: rgba(224,92,92,0.1);
+            color: var(--cancelled);
+            border: 1px solid rgba(224,92,92,0.3);
+            width: 100%;
+        }
+        .cancel-btn:hover {
+            background: rgba(224,92,92,0.2);
+            transform: translateY(-2px);
+        }
 
         /* ── Toast ── */
         .toast {
@@ -374,6 +390,11 @@
             </div>
         </div>
 
+        {{-- Cancel Button Container --}}
+        <div id="cancelContainer" style="display: {{ ($status === 'pending' || $status === 'approved' || $status === 'completed') ? 'block' : 'none' }}; margin-top: 1rem;">
+            <button onclick="cancelAppointment()" class="cancel-btn">Randevuyu İptal Et</button>
+        </div>
+
     </div>
 
     <p class="footer-note">Bu linki saklayarak durumunuzu istediğiniz zaman kontrol edebilirsiniz.</p>
@@ -435,6 +456,34 @@
                     }
                 })
                 .catch(() => {}); // silent fail — network error
+        }
+
+        function cancelAppointment() {
+            if(confirm('Randevunuzu iptal etmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) {
+                fetch('{{ route('appointment.cancel', ['tracking_code' => $appointment->tracking_code]) }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if(data.success) {
+                        currentStatus = 'cancelled';
+                        showSection('cancelled');
+                        document.getElementById('cancelContainer').style.display = 'none';
+                        const t = document.getElementById('toast');
+                        t.textContent = data.message;
+                        t.classList.add('show');
+                        setTimeout(() => t.classList.remove('show'), 3000);
+                        if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+                    } else {
+                        alert(data.message || 'İptal işlemi başarısız oldu.');
+                    }
+                })
+                .catch(() => alert('Bir hata oluştu.'));
+            }
         }
 
         // Only start polling if currently pending

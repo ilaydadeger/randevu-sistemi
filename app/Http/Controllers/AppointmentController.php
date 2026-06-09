@@ -14,6 +14,7 @@ class AppointmentController extends Controller
             'appointment_date' => 'required|date',
             'appointment_time' => 'required',
             'design_image'     => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'service_type'     => 'required|in:yapim,cikarma',
         ]);
 
         $imagePath = null;
@@ -37,6 +38,7 @@ class AppointmentController extends Controller
             'appointment_time' => $request->appointment_time,
             'image_path'       => $imagePath,
             'estimated_price'  => $estimatedPrice,
+            'service_type'     => $request->service_type,
             'status'           => 'pending',
             'tracking_code'    => \Illuminate\Support\Str::uuid(),
         ]);
@@ -58,6 +60,27 @@ class AppointmentController extends Controller
             ]);
         }
 
-        return view('randevu-takip', compact('appointment'));
+        $status = $appointment->status;
+
+        return view('randevu-takip', compact('appointment', 'status'));
+    }
+
+    public function cancelByClient(string $tracking_code)
+    {
+        $appointment = \App\Models\Appointment::where('tracking_code', $tracking_code)->firstOrFail();
+
+        if ($appointment->status === 'cancelled') {
+            return response()->json(['success' => false, 'message' => 'Randevu zaten iptal edilmiş.']);
+        }
+
+        $appointment->status = 'cancelled';
+        $appointment->save();
+
+        // Tırnakçıya bildirim gönder
+        if ($appointment->artist) {
+            $appointment->artist->notify(new \App\Notifications\AppointmentCancelledByClient($appointment));
+        }
+
+        return response()->json(['success' => true, 'message' => 'Randevu başarıyla iptal edildi.']);
     }
 }

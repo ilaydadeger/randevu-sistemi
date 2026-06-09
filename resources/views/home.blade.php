@@ -263,24 +263,30 @@
                 <div class="space-y-2">
                     <label class="font-label-caps text-label-caps text-on-surface-variant">İŞLEM TÜRÜ</label>
                     <div class="grid grid-cols-2 gap-3">
-                        <label class="relative flex cursor-pointer rounded-xl border p-4 hover:bg-surface-container-low transition-colors"
+                        <label class="relative flex cursor-pointer rounded-xl border p-3 hover:bg-surface-container-low transition-colors"
                             :class="serviceType === 'yapim' ? 'border-primary bg-primary-container/10' : 'border-outline-variant'">
                             <input type="radio" name="service_type" value="yapim" x-model="serviceType" class="peer sr-only">
-                            <div class="flex w-full items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <span class="material-symbols-outlined" :class="serviceType === 'yapim' ? 'text-primary' : 'text-on-surface-variant'">brush</span>
-                                    <span class="font-body-md font-semibold" :class="serviceType === 'yapim' ? 'text-primary' : 'text-on-surface'">Protez Tırnak Yapımı</span>
+                            <div class="flex w-full items-center justify-center text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-[20px]" :class="serviceType === 'yapim' ? 'text-primary' : 'text-on-surface-variant'">brush</span>
+                                    <div class="flex flex-col items-start leading-tight">
+                                        <span class="text-[10px] text-on-surface-variant/80 font-bold uppercase tracking-wider">Protez Tırnak</span>
+                                        <span class="text-sm font-bold" :class="serviceType === 'yapim' ? 'text-primary' : 'text-on-surface'">YAPIMI</span>
+                                    </div>
                                 </div>
                             </div>
                         </label>
 
-                        <label class="relative flex cursor-pointer rounded-xl border p-4 hover:bg-surface-container-low transition-colors"
+                        <label class="relative flex cursor-pointer rounded-xl border p-3 hover:bg-surface-container-low transition-colors"
                             :class="serviceType === 'cikarma' ? 'border-primary bg-primary-container/10' : 'border-outline-variant'">
                             <input type="radio" name="service_type" value="cikarma" x-model="serviceType" class="peer sr-only">
-                            <div class="flex w-full items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <span class="material-symbols-outlined" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface-variant'">backspace</span>
-                                    <span class="font-body-md font-semibold" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface'">Protez Tırnak Çıkarma</span>
+                            <div class="flex w-full items-center justify-center text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-[20px]" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface-variant'">backspace</span>
+                                    <div class="flex flex-col items-start leading-tight">
+                                        <span class="text-[10px] text-on-surface-variant/80 font-bold uppercase tracking-wider">Protez Tırnak</span>
+                                        <span class="text-sm font-bold" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface'">ÇIKARMA</span>
+                                    </div>
                                 </div>
                             </div>
                         </label>

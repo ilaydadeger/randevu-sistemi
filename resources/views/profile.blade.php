@@ -73,7 +73,12 @@
                                     <span class="font-headline-sm text-base font-bold leading-none" x-text="appointment.time_formatted"></span>
                                 </div>
                                 <div class="flex flex-col">
-                                <h3 class="font-body-md text-body-md font-semibold text-on-surface" x-text="appointment.client_name"></h3>
+                                <div class="flex items-center gap-2">
+                                            <h3 class="font-body-md text-body-md font-semibold text-on-surface" x-text="appointment.client_name"></h3>
+                                            <span x-show="appointment.service_type_label" 
+                                                  class="px-2 py-0.5 bg-primary-container text-on-primary-container text-[10px] rounded-full font-bold uppercase tracking-wider" 
+                                                  x-text="appointment.service_type_label"></span>
+                                        </div>
                                 </div>
                             </div>
                             <div class="flex items-center gap-sm shrink-0">
@@ -110,7 +115,12 @@
                                         x-text="appointment.client_name.substring(0, 1)">
                                     </div>
                                     <div>
-                                        <h3 class="font-body-md text-body-md font-semibold text-on-surface" x-text="appointment.client_name"></h3>
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="font-body-md text-body-md font-semibold text-on-surface" x-text="appointment.client_name"></h3>
+                                            <span x-show="appointment.service_type_label" 
+                                                  class="px-2 py-0.5 bg-primary-container text-on-primary-container text-[10px] rounded-full font-bold uppercase tracking-wider" 
+                                                  x-text="appointment.service_type_label"></span>
+                                        </div>
                                         <p class="font-label-caps text-label-caps text-secondary">
                                             <span x-text="appointment.date_formatted"></span> - 
                                             <span x-text="appointment.time_formatted"></span>
@@ -498,6 +508,7 @@
                         'date_formatted' => \Carbon\Carbon::parse($a->appointment_date)->locale('tr')->translatedFormat('d M, Y'),
                         'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                         'price'          => floatval($a->estimated_price),
+                        'service_type_label' => $a->service_type === 'yapim' ? 'Yapım' : ($a->service_type === 'cikarma' ? 'Çıkarma' : ''),
                         'image_url'      => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
                     ];
                 })) !!},
@@ -508,6 +519,7 @@
                         'tracking_code'  => $a->tracking_code,
                         'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                         'price'          => floatval($a->estimated_price),
+                        'service_type_label' => $a->service_type === 'yapim' ? 'Yapım' : ($a->service_type === 'cikarma' ? 'Çıkarma' : ''),
                         'image_url'      => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
                     ];
                 })) !!},

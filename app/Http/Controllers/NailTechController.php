@@ -425,6 +425,7 @@ class NailTechController extends Controller
                                          'date_formatted' => \Carbon\Carbon::parse($a->appointment_date)->locale('tr')->translatedFormat('d M, Y'),
                                          'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                                          'price'          => floatval($a->estimated_price),
+                                         'service_type_label' => $a->service_type === 'yapim' ? 'Yapım' : ($a->service_type === 'cikarma' ? 'Çıkarma' : ''),
                                          'image_url'      => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
                                      ];
                                  });
@@ -441,8 +442,9 @@ class NailTechController extends Controller
                                           'client_name'    => $a->client_name,
                                           'tracking_code'  => $a->tracking_code,
                                           'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
-                                          'price'          => floatval($a->estimated_price),
-                                          'image_url'      => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
+                                         'price'          => floatval($a->estimated_price),
+                                         'service_type_label' => $a->service_type === 'yapim' ? 'Yapım' : ($a->service_type === 'cikarma' ? 'Çıkarma' : ''),
+                                         'image_url'      => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
                                       ];
                                   });
 

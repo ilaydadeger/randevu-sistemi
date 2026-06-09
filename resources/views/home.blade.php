@@ -5,12 +5,17 @@
 @section('content')
     @php
         $uploadedImages = [];
-        if ($nailTech && $nailTech->portfolio_image_1)
-            $uploadedImages[] = asset('storage/' . $nailTech->portfolio_image_1);
-        if ($nailTech && $nailTech->portfolio_image_2)
-            $uploadedImages[] = asset('storage/' . $nailTech->portfolio_image_2);
-        if ($nailTech && $nailTech->portfolio_image_3)
-            $uploadedImages[] = asset('storage/' . $nailTech->portfolio_image_3);
+        if ($nailTech) {
+            if ($nailTech->portfolio_image_1) {
+                $uploadedImages[] = str_starts_with($nailTech->portfolio_image_1, 'http') ? $nailTech->portfolio_image_1 : asset('storage/' . $nailTech->portfolio_image_1);
+            }
+            if ($nailTech->portfolio_image_2) {
+                $uploadedImages[] = str_starts_with($nailTech->portfolio_image_2, 'http') ? $nailTech->portfolio_image_2 : asset('storage/' . $nailTech->portfolio_image_2);
+            }
+            if ($nailTech->portfolio_image_3) {
+                $uploadedImages[] = str_starts_with($nailTech->portfolio_image_3, 'http') ? $nailTech->portfolio_image_3 : asset('storage/' . $nailTech->portfolio_image_3);
+            }
+        }
 
         // Fetch blocked slots and occupied slots directly inside the blade
         $blockedSlots = [];
@@ -61,7 +66,7 @@
             @if($nailTech && $nailTech->profile_photo_path)
                 <div
                     class="relative w-32 h-32 rounded-full overflow-hidden border-2 border-surface-container-highest shadow-sm">
-                    <img src="{{ asset('storage/' . $nailTech->profile_photo_path) }}"
+                    <img src="{{ str_starts_with($nailTech->profile_photo_path, 'http') ? $nailTech->profile_photo_path : asset('storage/' . $nailTech->profile_photo_path) }}"
                         alt="Uzman Profil" class="w-full h-full object-cover">
                 </div>
             @endif
@@ -89,7 +94,7 @@
                         @if($nailTech && $nailTech->portfolio_image_1)
                             <img alt="Nail Art 1"
                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                src="{{ asset('storage/' . $nailTech->portfolio_image_1) }}" />
+                                src="{{ str_starts_with($nailTech->portfolio_image_1, 'http') ? $nailTech->portfolio_image_1 : asset('storage/' . $nailTech->portfolio_image_1) }}" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3"
                                 @click="openLightbox(0)">
                                 <button type="button"
@@ -110,7 +115,7 @@
                         @if($nailTech && $nailTech->portfolio_image_2)
                             <img alt="Nail Art 2"
                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                src="{{ asset('storage/' . $nailTech->portfolio_image_2) }}" />
+                                src="{{ str_starts_with($nailTech->portfolio_image_2, 'http') ? $nailTech->portfolio_image_2 : asset('storage/' . $nailTech->portfolio_image_2) }}" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2"
                                 @click="openLightbox(1)">
                                 <button type="button"
@@ -130,7 +135,7 @@
                         @if($nailTech && $nailTech->portfolio_image_3)
                             <img alt="Nail Art 3"
                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                src="{{ asset('storage/' . $nailTech->portfolio_image_3) }}" />
+                                src="{{ str_starts_with($nailTech->portfolio_image_3, 'http') ? $nailTech->portfolio_image_3 : asset('storage/' . $nailTech->portfolio_image_3) }}" />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2"
                                 @click="openLightbox(2)">
                                 <button type="button"

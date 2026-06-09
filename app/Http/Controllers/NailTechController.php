@@ -424,7 +424,7 @@ class NailTechController extends Controller
                                              'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                                              'client_name' => $a->client_name,
                                              'tracking_code_short' => substr($a->tracking_code, 0, 4),
-                                             'image_url' => $a->image_path ? asset('storage/' . $a->image_path) : null,
+                                             'image_url' => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
                                          ];
                                      });
 
@@ -455,7 +455,7 @@ class NailTechController extends Controller
                                               'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                                               'client_name' => $a->client_name,
                                               'tracking_code_short' => substr($a->tracking_code, 0, 4),
-                                              'image_url' => $a->image_path ? asset('storage/' . $a->image_path) : null,
+                                              'image_url' => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
                                           ];
                                       });
 
@@ -474,7 +474,7 @@ class NailTechController extends Controller
                                               'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                                               'client_name' => $a->client_name,
                                               'tracking_code_short' => substr($a->tracking_code, 0, 4),
-                                              'image_url' => $a->image_path ? asset('storage/' . $a->image_path) : null,
+                                              'image_url' => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
                                           ];
                                       });
 

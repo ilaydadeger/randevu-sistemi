@@ -617,7 +617,7 @@
                 'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                 'client_name' => str_replace(' (Protez Tırnak)', '', $a->client_name),
                 'tracking_code_short' => substr($a->tracking_code, 0, 4),
-                'image_url' => $a->image_path ? asset('storage/' . $a->image_path) : null,
+                'image_url' => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
             ])) !!},
             completedAppointments: {!! json_encode($completedAppointments->map(fn($a) => [
                 'id' => $a->id,
@@ -627,7 +627,7 @@
                 'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                 'client_name' => str_replace(' (Protez Tırnak)', '', $a->client_name),
                 'tracking_code_short' => substr($a->tracking_code, 0, 4),
-                'image_url' => $a->image_path ? asset('storage/' . $a->image_path) : null,
+                'image_url' => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
             ])) !!},
             cancelledAppointments: {!! json_encode($cancelledAppointments->map(fn($a) => [
                 'id' => $a->id,
@@ -637,7 +637,7 @@
                 'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                 'client_name' => str_replace(' (Protez Tırnak)', '', $a->client_name),
                 'tracking_code_short' => substr($a->tracking_code, 0, 4),
-                'image_url' => $a->image_path ? asset('storage/' . $a->image_path) : null,
+                'image_url' => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
             ])) !!},
             
             blockedSlots: {!! json_encode($blockedSlots) !!},

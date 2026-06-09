@@ -343,7 +343,7 @@
                         'date_formatted' => \Carbon\Carbon::parse($a->appointment_date)->locale('tr')->translatedFormat('d M, Y'),
                         'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                         'price'          => floatval($a->estimated_price),
-                        'image_url'      => $a->image_path ? asset('storage/' . $a->image_path) : null,
+                        'image_url'      => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
                     ];
                 })) !!},
                 todayAppointments: {!! json_encode($todayAppointments->map(function($a) {
@@ -353,7 +353,7 @@
                         'tracking_code'  => $a->tracking_code,
                         'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                         'price'          => floatval($a->estimated_price),
-                        'image_url'      => $a->image_path ? asset('storage/' . $a->image_path) : null,
+                        'image_url'      => $a->image_path ? (str_starts_with($a->image_path, 'http') ? $a->image_path : asset('storage/' . $a->image_path)) : null,
                     ];
                 })) !!},
 

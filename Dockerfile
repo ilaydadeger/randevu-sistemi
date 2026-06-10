@@ -33,9 +33,15 @@ WORKDIR /var/www/html
 # İzinleri ayarla
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Node.js kur
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
+
 # Bağımlılıkları kur
 RUN composer install --no-dev --optimize-autoloader --classmap-authoritative
 
+# NPM bağımlılıklarını kur ve Vite build al
+RUN npm install && npm run build
 # Başlatma komutu
 CMD php artisan config:clear && \
     php artisan cache:clear && \

@@ -12,7 +12,8 @@ class FrontendController extends Controller
      */
     public function show($slug)
     {
-        $nailTech = User::where('role', 'artist')
+        $nailTech = User::with(['scheduleBlocks', 'appointments', 'userPrices.serviceCategory'])
+                        ->where('role', 'artist')
                         ->where('slug', $slug)
                         ->firstOrFail();
 

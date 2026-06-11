@@ -18,6 +18,11 @@
 
     {{-- Vite Assets --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    {{-- HTMX for SPA transitions --}}
+    @once
+        <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    @endonce
 
     {{-- Shared Styles --}}
     <style>
@@ -94,7 +99,7 @@
     {{-- Page-specific styles --}}
     @stack('styles')
 </head>
-<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col relative selection:bg-primary-container selection:text-on-primary-container pb-20 sm:pb-24 md:pb-0">
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col relative selection:bg-primary-container selection:text-on-primary-container pb-20 sm:pb-24 md:pb-0" hx-boost="true">
 
     {{-- TopAppBar --}}
     <header class="docked full-width top-0 sticky z-50 bg-[#fdfaf8] flex justify-center items-center w-full px-margin-mobile h-12 sm:h-16 md:px-margin-desktop border-b border-surface-container-highest">
@@ -163,5 +168,46 @@
 
     {{-- Page-specific scripts --}}
     @stack('scripts')
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            
+            // Native fetch interceptor to always add CSRF token
+            if (csrfToken) {
+                const originalFetch = window.fetch;
+                window.fetch = async function () {
+                    let [resource, config] = arguments;
+                    if(config === undefined) {
+                        config = {};
+                    }
+                    if(config.headers === undefined) {
+                        config.headers = {};
+                    }
+                    
+                    if(config.method && !['GET', 'HEAD'].includes(config.method.toUpperCase())) {
+                        // Check if headers is Headers object
+                        if (config.headers instanceof Headers) {
+                            config.headers.append('X-CSRF-TOKEN', csrfToken);
+                            if (!config.headers.has('Accept')) {
+                                config.headers.append('Accept', 'application/json');
+                            }
+                        } else {
+                            config.headers['X-CSRF-TOKEN'] = csrfToken;
+                            config.headers['Accept'] = 'application/json';
+                        }
+                    }
+                    return originalFetch(resource, config);
+                };
+            }
+        });
+        
+        // Re-initialize Alpine on HTMX swaps
+        document.body.addEventListener('htmx:afterSwap', function(event) {
+            if (typeof Alpine !== 'undefined') {
+                Alpine.initTree(document.body);
+            }
+        });
+    </script>
 </body>
 </html>

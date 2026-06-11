@@ -21,15 +21,15 @@
         $blockedSlots = [];
         $occupiedSlots = [];
         if ($nailTech) {
-            $scheduleBlocks = $nailTech->scheduleBlocks()->get();
+            $scheduleBlocks = clone $nailTech->scheduleBlocks;
             foreach ($scheduleBlocks as $block) {
                 $blockedSlots[$block->blocked_date . '_' . substr($block->blocked_time, 0, 5)] = true;
             }
 
-            $appointments = $nailTech->appointments()
+            $appointments = $nailTech->appointments
                 ->whereIn('status', ['pending', 'approved'])
                 ->where('appointment_date', '>=', today()->toDateString())
-                ->get();
+                ->values();
 
             foreach ($appointments as $appt) {
                 $occupiedSlots[$appt->appointment_date . '_' . substr($appt->appointment_time, 0, 5)] = true;
@@ -49,12 +49,10 @@
         // Prepare hours from customizable work hours settings
         $hours = $nailTech->work_hours ?? ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
-        $nailTechPrices = $nailTech ? $nailTech->userPrices()
-            ->join('service_categories', 'user_prices.service_category_id', '=', 'service_categories.id')
-            ->select('service_categories.name', 'user_prices.price')
-            ->get()
-            ->pluck('price', 'name')
-            ->toArray() : [];
+        $nailTechPrices = $nailTech ? $nailTech->userPrices
+            ->mapWithKeys(function ($userPrice) {
+                return [$userPrice->serviceCategory->name => $userPrice->price];
+            })->toArray() : [];
     @endphp
 
     <main class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] md:max-w-3xl lg:max-w-4xl mx-auto w-full"

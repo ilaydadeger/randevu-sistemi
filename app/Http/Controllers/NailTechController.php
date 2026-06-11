@@ -402,6 +402,10 @@ class NailTechController extends Controller
         $user->work_hours = $hours;
         $user->save();
 
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Çalışma saatleriniz güncellendi.']);
+        }
+
         return back()->with('success', 'Çalışma saatleriniz güncellendi.');
     }
 

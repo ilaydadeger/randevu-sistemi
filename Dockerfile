@@ -43,12 +43,9 @@ RUN composer install --no-dev --optimize-autoloader --classmap-authoritative
 # NPM bağımlılıklarını kur ve Vite build al
 RUN npm install && npm run build
 # Başlatma komutu
-CMD php artisan config:clear && \
-    php artisan cache:clear && \
+CMD php artisan optimize:clear && \
     php artisan migrate --force && \
     php artisan storage:link && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache && \
+    php artisan optimize && \
     php artisan event:cache && \
     apache2-foreground

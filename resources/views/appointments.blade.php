@@ -281,11 +281,11 @@
             <h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">Çalışma Saatleri</h3>
             <p class="font-body-md text-on-surface-variant text-sm mb-4">Takviminizde gösterilecek günlük randevu saat dilimlerini düzenleyin.</p>
             
-            <form action="{{ route('panel.schedule.hours') }}" method="POST" class="space-y-4">
-                @csrf
+            <form @submit.prevent="submitWorkHours" class="space-y-4">
                 <div class="flex flex-wrap gap-2 items-center" x-data="{ 
                     hours: {{ json_encode($hours) }}, 
                     newHour: '',
+                    isSaving: false,
                     addHour() {
                         if (!this.newHour) return;
                         if (!/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(this.newHour)) {
@@ -302,6 +302,26 @@
                     },
                     removeHour(index) {
                         this.hours.splice(index, 1);
+                    },
+                    async submitWorkHours() {
+                        this.isSaving = true;
+                        try {
+                            const response = await fetch('{{ route('panel.schedule.hours') }}', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ work_hours: this.hours })
+                            });
+                            const data = await response.json();
+                            if (response.ok && data.success) {
+                                Toast.fire({ icon: 'success', title: data.message, iconColor: '#7a5555' });
+                            } else {
+                                Toast.fire({ icon: 'error', title: data.message || 'Bir hata oluştu.', iconColor: '#ba1a1a' });
+                            }
+                        } catch (e) {
+                            Toast.fire({ icon: 'error', title: 'Bağlantı hatası.', iconColor: '#ba1a1a' });
+                        } finally {
+                            this.isSaving = false;
+                        }
                     }
                 }">
                     <template x-for="(hour, index) in hours" :key="hour">
@@ -310,7 +330,6 @@
                             <button type="button" @click="removeHour(index)" class="text-primary/70 hover:text-primary flex items-center justify-center">
                                 <span class="material-symbols-outlined text-[14px]">close</span>
                             </button>
-                            <input type="hidden" name="work_hours[]" :value="hour">
                         </div>
                     </template>
                     
@@ -318,10 +337,13 @@
                         <input type="time" x-model="newHour" class="bg-surface-container-low border border-outline-variant rounded-lg px-3 py-1.5 text-xs text-on-surface focus:outline-none focus:border-primary">
                         <button type="button" @click="addHour()" class="bg-secondary text-on-secondary hover:opacity-90 px-4 py-1.5 rounded-lg text-xs font-semibold font-label-caps transition-opacity">EKLE</button>
                     </div>
-                </div>
-                
-                <div class="flex justify-end pt-2 border-t border-surface-variant/30">
-                    <button type="submit" class="bg-primary text-on-primary hover:opacity-90 px-6 py-2.5 rounded-full text-xs font-bold font-label-caps transition-opacity shadow-sm">SAATLERİ KAYDET</button>
+
+                    <div class="flex justify-end pt-2 w-full border-t border-surface-variant/30 mt-4">
+                        <button type="submit" :disabled="isSaving" class="bg-primary text-on-primary hover:opacity-90 px-6 py-2.5 rounded-full text-xs font-bold font-label-caps transition-opacity shadow-sm flex items-center gap-2">
+                            <span x-show="isSaving" class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span>
+                            SAATLERİ KAYDET
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>

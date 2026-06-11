@@ -77,8 +77,8 @@
 
             </div>
             @if($nailTech && $nailTech->bio)
-            <p class="font-body-md text-body-md text-on-surface-variant w-full max-w-sm px-4 mt-2">
-                {{ $nailTech->bio }}
+            <p class="mt-2 text-on-surface-variant font-body-md text-body-md px-4 text-center w-full" style="min-width: 280px;">
+                {{ str_replace(["\r", "\n"], ' ', $nailTech->bio) }}
             </p>
             @endif
         </section>

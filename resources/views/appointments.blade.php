@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', "L'ART DE L'ONGLE - Randevu Paneli")
+@section('title', (auth()->user()->salon_name ?? "L'ART DE L'ONGLE") . " - Randevu Paneli")
 
 @section('content')
 @php
@@ -36,7 +36,7 @@
     }
 @endphp
 
-<main class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] mx-auto w-full" x-data="appointmentsManager()">
+<main class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] md:max-w-3xl lg:max-w-5xl mx-auto w-full" x-data="appointmentsManager()">
     {{-- Header & Segmented Control --}}
     <div class="flex flex-col gap-sm">
         <h2 class="font-headline-md text-headline-md text-on-background">Randevular</h2>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', "Ana Sayfa - L'ART DE L'ONGLE")
+@section('title', "Ana Sayfa - " . ($nailTech->salon_name ?? "L'ART DE L'ONGLE"))
 
 @section('content')
     @php
@@ -57,7 +57,7 @@
             ->toArray() : [];
     @endphp
 
-    <main class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] mx-auto w-full"
+    <main class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] md:max-w-3xl lg:max-w-4xl mx-auto w-full"
         x-data="galleryManager({ images: {{ json_encode($uploadedImages) }} })">
 
         {{-- Premium Profile Header --}}

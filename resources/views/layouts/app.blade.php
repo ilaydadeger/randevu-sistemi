@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>@yield('title', "L'ART DE L'ONGLE")</title>
-
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%237a5555' d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/></svg>">
     {{-- CSRF Token --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -97,11 +97,37 @@
 <body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col relative selection:bg-primary-container selection:text-on-primary-container pb-20 sm:pb-24 md:pb-0">
 
     {{-- TopAppBar --}}
-    <header class="docked full-width top-0 sticky z-50 bg-surface dark:bg-surface-dim flex justify-center items-center w-full px-margin-mobile h-12 sm:h-16 md:px-margin-desktop border-b border-surface-container-highest">
-        <h1 class="font-headline-sm text-headline-sm tracking-widest text-primary dark:text-primary-fixed-dim font-medium text-center">
+    <header class="docked full-width top-0 sticky z-50 bg-[#fdfaf8] flex justify-center items-center w-full px-margin-mobile h-12 sm:h-16 md:px-margin-desktop border-b border-surface-container-highest">
+        <h1 class="font-headline-sm text-headline-sm tracking-widest text-[#7a5555] font-medium text-center">
             {{ request()->is('panel/*') ? (auth()->user()->salon_name ?? "L'ART DE L'ONGLE") : (($nailTech->salon_name ?? null) ?: "L'ART DE L'ONGLE") }}
         </h1>
     </header>
+
+    {{-- Desktop Navigation Bar (Sadece Tırnakçı Paneli İçin, Masaüstü) --}}
+    @if(request()->is('panel/*'))
+    <nav class="hidden md:flex justify-center items-center gap-10 py-3 bg-[#fdfaf8] border-b border-surface-container-highest w-full sticky top-16 z-40 shadow-sm">
+        <a href="{{ route('panel.preview') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.preview') ? 'text-[#7a5555] font-bold' : 'text-on-surface-variant hover:text-[#7a5555] transition-colors' }}">
+            <span class="material-symbols-outlined" style="font-size: 20px; @if(request()->routeIs('panel.preview')) font-variation-settings: 'FILL' 1; @endif">home</span>
+            <span class="font-label-caps tracking-wider text-xs">Önizleme</span>
+        </a>
+        
+        <a href="{{ route('panel.appointments') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.appointments') ? 'text-[#7a5555] font-bold' : 'text-on-surface-variant hover:text-[#7a5555] transition-colors' }}">
+            <span class="material-symbols-outlined" style="font-size: 20px; @if(request()->routeIs('panel.appointments')) font-variation-settings: 'FILL' 1; @endif">calendar_today</span>
+            <span class="font-label-caps tracking-wider text-xs">Randevular</span>
+        </a>
+        
+        <a href="{{ route('panel.book') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.book') ? 'text-[#7a5555] font-bold' : 'text-on-surface-variant hover:text-[#7a5555] transition-colors' }}">
+            <span class="material-symbols-outlined" style="font-size: 20px; @if(request()->routeIs('panel.book')) font-variation-settings: 'FILL' 1; @endif">explore</span>
+            <span class="font-label-caps tracking-wider text-xs">Fiyatlarım</span>
+        </a>
+        
+        <a href="{{ route('panel.profile') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.profile') ? 'text-[#7a5555] font-bold' : 'text-on-surface-variant hover:text-[#7a5555] transition-colors' }}">
+            <span class="material-symbols-outlined" style="font-size: 20px; @if(request()->routeIs('panel.profile')) font-variation-settings: 'FILL' 1; @endif">person</span>
+            <span class="font-label-caps tracking-wider text-xs">Profil</span>
+        </a>
+    </nav>
+    @endif
+
 
     {{-- Main Content --}}
     @yield('content')

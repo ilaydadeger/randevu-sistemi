@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', "Profilim - L'ART DE L'ONGLE")
+@section('title', "Profilim - " . (auth()->user()->salon_name ?? "L'ART DE L'ONGLE"))
 
 @section('content')
-    <main class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] mx-auto w-full"
+    <main class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] md:max-w-3xl lg:max-w-4xl mx-auto w-full"
         x-data="profileManager()">
         {{-- VIEW 1: Read-Only Header --}}
         <div x-show="!isEditing" x-transition.opacity>

@@ -97,8 +97,8 @@
 <body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col relative selection:bg-primary-container selection:text-on-primary-container pb-20 sm:pb-24 md:pb-0">
 
     {{-- TopAppBar --}}
-    <header class="docked full-width top-0 sticky z-50 bg-surface/85 dark:bg-surface-dim/85 backdrop-blur-md flex justify-center items-center w-full px-margin-mobile h-12 sm:h-16 md:px-margin-desktop border-b border-surface-container-highest">
-        <h1 class="font-headline-sm text-headline-sm tracking-widest text-on-surface dark:text-white font-black text-center">
+    <header class="docked full-width top-0 sticky z-50 bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-sm flex justify-center items-center w-full px-margin-mobile h-12 sm:h-16 md:px-margin-desktop border-b border-surface-container-highest">
+        <h1 class="font-headline-sm text-headline-sm tracking-widest text-primary dark:text-primary-fixed-dim font-extrabold text-center drop-shadow-sm">
             {{ request()->is('panel/*') ? (auth()->user()->salon_name ?? "L'ART DE L'ONGLE") : (($nailTech->salon_name ?? null) ?: "L'ART DE L'ONGLE") }}
         </h1>
     </header>
@@ -108,7 +108,7 @@
 
     {{-- BottomNavBar (Mobile Only - Sadece Tırnakçı Paneli İçin) --}}
     @if(request()->is('panel/*'))
-    <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-1.5 pb-safe bg-surface/85 dark:bg-surface-container/85 backdrop-blur-md rounded-t-xl shadow-[0px_-4px_20px_rgba(0,0,0,0.05)] border-t border-outline-variant/30 md:hidden">
+    <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-1.5 pb-safe bg-surface/90 dark:bg-surface-container/90 backdrop-blur-sm rounded-t-xl shadow-[0px_-4px_20px_rgba(0,0,0,0.05)] border-t border-outline-variant/30 md:hidden">
         {{-- Home (Preview) --}}
         <a href="{{ route('panel.preview') }}" class="flex flex-col items-center justify-center gap-0.5 {{ request()->routeIs('panel.preview') ? 'text-primary font-bold bg-primary-container/40 dark:bg-primary-container/40 rounded-full px-3.5 py-0.5 scale-105 transition-transform duration-300 ease-out' : 'text-on-surface-variant font-medium opacity-90 hover:text-primary hover:opacity-100 transition-colors' }}">
             <span class="material-symbols-outlined" data-icon="home" style="font-size: 22px; @if(request()->routeIs('panel.preview')) font-variation-settings: 'FILL' 1; @endif">home</span>

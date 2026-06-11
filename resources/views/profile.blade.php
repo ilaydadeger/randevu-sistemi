@@ -135,14 +135,18 @@
                                 </div>
                             </template>
                             <div class="flex gap-sm">
-                                <button @click="updateAppointmentStatus(appointment.id, 'cancelled')"
+                                <button @click="isApproving = appointment.id + '-cancelled'; updateAppointmentStatus(appointment.id, 'cancelled')"
+                                    :disabled="isApproving !== null"
                                     class="flex-1 py-2 px-4 rounded-full bg-error-container text-on-error-container font-label-caps text-label-caps hover:opacity-80 transition-opacity flex justify-center items-center gap-2">
-                                    <span class="spinner hidden material-symbols-outlined animate-spin text-sm">progress_activity</span>
+                                    <span x-show="isApproving === appointment.id + '-cancelled'" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+                                    <span x-show="isApproving !== appointment.id + '-cancelled'" class="material-symbols-outlined text-sm">cancel</span>
                                     Reddet
                                 </button>
-                                <button @click="openApproveModal(appointment)"
+                                <button @click="isApproving = appointment.id + '-approved'; updateAppointmentStatus(appointment.id, 'approved')"
+                                    :disabled="isApproving !== null"
                                     class="flex-1 py-2 px-4 rounded-full bg-primary text-on-primary font-label-caps text-label-caps hover:bg-surface-tint transition-colors flex justify-center items-center gap-2">
-                                    <span class="spinner hidden material-symbols-outlined animate-spin text-sm">progress_activity</span>
+                                    <span x-show="isApproving === appointment.id + '-approved'" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+                                    <span x-show="isApproving !== appointment.id + '-approved'" class="material-symbols-outlined text-sm">check_circle</span>
                                     Onayla
                                 </button>
                             </div>
@@ -580,6 +584,7 @@
                     file_portfolio_3: null,
                     remove_portfolio_image_3: false
                 },
+                isApproving: null,
 
                 previewPhoto(event) {
                     const file = event.target.files[0];
@@ -932,7 +937,10 @@
                             buttonsStyling: false
                         });
 
-                        if (!confirmCancel.isConfirmed) return;
+                        if (!confirmCancel.isConfirmed) {
+                            this.isApproving = null;
+                            return;
+                        }
                     }
 
                     let finalPrice = null;
@@ -973,15 +981,14 @@
                             }
                         });
 
-                        if (priceResult === undefined) return; // cancelled
+                        if (priceResult === undefined) {
+                            this.isApproving = null;
+                            return; // cancelled
+                        }
                         finalPrice = priceResult;
                     }
 
                     const card = document.getElementById('appointment-card-' + id);
-                    if (card) {
-                        const buttons = card.querySelectorAll('button');
-                        buttons.forEach(b => b.disabled = true);
-                    }
 
                     try {
                         const payload = { status: status };
@@ -1016,10 +1023,6 @@
                                 iconColor: '#7a5555'
                             });
                         } else {
-                            if (card) {
-                                const buttons = card.querySelectorAll('button');
-                                buttons.forEach(b => b.disabled = false);
-                            }
                             Toast.fire({
                                 icon: 'error',
                                 title: data.message || 'Hata oluştu.',
@@ -1027,17 +1030,14 @@
                             });
                         }
                     } catch (error) {
-                        if (card) {
-                            const buttons = card.querySelectorAll('button');
-                            buttons.forEach(b => b.disabled = false);
-                        }
                         Toast.fire({
                             icon: 'error',
                             title: 'Bağlantı hatası.',
                             iconColor: '#ba1a1a'
                         });
+                    } finally {
+                        this.isApproving = null;
                     }
-                },
                 
                 async dismissNotification(id) {
                     try {

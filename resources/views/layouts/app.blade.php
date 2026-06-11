@@ -19,10 +19,7 @@
     {{-- Vite Assets --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
-    {{-- HTMX for SPA transitions --}}
-    @once
-        <script src="https://unpkg.com/htmx.org@1.9.12"></script>
-    @endonce
+
 
     {{-- Shared Styles --}}
     <style>
@@ -99,7 +96,7 @@
     {{-- Page-specific styles --}}
     @stack('styles')
 </head>
-<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col relative selection:bg-primary-container selection:text-on-primary-container pb-20 sm:pb-24 md:pb-0" hx-boost="true">
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col relative selection:bg-primary-container selection:text-on-primary-container pb-20 sm:pb-24 md:pb-0">
 
     {{-- TopAppBar --}}
     <header class="docked full-width top-0 sticky z-50 bg-[#fdfaf8] flex justify-center items-center w-full px-margin-mobile h-12 sm:h-16 md:px-margin-desktop border-b border-surface-container-highest">
@@ -210,12 +207,7 @@
             }
         });
         
-        // Re-initialize Alpine on HTMX swaps
-        document.body.addEventListener('htmx:afterSwap', function(event) {
-            if (typeof Alpine !== 'undefined') {
-                Alpine.initTree(document.body);
-            }
-        });
+
     </script>
 </body>
 </html>

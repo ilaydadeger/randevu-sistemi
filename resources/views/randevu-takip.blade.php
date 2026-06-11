@@ -411,7 +411,7 @@
 
     <script>
         const TRACKING_CODE = '{{ $appointment->tracking_code }}';
-        const CHECK_URL     = '/randevu-takip/' + TRACKING_CODE + '/status';
+        const CHECK_URL     = '/randevu-takip/' + TRACKING_CODE;
         let   currentStatus = '{{ $status }}';
         let   pollTimer     = null;
 

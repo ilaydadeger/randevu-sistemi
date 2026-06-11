@@ -97,8 +97,8 @@
 <body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col relative selection:bg-primary-container selection:text-on-primary-container pb-20 sm:pb-24 md:pb-0">
 
     {{-- TopAppBar --}}
-    <header class="docked full-width top-0 sticky z-50 bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-sm flex justify-center items-center w-full px-margin-mobile h-12 sm:h-16 md:px-margin-desktop border-b border-surface-container-highest">
-        <h1 class="font-headline-sm text-headline-sm tracking-widest text-primary dark:text-primary-fixed-dim font-extrabold text-center drop-shadow-sm">
+    <header class="docked full-width top-0 sticky z-50 bg-surface dark:bg-surface-dim flex justify-center items-center w-full px-margin-mobile h-12 sm:h-16 md:px-margin-desktop border-b border-surface-container-highest">
+        <h1 class="font-headline-sm text-headline-sm tracking-widest text-primary dark:text-primary-fixed-dim font-medium text-center">
             {{ request()->is('panel/*') ? (auth()->user()->salon_name ?? "L'ART DE L'ONGLE") : (($nailTech->salon_name ?? null) ?: "L'ART DE L'ONGLE") }}
         </h1>
     </header>

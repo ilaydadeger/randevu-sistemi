@@ -21,7 +21,7 @@ class AnalysisController extends Controller
 
         // 2. Fotoğrafı Python yapay zeka API'sine gönderiyoruz
         try {
-            $response = Http::timeout(60)->attach(
+            $response = Http::timeout(120)->attach(
                 'file',
                 file_get_contents($resim->path()),
                 $resim->getClientOriginalName()

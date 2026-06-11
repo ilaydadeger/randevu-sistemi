@@ -200,6 +200,14 @@
                     return originalFetch(resource, config);
                 };
             }
+
+            // Pre-warm Hugging Face AI API
+            const aiUrl = '{{ config('services.ai.url') }}';
+            if (aiUrl) {
+                fetch(aiUrl + '/').catch(e => {
+                    // Ignore CORS or network errors for pre-warming
+                });
+            }
         });
         
         // Re-initialize Alpine on HTMX swaps

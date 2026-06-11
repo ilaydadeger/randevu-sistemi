@@ -55,7 +55,8 @@
             })->toArray() : [];
     @endphp
 
-    <main class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] md:max-w-3xl lg:max-w-4xl mx-auto w-full"
+    <main
+        class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] md:max-w-3xl lg:max-w-4xl mx-auto w-full"
         x-data="galleryManager({ images: {{ json_encode($uploadedImages) }} })">
 
         {{-- Premium Profile Header --}}
@@ -75,9 +76,10 @@
 
             </div>
             @if($nailTech && $nailTech->bio)
-            <p class="mt-2 text-on-surface-variant font-body-md text-body-md px-4 text-center w-full" style="min-width: 280px;">
-                {{ str_replace(["\r", "\n"], ' ', $nailTech->bio) }}
-            </p>
+                <p class="mt-2 text-on-surface-variant font-body-md text-body-md px-4 text-center w-full"
+                    style="min-width: 280px;">
+                    {{ str_replace(["\r", "\n"], ' ', $nailTech->bio) }}
+                </p>
             @endif
         </section>
 
@@ -241,11 +243,11 @@
 
         {{-- Appointment Form --}}
         <section class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-sm" x-data="bookingCalendar({
-                    blockedSlots: {{ json_encode($blockedSlots) }},
-                    occupiedSlots: {{ json_encode($occupiedSlots) }},
-                    hours: {{ json_encode($hours) }},
-                    todayStr: '{{ today()->toDateString() }}'
-                })">
+                        blockedSlots: {{ json_encode($blockedSlots) }},
+                        occupiedSlots: {{ json_encode($occupiedSlots) }},
+                        hours: {{ json_encode($hours) }},
+                        todayStr: '{{ today()->toDateString() }}'
+                    })">
             <div class="mb-6 border-b border-surface-variant pb-4 flex items-center justify-between">
                 <div>
                     <h3 class="font-headline-sm text-headline-sm text-on-surface">Randevu Talebi Oluştur</h3>
@@ -261,29 +263,41 @@
                 <div class="space-y-2">
                     <label class="font-label-caps text-label-caps text-on-surface-variant">İŞLEM TÜRÜ</label>
                     <div class="grid grid-cols-2 gap-3">
-                        <label class="relative flex cursor-pointer rounded-xl border p-3 hover:bg-surface-container-low transition-colors"
+                        <label
+                            class="relative flex cursor-pointer rounded-xl border p-3 hover:bg-surface-container-low transition-colors"
                             :class="serviceType === 'yapim' ? 'border-primary bg-primary-container/10' : 'border-outline-variant'">
-                            <input type="radio" name="service_type" value="yapim" x-model="serviceType" class="peer sr-only">
+                            <input type="radio" name="service_type" value="yapim" x-model="serviceType"
+                                class="peer sr-only">
                             <div class="flex w-full items-center justify-center text-center">
                                 <div class="flex items-center justify-center gap-2">
-                                    <span class="material-symbols-outlined text-[20px]" :class="serviceType === 'yapim' ? 'text-primary' : 'text-on-surface-variant'">brush</span>
+                                    <span class="material-symbols-outlined text-[20px]"
+                                        :class="serviceType === 'yapim' ? 'text-primary' : 'text-on-surface-variant'">brush</span>
                                     <div class="flex flex-col items-start leading-tight">
-                                        <span class="text-[10px] text-on-surface-variant/80 font-bold uppercase tracking-wider">Protez Tırnak</span>
-                                        <span class="text-sm font-bold" :class="serviceType === 'yapim' ? 'text-primary' : 'text-on-surface'">YAPIMI</span>
+                                        <span
+                                            class="text-[10px] text-on-surface-variant/80 font-bold uppercase tracking-wider">Protez
+                                            Tırnak</span>
+                                        <span class="text-sm font-bold"
+                                            :class="serviceType === 'yapim' ? 'text-primary' : 'text-on-surface'">YAPIMI</span>
                                     </div>
                                 </div>
                             </div>
                         </label>
 
-                        <label class="relative flex cursor-pointer rounded-xl border p-3 hover:bg-surface-container-low transition-colors"
+                        <label
+                            class="relative flex cursor-pointer rounded-xl border p-3 hover:bg-surface-container-low transition-colors"
                             :class="serviceType === 'cikarma' ? 'border-primary bg-primary-container/10' : 'border-outline-variant'">
-                            <input type="radio" name="service_type" value="cikarma" x-model="serviceType" class="peer sr-only">
+                            <input type="radio" name="service_type" value="cikarma" x-model="serviceType"
+                                class="peer sr-only">
                             <div class="flex w-full items-center justify-center text-center">
                                 <div class="flex items-center justify-center gap-2">
-                                    <span class="material-symbols-outlined text-[20px]" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface-variant'">backspace</span>
+                                    <span class="material-symbols-outlined text-[20px]"
+                                        :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface-variant'">backspace</span>
                                     <div class="flex flex-col items-start leading-tight">
-                                        <span class="text-[10px] text-on-surface-variant/80 font-bold uppercase tracking-wider">Protez Tırnak</span>
-                                        <span class="text-sm font-bold" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface'">ÇIKARMA</span>
+                                        <span
+                                            class="text-[10px] text-on-surface-variant/80 font-bold uppercase tracking-wider">Protez
+                                            Tırnak</span>
+                                        <span class="text-sm font-bold"
+                                            :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface'">ÇIKARMA</span>
                                     </div>
                                 </div>
                             </div>
@@ -294,52 +308,67 @@
                 {{-- Yapım (Image Upload and AI Price Estimation) Section --}}
                 <div x-show="serviceType === 'yapim'" x-collapse class="space-y-6">
 
-                {{-- Image Upload (Drag & Drop) --}}
-                <div class="space-y-2">
-                    <label class="font-label-caps text-label-caps text-on-surface-variant">TIRNAK MODELİ (GÖRSEL)</label>
-                    <div id="dropzone"
-                        class="relative w-full h-48 rounded-xl border-2 border-dashed border-outline-variant bg-surface-container hover:bg-surface-container-high hover:border-primary transition-all flex flex-col items-center justify-center cursor-pointer overflow-hidden group">
+                    {{-- Image Upload (Drag & Drop) --}}
+                    <div class="space-y-2">
+                        <label class="font-label-caps text-label-caps text-on-surface-variant">TIRNAK MODELİ
+                            (GÖRSEL)</label>
+                        <div id="dropzone"
+                            class="relative w-full h-48 rounded-xl border-2 border-dashed border-outline-variant bg-surface-container hover:bg-surface-container-high hover:border-primary transition-all flex flex-col items-center justify-center cursor-pointer overflow-hidden group">
 
-                        <input type="file" name="design_image" id="fileInput"
-                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*">
+                            <input type="file" name="design_image" id="fileInput"
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*">
 
-                        <div id="uploadPlaceholder"
-                            class="flex flex-col items-center pointer-events-none transition-opacity duration-300">
-                            <span
-                                class="material-symbols-outlined text-4xl text-outline mb-2 group-hover:text-primary transition-colors">cloud_upload</span>
-                            <span class="font-body-md text-on-surface-variant font-medium">Görseli sürükleyin veya
-                                seçin</span>
-                            <span class="text-xs text-outline mt-1">PNG, JPG, WEBP (Max 5MB)</span>
+                            <div id="uploadPlaceholder"
+                                class="flex flex-col items-center pointer-events-none transition-opacity duration-300">
+                                <span
+                                    class="material-symbols-outlined text-4xl text-outline mb-2 group-hover:text-primary transition-colors">cloud_upload</span>
+                                <span class="font-body-md text-on-surface-variant font-medium">Görseli sürükleyin veya
+                                    seçin</span>
+                                <span class="text-xs text-outline mt-1">PNG, JPG, WEBP (Max 5MB)</span>
+                            </div>
+
+                            <img id="imagePreview" class="absolute inset-0 w-full h-full object-cover hidden" alt="Preview">
                         </div>
-
-                        <img id="imagePreview" class="absolute inset-0 w-full h-full object-cover hidden" alt="Preview">
-                    </div>
-                    <p class="text-xs text-on-surface-variant/70 italic mt-1">* Lütfen yaptırmak istediğiniz tırnak modelinin yakından ve belirgin bir görselini yükleyin.</p>
-                </div>
-
-                {{-- AI Price Estimation Section --}}
-                <div id="priceEstimationSection"
-                    class="fiyat-kutusu hidden bg-primary-container/20 rounded-xl p-4 border border-primary/20 flex flex-col gap-3">
-                    {{-- Loading / Status Row --}}
-                    <div class="flex items-start gap-3">
-                        <div id="priceSpinner" class="shrink-0 mt-0.5">
-                            <span class="material-symbols-outlined text-primary animate-spin">progress_activity</span>
-                        </div>
-                        <div class="flex-1">
-                            <div id="priceTitle" class="fiyat-gosterim font-body-md font-semibold text-primary">Fiyat Oluşturuluyor...</div>
-                            <p id="priceDesc" class="hidden text-sm text-on-surface-variant mt-1"></p>
+                        <p class="text-xs text-on-surface-variant/70 italic mt-1">* Lütfen yaptırmak istediğiniz tırnak
+                            modelinin yakından ve belirgin bir görselini yükleyin.</p>
+                            
+                        <div id="viewPriceBtnContainer" class="hidden mt-3 text-center">
+                            <button type="button" id="viewPriceBtn" class="bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 px-4 py-2.5 rounded-full text-[11px] md:text-xs font-bold font-label-caps transition-colors w-full flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-[18px]">calculate</span>
+                                YAPAY ZEKA İLE TAHMİNİ FİYAT OLUŞTUR
+                            </button>
                         </div>
                     </div>
 
-                    {{-- Price Display (Shown on success) --}}
-                    <div id="serviceSelectorContainer" class="hidden flex flex-col gap-2 pt-2 border-t border-primary/10">
-                        <div class="flex justify-between items-center bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/20 shadow-sm">
-                            <span class="text-xs font-bold text-on-surface-variant font-label-caps tracking-widest">Protez Tırnak Toplam Fiyat:</span>
-                            <span id="singleTotalPrice" class="text-2xl font-black text-primary">₺0</span>
+                    {{-- AI Price Estimation Section --}}
+                    <div id="priceEstimationSection"
+                        class="fiyat-kutusu hidden bg-primary-container/20 rounded-xl p-4 border border-primary/20 flex flex-col gap-3">
+                        {{-- Loading / Status Row --}}
+                        <div class="flex items-start gap-3">
+                            <div id="priceSpinner" class="shrink-0 mt-0.5">
+                                <span class="material-symbols-outlined text-primary animate-spin">progress_activity</span>
+                            </div>
+                            <div class="flex-1">
+                                <div id="priceTitle" class="fiyat-gosterim font-body-md font-semibold text-primary">Fiyat
+                                    Oluşturuluyor...</div>
+                                <p id="priceDesc" class="hidden text-sm text-on-surface-variant mt-1"></p>
+                            </div>
                         </div>
-                        <p class="text-[11px] text-on-surface-variant/60 text-center italic mt-1">* Sadece tahmini fiyattır. Tırnak uzmanı randevu sırasında bu fiyat üzerinde değişiklik yapabilir.</p>
+
+                        {{-- Price Display (Shown on success) --}}
+                        <div id="serviceSelectorContainer"
+                            class="hidden flex flex-col gap-2 pt-2 border-t border-primary/10">
+                            <div
+                                class="flex justify-between items-center bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/20 shadow-sm">
+                                <span
+                                    class="text-xs font-bold text-on-surface-variant font-label-caps tracking-widest">Protez
+                                    Tırnak Toplam Fiyat:</span>
+                                <span id="singleTotalPrice" class="text-2xl font-black text-primary">₺0</span>
+                            </div>
+                            <p class="text-[11px] text-on-surface-variant/60 text-center italic mt-1">* Sadece tahmini
+                                fiyattır. Tırnak uzmanı randevu sırasında bu fiyat üzerinde değişiklik yapabilir.</p>
+                        </div>
                     </div>
-                </div>
                 </div>
 
                 {{-- Client Details --}}
@@ -403,11 +432,11 @@
                         <div class="grid grid-cols-7 gap-2 text-center font-body-md text-body-md">
                             <template x-for="day in daysInGrid" :key="day.dateStr">
                                 <div @click="selectDay(day)" :class="{
-                                            'text-on-surface-variant opacity-30 cursor-not-allowed': !day.isSelectable,
-                                            'rounded-full bg-error/10 text-error/60 border border-error/20 line-through cursor-not-allowed': day.isSelectable && isDayFullyBooked(day.dateStr),
-                                            'rounded-full hover:bg-surface-container cursor-pointer transition-colors': day.isSelectable && !isDayFullyBooked(day.dateStr) && selectedDate !== day.dateStr,
-                                            'rounded-full bg-primary text-on-primary shadow-sm cursor-pointer font-semibold': day.isSelectable && !isDayFullyBooked(day.dateStr) && selectedDate === day.dateStr
-                                        }"
+                                                'text-on-surface-variant opacity-30 cursor-not-allowed': !day.isSelectable,
+                                                'rounded-full bg-error/10 text-error/60 border border-error/20 line-through cursor-not-allowed': day.isSelectable && isDayFullyBooked(day.dateStr),
+                                                'rounded-full hover:bg-surface-container cursor-pointer transition-colors': day.isSelectable && !isDayFullyBooked(day.dateStr) && selectedDate !== day.dateStr,
+                                                'rounded-full bg-primary text-on-primary shadow-sm cursor-pointer font-semibold': day.isSelectable && !isDayFullyBooked(day.dateStr) && selectedDate === day.dateStr
+                                            }"
                                     class="py-2 relative select-none flex items-center justify-center w-9 h-9 mx-auto transition-colors">
                                     <span x-text="day.dayNum"></span>
                                     <template x-if="day.hasDot">
@@ -429,10 +458,10 @@
                                     <button type="button"
                                         @click="if (slot.isAvailable) { selectedTime = slot.hour; activeSlotKey = slot.key; }"
                                         :disabled="!slot.isAvailable" :class="{
-                                                'bg-surface-variant/20 text-on-surface-variant/30 border border-outline-variant/10 cursor-not-allowed opacity-50': !slot.isAvailable,
-                                                'border border-outline-variant font-body-md text-body-md text-on-surface hover:bg-surface-container transition-colors': slot.isAvailable && selectedTime !== slot.hour,
-                                                'bg-secondary text-on-secondary font-body-md text-body-md shadow-sm transition-colors': slot.isAvailable && selectedTime === slot.hour
-                                            }"
+                                                    'bg-surface-variant/20 text-on-surface-variant/30 border border-outline-variant/10 cursor-not-allowed opacity-50': !slot.isAvailable,
+                                                    'border border-outline-variant font-body-md text-body-md text-on-surface hover:bg-surface-container transition-colors': slot.isAvailable && selectedTime !== slot.hour,
+                                                    'bg-secondary text-on-secondary font-body-md text-body-md shadow-sm transition-colors': slot.isAvailable && selectedTime === slot.hour
+                                                }"
                                         class="flex-none px-6 py-2 rounded-full transition-colors whitespace-nowrap">
                                         <span x-text="formatTimeLabel(slot.hour)"></span>
                                     </button>
@@ -696,15 +725,15 @@
                 isDayFullyBooked(dateStr) {
                     if (!dateStr) return false;
                     if (this.hours.length === 0) return false;
-                    
+
                     const isTodaySelected = dateStr === this.todayStr;
                     const now = new Date();
-                    
+
                     return this.hours.every(hour => {
                         const key = `${dateStr}_${hour}`;
                         const isBlocked = !!this.blockedSlots[key];
                         const isOccupied = !!this.occupiedSlots[key];
-                        
+
                         let isPast = false;
                         if (isTodaySelected) {
                             const parts = dateStr.split('-');
@@ -715,7 +744,7 @@
                                 isPast = true;
                             }
                         }
-                        
+
                         return isBlocked || isOccupied || isPast;
                     });
                 },
@@ -811,6 +840,10 @@
                 dropzone.classList.remove('border-primary', 'bg-surface-container-high');
             }
 
+            const viewPriceBtnContainer = document.getElementById('viewPriceBtnContainer');
+            const viewPriceBtn = document.getElementById('viewPriceBtn');
+            const selectorContainer = document.getElementById('serviceSelectorContainer');
+
             // Handle file selection
             fileInput.addEventListener('change', function (e) {
                 if (this.files && this.files[0]) {
@@ -825,14 +858,34 @@
                     }
                     reader.readAsDataURL(file);
 
-                    // Trigger AI Price Simulation
+                    // "Tahmini Fiyatı Gör" butonunu göster
+                    if (viewPriceBtnContainer) viewPriceBtnContainer.classList.remove('hidden');
+                    
+                    // Fiyat kutusunu gizle
+                    if (priceSection) priceSection.classList.add('hidden');
+                    
+                    // Önceki fiyattan kalma div'i gizle
+                    if (selectorContainer) selectorContainer.classList.add('hidden');
+
+                    // Trigger AI Price Simulation in background
                     simulateAIPrice(file);
                 }
             });
 
+            if (viewPriceBtn) {
+                viewPriceBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (viewPriceBtnContainer) viewPriceBtnContainer.classList.add('hidden');
+                    if (priceSection) {
+                        priceSection.classList.remove('hidden');
+                        priceSection.classList.add('animate-in', 'fade-in', 'slide-in-from-bottom-2');
+                    }
+                });
+            }
+
             window.nihaiJP = 0;
 
-            window.updatePriceDisplay = function() {
+            window.updatePriceDisplay = function () {
                 const totalPriceEl = document.getElementById('singleTotalPrice');
                 const estPriceInput = document.getElementById('estimatedPriceInput');
                 if (totalPriceEl) totalPriceEl.innerText = `₺${window.nihaiJP}`;
@@ -841,8 +894,8 @@
 
             function simulateAIPrice(file) {
                 const priceBreakdown = document.getElementById('priceBreakdown');
-                priceSection.classList.remove('hidden');
-                priceSection.classList.add('animate-in', 'fade-in', 'slide-in-from-bottom-2');
+                
+                // Arka planda başlarken yazıları resetle
                 priceSpinner.innerHTML = '<span class="material-symbols-outlined text-primary animate-spin">progress_activity</span>';
                 priceTitle.innerText = 'Fiyat Oluşturuluyor...';
                 priceTitle.className = 'font-body-md font-semibold text-primary';
@@ -873,11 +926,10 @@
                             // Spinner güncelle
                             priceSpinner.innerHTML = '<span class="material-symbols-outlined text-green-600 dark:text-green-400">check_circle</span>';
                             priceTitle.className = 'fiyat-gosterim font-body-md font-semibold text-green-600 dark:text-green-400';
-                            priceTitle.innerText = 'Fiyat Oluşturuldu!';
+                            priceTitle.innerText = 'Fiyat Oluşturuldu! (yapayzeka yanlış sonuç verebilir)';
 
                             window.nihaiJP = data.nihai_jp;
 
-                            const selectorContainer = document.getElementById('serviceSelectorContainer');
                             if (selectorContainer) {
                                 selectorContainer.classList.remove('hidden');
                             }
@@ -892,41 +944,13 @@
                     })
                     .catch(error => {
                         console.error("===== HATA DETAYI =====", error.message || error);
-                        priceSpinner.innerHTML = '<span class="material-symbols-outlined text-amber-500">schedule</span>';
+                        priceSpinner.innerHTML = '<span class="material-symbols-outlined text-amber-500">warning</span>';
                         priceTitle.className = 'font-body-md font-semibold text-amber-600';
-                        priceTitle.innerText = 'Yapay Zeka Uyandırılıyor...';
-                        priceDesc.classList.remove('hidden');
-                        priceDesc.innerHTML = 'Sunucu ilk istekte biraz zaman alıyor. Çok fazla deneme yapmak engellenmenize (HTTP 429) sebep olabilir.<br><button id="retryBtn" class="underline font-semibold text-primary mt-2" disabled>Lütfen Bekleyin (15s)</button>';
+                        priceTitle.innerText = 'Yapay zeka şuanda yanıt vermiyor.';
+                        priceDesc.classList.add('hidden');
+
                         const priceBreakdownEl = document.getElementById('priceBreakdown');
                         if (priceBreakdownEl) priceBreakdownEl.classList.add('hidden');
-
-                        // Sadece manuel tekrar dene butonu koyalım, spam'i önlemek için 15 saniye bekletelim
-                        let cooldown = 15;
-                        const retryBtn = document.getElementById('retryBtn');
-                        
-                        const timer = setInterval(() => {
-                            cooldown--;
-                            if (retryBtn) retryBtn.innerText = `Lütfen Bekleyin (${cooldown}s)`;
-                            
-                            if (cooldown <= 0) {
-                                clearInterval(timer);
-                                if (retryBtn) {
-                                    retryBtn.innerText = "Tekrar Dene";
-                                    retryBtn.disabled = false;
-                                    retryBtn.classList.remove('text-on-surface-variant');
-                                    retryBtn.classList.add('text-primary');
-                                }
-                            }
-                        }, 1000);
-
-                        retryBtn?.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            if (!retryBtn.disabled) {
-                                retryBtn.disabled = true;
-                                retryBtn.innerText = "Deneniyor...";
-                                fileInput.dispatchEvent(new Event('change'));
-                            }
-                        });
                     });
             }
 

@@ -77,7 +77,7 @@
 
             </div>
             @if($nailTech && $nailTech->bio)
-            <p class="font-body-md text-body-md text-on-surface-variant max-w-sm mt-2">
+            <p class="font-body-md text-body-md text-on-surface-variant w-full max-w-sm px-4 mt-2">
                 {{ $nailTech->bio }}
             </p>
             @endif

@@ -73,6 +73,12 @@
     --font-body-md: Inter, sans-serif;
 }
 
+@utility max-w-xs { max-width: 20rem; }
+@utility max-w-sm { max-width: 24rem; }
+@utility max-w-md { max-width: 28rem; }
+@utility max-w-lg { max-width: 32rem; }
+@utility max-w-xl { max-width: 36rem; }
+
 @utility text-label-caps {
     font-size: var(--fs-label-caps);
     line-height: 1.2;

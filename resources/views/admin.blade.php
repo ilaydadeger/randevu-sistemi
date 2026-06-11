@@ -226,7 +226,7 @@
 {{-- Delete Modal --}}
 <div x-cloak x-show="deleteModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
     <div x-show="deleteModalOpen" x-transition.opacity class="absolute inset-0 bg-on-surface/60 backdrop-blur-sm" @click="deleteModalOpen = false"></div>
-    <div x-show="deleteModalOpen" x-transition.scale.origin.bottom class="relative bg-surface-container-lowest rounded-3xl w-full max-w-sm p-8 shadow-2xl border border-error/20 text-center">
+    <div x-show="deleteModalOpen" x-transition.scale.origin.bottom class="relative bg-surface-container-lowest rounded-3xl w-full max-w-[24rem] p-8 shadow-2xl border border-error/20 text-center">
         <div class="w-20 h-20 bg-error-container/30 rounded-full flex items-center justify-center mx-auto mb-5 text-error">
             <span class="material-symbols-outlined text-4xl">warning</span>
         </div>

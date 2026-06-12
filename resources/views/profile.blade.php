@@ -332,7 +332,6 @@
                 </div>
             </form>
         </section>
-    </main>
 
 
     {{-- Approve / Reschedule Modal --}}
@@ -464,6 +463,7 @@
             <img :src="modalImageUrl" class="max-w-full max-h-[80vh] mx-auto object-contain rounded-xl shadow-2xl">
         </div>
     </div>
+    </main>
 @endsection
 
 @push('scripts')

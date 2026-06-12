@@ -883,9 +883,15 @@
                     this.activeApproveTime = appointment.time;
                     
                     if (appointment.date) {
-                        const apptDate = new Date(appointment.date);
-                        this.currentYear = apptDate.getFullYear();
-                        this.currentMonth = apptDate.getMonth();
+                        const parts = appointment.date.split('-');
+                        if(parts.length >= 3) {
+                            this.currentYear = parseInt(parts[0], 10);
+                            this.currentMonth = parseInt(parts[1], 10) - 1;
+                        } else {
+                            const apptDate = new Date(appointment.date);
+                            this.currentYear = apptDate.getFullYear() || new Date().getFullYear();
+                            this.currentMonth = (apptDate.getMonth() >= 0) ? apptDate.getMonth() : new Date().getMonth();
+                        }
                     } else {
                         const today = new Date();
                         this.currentYear = today.getFullYear();

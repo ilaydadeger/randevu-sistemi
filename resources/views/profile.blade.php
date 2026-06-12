@@ -338,7 +338,7 @@
     {{-- Approve / Reschedule Modal --}}
     <template x-teleport="body">
     <div x-show="approveModalOpen" style="display:none" class="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" x-transition.opacity>
-        <div class="relative bg-surface-container-lowest rounded-2xl w-full max-w-lg shadow-xl overflow-y-auto max-h-[90vh]" @click.away="approveModalOpen = false">
+        <div style="width: 100%; max-width: 500px;" class="relative bg-surface-container-lowest rounded-2xl shadow-xl overflow-y-auto max-h-[90vh]" @click.away="approveModalOpen = false">
             <div class="p-4 border-b border-outline-variant/30 flex items-center justify-between sticky top-0 bg-surface-container-lowest z-10">
                 <h3 class="font-headline-sm text-headline-sm text-on-surface">Randevuyu Onayla</h3>
                 <button @click="approveModalOpen = false" class="text-on-surface-variant hover:text-error transition-colors p-1 rounded-full">

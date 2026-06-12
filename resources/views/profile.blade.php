@@ -367,6 +367,16 @@
                     <span>Randevu Zamanı: <span class="font-bold" x-text="formatDate(selectedDate) + ' - Saat ' + selectedTime"></span></span>
                 </div>
 
+                {{-- Client Uploaded Image Preview --}}
+                <template x-if="activeApproveImage">
+                    <div class="rounded-xl overflow-hidden bg-surface-variant border border-outline-variant/30 flex items-center justify-center cursor-pointer max-h-48" @click="openImageModal(activeApproveImage)">
+                        <img :src="activeApproveImage" class="w-full h-full object-contain" alt="Referans Görseli">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-black/20">
+                            <span class="material-symbols-outlined text-white text-3xl drop-shadow-md">zoom_in</span>
+                        </div>
+                    </div>
+                </template>
+
                 {{-- Mini Calendar --}}
                 <div class="bg-surface-container-low rounded-xl p-4 border border-outline-variant/30">
                     <!-- Month / Year -->
@@ -483,6 +493,7 @@
                 approveModalOpen: false,
                 activeApproveId: null,
                 activeApprovePrice: 0,
+                activeApproveImage: null,
                 
                 blockedSlots: {!! json_encode($blockedSlots) !!},
                 occupiedSlots: {!! json_encode($occupiedSlots) !!},
@@ -802,6 +813,9 @@
 
                 isDayFullyBooked(dateStr) {
                     const isAnyAvailable = this.hours.some(hour => {
+                        if (dateStr === this.activeApproveDate && hour === this.activeApproveTime) {
+                            return true;
+                        }
                         const key = dateStr + '_' + hour;
                         const isBlocked = !!this.blockedSlots[key];
                         const isOccupied = !!this.occupiedSlots[key];
@@ -818,6 +832,11 @@
                         const isOccupied = !!this.occupiedSlots[key];
                         
                         let isAvailable = !isBlocked && !isOccupied;
+                        
+                        // If it's the current appointment's slot, it IS available
+                        if (this.selectedDate === this.activeApproveDate && hour === this.activeApproveTime) {
+                            isAvailable = true;
+                        }
                         
                         if (this.selectedDate === this.todayStr) {
                             const now = new Date();
@@ -847,6 +866,9 @@
                     return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
                 },
 
+                activeApproveDate: '',
+                activeApproveTime: '',
+
                 formatTimeLabel(hour) {
                     return hour;
                 },
@@ -856,12 +878,21 @@
                     this.activeApprovePrice = appointment.price;
                     this.selectedDate = appointment.date;
                     this.selectedTime = appointment.time;
+                    this.activeApproveImage = appointment.image_url;
+                    this.activeApproveDate = appointment.date;
+                    this.activeApproveTime = appointment.time;
                     
-                    const apptDate = new Date(appointment.date);
-                    this.currentYear = apptDate.getFullYear();
-                    this.currentMonth = apptDate.getMonth();
+                    if (appointment.date) {
+                        const apptDate = new Date(appointment.date);
+                        this.currentYear = apptDate.getFullYear();
+                        this.currentMonth = apptDate.getMonth();
+                    } else {
+                        const today = new Date();
+                        this.currentYear = today.getFullYear();
+                        this.currentMonth = today.getMonth();
+                    }
+                    
                     this.generateGrid();
-                    
                     this.approveModalOpen = true;
                 },
 

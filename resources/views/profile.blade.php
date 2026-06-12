@@ -129,18 +129,16 @@
                                 </div>
                                 <span class="font-headline-sm text-headline-sm text-primary" x-text="'₺' + appointment.price"></span>
                             </div>
-                            <template x-if="appointment.image_url">
-                                <div class="mb-sm rounded-lg overflow-hidden h-24 bg-surface-variant flex items-center justify-center border border-outline-variant/30 cursor-pointer" @click.stop="openImageModal(appointment.image_url)">
-                                    <img alt="Nail Art Reference" class="w-full h-full object-cover pointer-events-none" :src="appointment.image_url" x-on:error="$el.parentElement.style.display = 'none'" />
-                                </div>
-                            </template>
+                            <div x-show="appointment.image_url" class="mb-sm rounded-lg overflow-hidden h-24 bg-surface-variant flex items-center justify-center border border-outline-variant/30 cursor-pointer" @click="openImageModal(appointment.image_url)">
+                                <img alt="Nail Art Reference" class="w-full h-full object-cover pointer-events-none" :src="appointment.image_url || ''" x-on:error="$el.parentElement.style.display = 'none'" />
+                            </div>
                             <div class="flex gap-sm">
-                                <button @click.stop="updateAppointmentStatus(appointment.id, 'cancelled')"
+                                <button type="button" @click="updateAppointmentStatus(appointment.id, 'cancelled')"
                                     class="flex-1 py-2 px-4 rounded-full bg-error-container text-on-error-container font-label-caps text-label-caps hover:opacity-80 transition-opacity flex justify-center items-center gap-2">
                                     <span class="material-symbols-outlined text-sm pointer-events-none">cancel</span>
                                     Reddet
                                 </button>
-                                <button @click.stop="openApproveModal(appointment)"
+                                <button type="button" @click="openApproveModal(appointment.id)"
                                     class="flex-1 py-2 px-4 rounded-full bg-primary text-on-primary font-label-caps text-label-caps hover:bg-surface-tint transition-colors flex justify-center items-center gap-2">
                                     <span class="material-symbols-outlined text-sm pointer-events-none">check_circle</span>
                                     Onayla
@@ -148,6 +146,7 @@
                             </div>
                         </div>
                     </template>
+
 
                     <template x-if="pendingApprovals.length === 0">
                         <div class="bg-surface-container-low rounded-xl p-md text-center text-on-surface-variant border border-outline-variant/30">
@@ -872,7 +871,9 @@
                     return hour;
                 },
 
-                openApproveModal(appointment) {
+                openApproveModal(id) {
+                    const appointment = this.pendingApprovals.find(a => a.id == id);
+                    if (!appointment) return;
                     this.activeApproveId = appointment.id;
                     this.activeApprovePrice = appointment.price;
                     this.selectedDate = appointment.date;

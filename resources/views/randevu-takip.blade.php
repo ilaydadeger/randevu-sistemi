@@ -405,6 +405,19 @@
 
     </div>
 
+    {{-- Custom Confirm Modal --}}
+    <div id="confirmOverlay" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:1rem;">
+        <div style="background:#18181f; border:1px solid rgba(255,255,255,0.12); border-radius:20px; padding:2rem 1.75rem; max-width:360px; width:100%; text-align:center; animation:fadeUp 0.3s ease both;">
+            <div style="width:56px;height:56px;border-radius:50%;background:rgba(224,92,92,0.12);border:1.5px solid rgba(224,92,92,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-size:1.6rem;">⚠️</div>
+            <p style="font-size:1rem;font-weight:700;color:#f0eff4;margin-bottom:0.5rem;">Randevuyu İptal Et</p>
+            <p style="font-size:0.85rem;color:#9391a1;line-height:1.6;margin-bottom:1.5rem;">Randevunuzu iptal etmek istediğinize emin misiniz? Bu işlem geri alınamaz.</p>
+            <div style="display:flex;gap:0.75rem;">
+                <button onclick="document.getElementById('confirmOverlay').style.display='none'" style="flex:1;padding:0.75rem;border-radius:99px;font-size:0.8rem;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#9391a1;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">Vazgeç</button>
+                <button onclick="doCancel()" style="flex:1;padding:0.75rem;border-radius:99px;font-size:0.8rem;font-weight:600;background:rgba(224,92,92,0.15);border:1px solid rgba(224,92,92,0.35);color:#e05c5c;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='rgba(224,92,92,0.25)'" onmouseout="this.style.background='rgba(224,92,92,0.15)'">Evet, İptal Et</button>
+            </div>
+        </div>
+    </div>
+
     <p class="footer-note">Bu linki saklayarak durumunuzu istediğiniz zaman kontrol edebilirsiniz.</p>
 
     <div class="toast" id="toast">Link kopyalandı!</div>
@@ -480,31 +493,44 @@
         }
 
         function cancelAppointment() {
-            if(confirm('Randevunuzu iptal etmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) {
-                fetch('{{ route('appointment.cancel', ['tracking_code' => $appointment->tracking_code]) }}', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if(data.success) {
-                        currentStatus = 'cancelled';
-                        showSection('cancelled');
-                        document.getElementById('cancelContainer').style.display = 'none';
-                        const t = document.getElementById('toast');
-                        t.textContent = data.message;
-                        t.classList.add('show');
-                        setTimeout(() => t.classList.remove('show'), 3000);
-                        if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
-                    } else {
-                        alert(data.message || 'İptal işlemi başarısız oldu.');
-                    }
-                })
-                .catch(() => alert('Bir hata oluştu.'));
+            document.getElementById('confirmOverlay').style.display = 'flex';
+        }
+
+        function doCancel() {
+            document.getElementById('confirmOverlay').style.display = 'none';
+            fetch('{{ route('appointment.cancel', ['tracking_code' => $appointment->tracking_code]) }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if(data.success) {
+                    currentStatus = 'cancelled';
+                    showSection('cancelled');
+                    document.getElementById('cancelContainer').style.display = 'none';
+                    const t = document.getElementById('toast');
+                    t.textContent = data.message;
+                    t.classList.add('show');
+                    setTimeout(() => t.classList.remove('show'), 3000);
+                    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+                } else {
+                    showToastMsg(data.message || 'İptal işlemi başarısız oldu.', true);
+                }
+            })
+            .catch(() => showToastMsg('Bir hata oluştu.', true));
+        }
+
+        function showToastMsg(msg, isError) {
+            const t = document.getElementById('toast');
+            if (isError) {
+                t.style.cssText = 'background:rgba(224,92,92,0.2);border-color:rgba(224,92,92,0.4);color:#e05c5c;';
             }
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => { t.classList.remove('show'); t.style.cssText = ''; }, 3500);
         }
 
         // Only start polling if currently pending

@@ -135,18 +135,14 @@
                                 </div>
                             </template>
                             <div class="flex gap-sm">
-                                <button @click="isApproving = appointment.id + '-cancelled'; updateAppointmentStatus(appointment.id, 'cancelled')"
-                                    :disabled="isApproving !== null"
+                                <button @click="updateAppointmentStatus(appointment.id, 'cancelled')"
                                     class="flex-1 py-2 px-4 rounded-full bg-error-container text-on-error-container font-label-caps text-label-caps hover:opacity-80 transition-opacity flex justify-center items-center gap-2">
-                                    <span x-show="isApproving === appointment.id + '-cancelled'" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
-                                    <span x-show="isApproving !== appointment.id + '-cancelled'" class="material-symbols-outlined text-sm">cancel</span>
+                                    <span class="material-symbols-outlined text-sm">cancel</span>
                                     Reddet
                                 </button>
-                                <button @click="isApproving = appointment.id + '-approved'; updateAppointmentStatus(appointment.id, 'approved')"
-                                    :disabled="isApproving !== null"
+                                <button @click="openApproveModal(appointment)"
                                     class="flex-1 py-2 px-4 rounded-full bg-primary text-on-primary font-label-caps text-label-caps hover:bg-surface-tint transition-colors flex justify-center items-center gap-2">
-                                    <span x-show="isApproving === appointment.id + '-approved'" class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
-                                    <span x-show="isApproving !== appointment.id + '-approved'" class="material-symbols-outlined text-sm">check_circle</span>
+                                    <span class="material-symbols-outlined text-sm">check_circle</span>
                                     Onayla
                                 </button>
                             </div>
@@ -543,10 +539,16 @@
                     try {
                         const response = await fetch('{{ route("panel.api.updates") }}');
                         if (response.ok) {
-                            const data = await response.json();
-                            if (data.success) {
-                                this.pendingApprovals = data.pendingApprovals;
-                                this.todayAppointments = data.todayAppointments;
+                            const contentType = response.headers.get("content-type");
+                            if (contentType && contentType.indexOf("application/json") !== -1) {
+                                const data = await response.json();
+                                if (data.success) {
+                                    this.pendingApprovals = data.pendingApprovals;
+                                    this.todayAppointments = data.todayAppointments;
+                                }
+                            } else {
+                                // Gelen yanıt JSON değilse (muhtemelen oturum süresi dolduğu için login sayfasına yönlendirildi)
+                                window.location.reload();
                             }
                         }
                     } catch (e) {

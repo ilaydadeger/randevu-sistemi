@@ -1009,32 +1009,38 @@
                 try {
                     const response = await fetch('{{ route("panel.api.updates") }}');
                     if (response.ok) {
-                        const data = await response.json();
-                        if (data.success) {
-                            this.upcomingAppointments = data.upcomingAppointments;
-                            this.completedAppointments = data.completedAppointments;
-                            this.cancelledAppointments = data.cancelledAppointments;
-                            this.blockedSlots = data.blockedSlots;
-                            this.occupiedSlots = data.occupiedSlots;
-                            this.notes = data.notes || [];
-                            
-                            if (!this.hasUnsavedChanges()) {
-                                this.localBlockedSlots = JSON.parse(JSON.stringify(this.blockedSlots));
-                            } else {
-                                Object.keys(this.blockedSlots).forEach(key => {
-                                    if (!key.startsWith(this.selectedDate + '_')) {
-                                        this.localBlockedSlots[key] = this.blockedSlots[key];
-                                    }
-                                });
-                                Object.keys(this.localBlockedSlots).forEach(key => {
-                                    if (!key.startsWith(this.selectedDate + '_') && !this.blockedSlots[key]) {
-                                        delete this.localBlockedSlots[key];
-                                    }
-                                });
-                                this.localBlockedSlots = { ...this.localBlockedSlots };
+                        const contentType = response.headers.get("content-type");
+                        if (contentType && contentType.indexOf("application/json") !== -1) {
+                            const data = await response.json();
+                            if (data.success) {
+                                this.upcomingAppointments = data.upcomingAppointments;
+                                this.completedAppointments = data.completedAppointments;
+                                this.cancelledAppointments = data.cancelledAppointments;
+                                this.blockedSlots = data.blockedSlots;
+                                this.occupiedSlots = data.occupiedSlots;
+                                this.notes = data.notes || [];
+                                
+                                if (!this.hasUnsavedChanges()) {
+                                    this.localBlockedSlots = JSON.parse(JSON.stringify(this.blockedSlots));
+                                } else {
+                                    Object.keys(this.blockedSlots).forEach(key => {
+                                        if (!key.startsWith(this.selectedDate + '_')) {
+                                            this.localBlockedSlots[key] = this.blockedSlots[key];
+                                        }
+                                    });
+                                    Object.keys(this.localBlockedSlots).forEach(key => {
+                                        if (!key.startsWith(this.selectedDate + '_') && !this.blockedSlots[key]) {
+                                            delete this.localBlockedSlots[key];
+                                        }
+                                    });
+                                    this.localBlockedSlots = { ...this.localBlockedSlots };
+                                }
+                                
+                                this.calculateEarnings();
                             }
-                            
-                            this.calculateEarnings();
+                        } else {
+                            // Gelen yanıt JSON değilse (muhtemelen oturum süresi dolduğu için login sayfasına yönlendirildi)
+                            window.location.reload();
                         }
                     }
                 } catch (e) {

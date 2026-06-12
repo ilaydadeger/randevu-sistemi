@@ -1040,6 +1040,7 @@
                     } finally {
                         this.isApproving = null;
                     }
+                },
                 
                 async dismissNotification(id) {
                     try {

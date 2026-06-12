@@ -336,7 +336,8 @@
 
 
     {{-- Approve / Reschedule Modal --}}
-    <div x-cloak x-show="approveModalOpen" class="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-on-surface/40 backdrop-blur-sm" x-transition.opacity>
+    <template x-teleport="body">
+    <div x-show="approveModalOpen" style="display:none" class="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" x-transition.opacity>
         <div class="relative bg-surface-container-lowest rounded-2xl w-full max-w-lg shadow-xl overflow-y-auto max-h-[90vh]" @click.away="approveModalOpen = false">
             <div class="p-4 border-b border-outline-variant/30 flex items-center justify-between sticky top-0 bg-surface-container-lowest z-10">
                 <h3 class="font-headline-sm text-headline-sm text-on-surface">Randevuyu Onayla</h3>
@@ -454,17 +455,21 @@
             </div>
         </div>
     </div>
+    </template>
 
     {{-- Fullscreen Design Image Modal --}}
-    <div x-cloak x-show="imageModalOpen" class="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" x-transition.opacity>
-        <div class="relative max-w-lg max-h-[80vh] w-full" @click.away="imageModalOpen = false">
-            <button @click="imageModalOpen = false" class="absolute -top-12 right-0 text-white hover:opacity-85 p-2 bg-black/30 rounded-full flex items-center justify-center">
+    <template x-teleport="body">
+    <div x-show="imageModalOpen" style="display:none" class="fixed inset-0 z-[150] flex items-center justify-center p-6 bg-black/85 backdrop-blur-sm" x-transition.opacity>
+        <div class="relative w-full max-w-2xl" @click.away="imageModalOpen = false">
+            <button @click="imageModalOpen = false" class="absolute -top-12 right-0 text-white hover:opacity-85 p-2 bg-white/20 rounded-full flex items-center justify-center w-10 h-10">
                 <span class="material-symbols-outlined text-2xl">close</span>
             </button>
-            <img :src="modalImageUrl" class="max-w-full max-h-[80vh] mx-auto object-contain rounded-xl shadow-2xl">
+            <img :src="modalImageUrl" class="w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl block mx-auto">
         </div>
     </div>
+    </template>
 </div>
+
 @endsection
 
 @push('scripts')

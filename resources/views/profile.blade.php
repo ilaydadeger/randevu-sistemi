@@ -3,8 +3,8 @@
 @section('title', "Profilim - " . (auth()->user()->salon_name ?? "L'ART DE L'ONGLE"))
 
 @section('content')
-    <main class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] md:max-w-3xl lg:max-w-4xl mx-auto w-full"
-        x-data="profileManager()">
+<div x-data="profileManager()">
+    <main class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] md:max-w-3xl lg:max-w-4xl mx-auto w-full">
         {{-- VIEW 1: Read-Only Header --}}
         <div x-show="!isEditing" x-transition.opacity>
             <section class="flex justify-between items-center mb-sm">
@@ -332,6 +332,7 @@
                 </div>
             </form>
         </section>
+    </main>
 
 
     {{-- Approve / Reschedule Modal --}}
@@ -463,7 +464,7 @@
             <img :src="modalImageUrl" class="max-w-full max-h-[80vh] mx-auto object-contain rounded-xl shadow-2xl">
         </div>
     </div>
-    </main>
+</div>
 @endsection
 
 @push('scripts')

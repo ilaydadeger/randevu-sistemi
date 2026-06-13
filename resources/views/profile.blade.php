@@ -356,8 +356,9 @@
                     <span class="font-bold text-xs text-on-surface font-label-caps shrink-0">FİYAT:</span>
                     <div class="relative flex-1">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant font-bold text-sm">₺</span>
-                        <input x-model="activeApprovePrice" type="number" min="0" step="any" 
-                            class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg pl-7 pr-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary">
+                        <input x-model.number="activeApprovePrice" type="number" min="0" step="1" 
+                            class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg pl-7 pr-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary"
+                            @input="activeApprovePrice = parseFloat($event.target.value) || 0">
                     </div>
                 </div>
 
@@ -909,7 +910,8 @@
                 },
 
                 async confirmApprove() {
-                    if(this.activeApprovePrice === '' || isNaN(this.activeApprovePrice) || parseFloat(this.activeApprovePrice) < 0) {
+                    const priceVal = parseFloat(this.activeApprovePrice);
+                    if(isNaN(priceVal) || priceVal < 0) {
                         Toast.fire({ icon: 'error', title: 'Lütfen geçerli bir fiyat girin.' });
                         return;
                     }
@@ -923,7 +925,7 @@
                     try {
                         const payload = { 
                             status: 'approved',
-                            price: parseFloat(this.activeApprovePrice),
+                            price: priceVal,
                             new_date: this.selectedDate,
                             new_time: this.selectedTime
                         };

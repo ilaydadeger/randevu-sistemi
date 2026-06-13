@@ -13,8 +13,10 @@ class ServiceCategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['group_name' => 'Temel İşlem', 'name' => 'Kalıcı Oje'],
             ['group_name' => 'Temel İşlem', 'name' => 'Jel Protez'],
+            ['group_name' => 'Temel İşlem', 'name' => 'Kalıcı Oje'],
+            ['group_name' => 'Temel İşlem', 'name' => 'Jel Güçlendirme'],
+            ['group_name' => 'Temel İşlem', 'name' => 'Çıkarma'],
             ['group_name' => 'Uzunluk', 'name' => 'Kısa'],
             ['group_name' => 'Uzunluk', 'name' => 'Orta'],
             ['group_name' => 'Uzunluk', 'name' => 'Uzun'],

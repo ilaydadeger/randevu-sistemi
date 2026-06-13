@@ -81,7 +81,6 @@ class NailTechController extends Controller
         $user = auth()->user();
         
         $categories = \App\Models\ServiceCategory::where('name', '!=', 'Düz Renk')
-            ->where('name', '!=', 'Kalıcı Oje')
             ->where('group_name', '!=', 'Uzunluk')
             ->where('group_name', '!=', 'Şekil')
             ->get()

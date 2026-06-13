@@ -48,7 +48,16 @@
                         @foreach($groupCategories as $category)
                             <div class="flex items-center justify-between gap-4">
                                 <label for="price_{{ $category->id }}" class="font-body-md text-on-surface-variant flex-1">
-                                    {{ $category->name === 'Jel Protez' ? 'Protez Tırnak' : $category->name }}
+                                    @php
+                                        $displayName = match($category->name) {
+                                            'Jel Protez' => 'Protez Tırnak Yapımı',
+                                            'Kalıcı Oje' => 'Kalıcı Oje',
+                                            'Jel Güçlendirme' => 'Jel Güçlendirme',
+                                            'Çıkarma' => 'Çıkarma Ücreti',
+                                            default => $category->name
+                                        };
+                                    @endphp
+                                    {{ $displayName }}
                                 </label>
 
                                 <div class="relative w-1/3 min-w-[120px]">

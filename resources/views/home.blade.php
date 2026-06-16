@@ -270,18 +270,17 @@
                 <div class="space-y-2">
                     <label class="font-label-caps text-label-caps text-on-surface-variant">İŞLEM TÜRÜ</label>
                     <div class="grid grid-cols-2 gap-3">
-                        {{-- Yapım button (opens sub-options) --}}
                         <button type="button"
                             @click="serviceType = 'yapim'; updateBasePrice()"
-                            class="relative flex cursor-pointer rounded-xl border p-3 hover:bg-surface-container-low transition-colors text-left"
+                            class="relative flex cursor-pointer rounded-xl border p-3 hover:bg-surface-container-low transition-colors"
                             :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'border-primary bg-primary-container/10' : 'border-outline-variant'">
-                            <div class="flex w-full items-start gap-2">
-                                <span class="material-symbols-outlined text-[18px] mt-0.5 shrink-0"
+                            <div class="flex w-full items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-[20px] shrink-0"
                                     :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface-variant'">brush</span>
                                 <div class="flex flex-col items-start leading-tight gap-0.5">
-                                    <span class="text-[10px] font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Protez Tırnak</span>
-                                    <span class="text-[10px] font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Jel Güçlendirme</span>
-                                    <span class="text-[10px] font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Kalıcı Oje</span>
+                                    <span class="text-[12px] font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Protez Tırnak</span>
+                                    <span class="text-[12px] font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Jel Güçlendirme</span>
+                                    <span class="text-[12px] font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Kalıcı Oje</span>
                                 </div>
                             </div>
                         </button>
@@ -291,12 +290,12 @@
                             :class="serviceType === 'cikarma' ? 'border-primary bg-primary-container/10' : 'border-outline-variant'">
                             <input type="radio" value="cikarma" x-model="serviceType"
                                 class="peer sr-only" @change="updateBasePrice()">
-                            <div class="flex w-full items-start gap-2">
-                                <span class="material-symbols-outlined text-[18px] mt-0.5 shrink-0"
+                            <div class="flex w-full items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-[20px] shrink-0"
                                     :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface-variant'">backspace</span>
                                 <div class="flex flex-col items-start leading-tight gap-0.5">
-                                    <span class="text-[10px] font-bold" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface'">Protez Tırnak</span>
-                                    <span class="text-[10px] font-bold" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface'">Çıkarma</span>
+                                    <span class="text-[12px] font-bold" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface'">Protez Tırnak</span>
+                                    <span class="text-[12px] font-bold" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface'">Çıkarma</span>
                                 </div>
                             </div>
                         </label>

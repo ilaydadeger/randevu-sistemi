@@ -3,7 +3,8 @@
 @section('title', "Fiyatlandırma Ayarları - " . (auth()->user()->salon_name ?? "L'ART DE L'ONGLE"))
 
 @section('content')
-    <main class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] md:max-w-3xl lg:max-w-4xl mx-auto w-full"
+    <main
+        class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] md:max-w-3xl lg:max-w-4xl mx-auto w-full"
         x-data="pricingManager()">
         <div class="flex flex-col gap-sm">
             <h2 class="font-headline-md text-headline-md text-on-background">CV Fiyatlandırma Modeli</h2>
@@ -53,10 +54,10 @@
                             <div class="flex items-center justify-between gap-4">
                                 <label for="price_{{ $category->id }}" class="font-body-md text-on-surface-variant flex-1">
                                     @php
-                                        $displayName = match($category->name) {
+                                        $displayName = match ($category->name) {
                                             'Jel Protez' => 'Protez Tırnak Yapımı',
                                             'Jel Güçlendirme' => 'Jel Güçlendirme',
-                                            'Çıkarma' => 'Protez Tırnak Çıkarma Ücreti',
+                                            'Çıkarma' => 'Protez Tırnak Çıkarma',
                                             default => $category->name
                                         };
                                     @endphp

@@ -279,7 +279,6 @@
                                 <span class="material-symbols-outlined text-[18px] mt-0.5 shrink-0"
                                     :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface-variant'">brush</span>
                                 <div class="flex flex-col items-start leading-tight gap-0.5">
-                                    <span class="text-[9px] text-on-surface-variant/80 font-bold uppercase tracking-wider">İşlem Türü</span>
                                     <span class="text-[10px] font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Protez Tırnak</span>
                                     <span class="text-[10px] font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Jel Güçlendirme</span>
                                     <span class="text-[10px] font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Kalıcı Oje</span>

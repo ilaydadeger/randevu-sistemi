@@ -311,13 +311,13 @@
                     {{-- Hidden service_type input (real value) --}}
                     <input type="hidden" name="service_type" :value="serviceType">
 
-                    {{-- Yapım tek kutu (Protez Tırnak, Jel Güçlendirme, Kalıcı Oje aynı fiyat) --}}
+                    {{-- Yapım tek kutu (Protez Tırnak | Jel Güçlendirme | Kalıcı Oje aynı fiyat) --}}
                     <div x-show="serviceType === 'yapim'" x-transition class="mt-2">
                         <div class="flex items-center justify-between rounded-xl border border-primary bg-primary-container/10 p-3 gap-3">
                             <div class="flex items-center gap-2">
                                 <span class="material-symbols-outlined text-primary text-[20px]">nail_care</span>
                                 <span class="text-[11px] font-bold text-on-surface leading-snug">
-                                    Protez Tırnak, Jel Güçlendirme, Kalıcı Oje
+                                    Protez Tırnak | Jel Güçlendirme | Kalıcı Oje
                                 </span>
                             </div>
                             <span class="text-sm font-black text-primary whitespace-nowrap">₺{{ intval($baseProthezPrice) > 0 ? intval($baseProthezPrice) : '?' }}</span>
@@ -326,7 +326,7 @@
 
                     {{-- Seçilen işlemin base fiyat gösterimi (görsel yüklenmeden önce) --}}
                     <div x-show="serviceType === 'yapim' && !aiPriceLoaded" x-transition class="mt-2 flex items-center justify-between bg-surface-container-low p-3 rounded-xl border border-outline-variant/30">
-                        <span class="text-xs font-bold text-on-surface-variant font-label-caps tracking-widest">Tahmini Ücret:</span>
+                        <span class="text-xs font-bold text-on-surface-variant font-label-caps tracking-widest">Base Ücret:</span>
                         <span class="text-xl font-black text-primary" x-text="'₺' + basePriceDisplay"></span>
                     </div>
                 </div>
@@ -339,7 +339,7 @@
                         <label class="font-label-caps text-label-caps text-on-surface-variant">TIRNAK MODELİ
                             (GÖRSEL)</label>
                         <div id="dropzone"
-                            class="relative w-full h-48 rounded-xl border-2 border-dashed border-outline-variant bg-surface-container hover:bg-surface-container-high hover:border-primary transition-all flex flex-col items-center justify-center cursor-pointer overflow-hidden group">
+                            class="relative w-full h-28 rounded-xl border-2 border-dashed border-outline-variant bg-surface-container hover:bg-surface-container-high hover:border-primary transition-all flex flex-col items-center justify-center cursor-pointer overflow-hidden group">
 
                             <input type="file" name="design_image" id="fileInput"
                                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*">

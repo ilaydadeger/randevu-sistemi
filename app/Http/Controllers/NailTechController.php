@@ -80,6 +80,11 @@ class NailTechController extends Controller
     {
         $user = auth()->user();
         
+        // Çıkarma kategorisini garantiye al (yoksa oluştur)
+        \App\Models\ServiceCategory::firstOrCreate(
+            ['group_name' => 'Temel İşlem', 'name' => 'Çıkarma']
+        );
+        
         $categories = \App\Models\ServiceCategory::where('name', '!=', 'Düz Renk')
             ->where('group_name', '!=', 'Uzunluk')
             ->where('group_name', '!=', 'Şekil')

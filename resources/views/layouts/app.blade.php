@@ -83,11 +83,16 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
+        html {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
         body {
             background-color: #fcf9f8;
             color: #1b1c1c;
             min-height: 100dvh;
             overflow-x: hidden;
+            max-width: 100vw;
         }
         .bottom-nav-safe {
             padding-bottom: calc(8px + env(safe-area-inset-bottom));

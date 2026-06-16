@@ -291,17 +291,12 @@
                             :class="serviceType === 'cikarma' ? 'border-primary bg-primary-container/10' : 'border-outline-variant'">
                             <input type="radio" value="cikarma" x-model="serviceType"
                                 class="peer sr-only" @change="updateBasePrice()">
-                            <div class="flex w-full items-center justify-center text-center">
-                                <div class="flex items-center justify-center gap-2">
-                                    <span class="material-symbols-outlined text-[20px]"
-                                        :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface-variant'">backspace</span>
-                                    <div class="flex flex-col items-start leading-tight">
-                                        <span
-                                            class="text-[10px] text-on-surface-variant/80 font-bold uppercase tracking-wider">Protez
-                                            Tırnak</span>
-                                        <span class="text-sm font-bold"
-                                            :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface'">ÇIKARMA</span>
-                                    </div>
+                            <div class="flex w-full items-start gap-2">
+                                <span class="material-symbols-outlined text-[18px] mt-0.5 shrink-0"
+                                    :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface-variant'">backspace</span>
+                                <div class="flex flex-col items-start leading-tight gap-0.5">
+                                    <span class="text-[10px] font-bold" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface'">Protez Tırnak</span>
+                                    <span class="text-[10px] font-bold" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface'">Çıkarma</span>
                                 </div>
                             </div>
                         </label>

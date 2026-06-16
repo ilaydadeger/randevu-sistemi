@@ -85,14 +85,14 @@
         }
         html {
             overflow-x: hidden;
-            max-width: 100vw;
+            max-width: 100%;
         }
         body {
             background-color: #fcf9f8;
             color: #1b1c1c;
             min-height: 100dvh;
             overflow-x: hidden;
-            max-width: 100vw;
+            max-width: 100%;
         }
         .bottom-nav-safe {
             padding-bottom: calc(8px + env(safe-area-inset-bottom));

@@ -86,7 +86,10 @@
         body {
             background-color: #fcf9f8;
             color: #1b1c1c;
-            min-height: max(884px, 100dvh);
+            min-height: 100dvh;
+        }
+        .bottom-nav-safe {
+            padding-bottom: calc(8px + env(safe-area-inset-bottom));
         }
         [x-cloak] {
             display: none !important;
@@ -136,7 +139,7 @@
 
     {{-- BottomNavBar (Mobile Only - Sadece Tırnakçı Paneli İçin) --}}
     @if(request()->is('panel/*'))
-    <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-1.5 pb-safe bg-surface/90 dark:bg-surface-container/90 backdrop-blur-sm rounded-t-xl shadow-[0px_-4px_20px_rgba(0,0,0,0.05)] border-t border-outline-variant/30 md:hidden">
+    <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-2 bottom-nav-safe bg-surface/90 dark:bg-surface-container/90 backdrop-blur-sm rounded-t-xl shadow-[0px_-4px_20px_rgba(0,0,0,0.05)] border-t border-outline-variant/30 md:hidden" style="padding-bottom: calc(10px + env(safe-area-inset-bottom));">
         {{-- Home (Preview) --}}
         <a href="{{ route('panel.preview') }}" class="flex flex-col items-center justify-center gap-0.5 {{ request()->routeIs('panel.preview') ? 'text-primary font-bold bg-primary-container/40 dark:bg-primary-container/40 rounded-full px-3.5 py-0.5 scale-105 transition-transform duration-300 ease-out' : 'text-on-surface-variant font-medium opacity-90 hover:text-primary hover:opacity-100 transition-colors' }}">
             <span class="material-symbols-outlined" data-icon="home" style="font-size: 22px; @if(request()->routeIs('panel.preview')) font-variation-settings: 'FILL' 1; @endif">home</span>

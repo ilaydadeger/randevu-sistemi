@@ -275,14 +275,14 @@
                             @click="serviceType = 'yapim'; updateBasePrice()"
                             class="relative flex cursor-pointer rounded-xl border p-3 hover:bg-surface-container-low transition-colors text-left"
                             :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'border-primary bg-primary-container/10' : 'border-outline-variant'">
-                            <div class="flex w-full items-center justify-center text-center">
-                                <div class="flex items-center justify-center gap-2">
-                                    <span class="material-symbols-outlined text-[20px]"
-                                        :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface-variant'">brush</span>
-                                    <div class="flex flex-col items-start leading-tight">
-                                        <span class="text-[10px] text-on-surface-variant/80 font-bold uppercase tracking-wider">Protez Tırnak</span>
-                                        <span class="text-sm font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">YAPIMI</span>
-                                    </div>
+                            <div class="flex w-full items-start gap-2">
+                                <span class="material-symbols-outlined text-[18px] mt-0.5 shrink-0"
+                                    :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface-variant'">brush</span>
+                                <div class="flex flex-col items-start leading-tight gap-0.5">
+                                    <span class="text-[9px] text-on-surface-variant/80 font-bold uppercase tracking-wider">İşlem Türü</span>
+                                    <span class="text-[10px] font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Protez Tırnak</span>
+                                    <span class="text-[10px] font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Jel Güçlendirme</span>
+                                    <span class="text-[10px] font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Kalıcı Oje</span>
                                 </div>
                             </div>
                         </button>
@@ -311,20 +311,7 @@
                     {{-- Hidden service_type input (real value) --}}
                     <input type="hidden" name="service_type" :value="serviceType">
 
-                    {{-- Yapım tek kutu (Protez Tırnak | Jel Güçlendirme | Kalıcı Oje aynı fiyat) --}}
-                    <div x-show="serviceType === 'yapim'" x-transition class="mt-2">
-                        <div class="flex items-center justify-between rounded-xl border border-primary bg-primary-container/10 p-3 gap-3">
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary text-[20px]">nail_care</span>
-                                <span class="text-[11px] font-bold text-on-surface leading-snug">
-                                    Protez Tırnak | Jel Güçlendirme | Kalıcı Oje
-                                </span>
-                            </div>
-                            <span class="text-sm font-black text-primary whitespace-nowrap">₺{{ intval($baseProthezPrice) > 0 ? intval($baseProthezPrice) : '?' }}</span>
-                        </div>
-                    </div>
-
-                    {{-- Seçilen işlemin base fiyat gösterimi (görsel yüklenmeden önce) --}}
+                    {{-- Base fiyat gösterimi (görsel yüklenmeden önce) --}}
                     <div x-show="serviceType === 'yapim' && !aiPriceLoaded" x-transition class="mt-2 flex items-center justify-between bg-surface-container-low p-3 rounded-xl border border-outline-variant/30">
                         <span class="text-xs font-bold text-on-surface-variant font-label-caps tracking-widest">Base Ücret:</span>
                         <span class="text-xl font-black text-primary" x-text="'₺' + basePriceDisplay"></span>

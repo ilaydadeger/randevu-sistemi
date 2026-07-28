@@ -85,10 +85,7 @@ class NailTechController extends Controller
             ['group_name' => 'Temel İşlem', 'name' => 'Çıkarma']
         );
         
-        $categories = \App\Models\ServiceCategory::where('name', '!=', 'Düz Renk')
-            ->where('group_name', '!=', 'Uzunluk')
-            ->where('group_name', '!=', 'Şekil')
-            ->get()
+        $categories = \App\Models\ServiceCategory::all()
             ->groupBy('group_name');
 
         $order = [

@@ -96,7 +96,15 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => 'public',
+            // Render ve diğer bulut PostgreSQL sağlayıcılarında SSL zorunludur.
+            // Yerel geliştirmede DB_SSLMODE=prefer, production'da DB_SSLMODE=require olarak ayarlayın.
             'sslmode' => env('DB_SSLMODE', 'prefer'),
+            'options' => extension_loaded('pdo_pgsql') ? array_filter([
+                PDO::ATTR_PERSISTENT => false,
+                // Render PostgreSQL'de "SSL connection has been closed unexpectedly" hatasını önler.
+                // PDO prepared statement'ları SSL üzerinden bazen bağlantıyı düşürür.
+                PDO::PGSQL_ATTR_DISABLE_PREPARES => true,
+            ]) : [],
         ],
 
         'sqlsrv' => [

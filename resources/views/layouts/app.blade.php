@@ -207,13 +207,7 @@
                 };
             }
 
-            // Pre-warm AI API (no-cors prevents CORS console errors)
-            const aiUrl = '{{ config('services.ai.url') }}';
-            if (aiUrl) {
-                fetch(aiUrl + '/', { mode: 'no-cors' }).catch(e => {
-                    // Ignore network errors for pre-warming
-                });
-            }
+            // Pre-warm AI API is removed to prevent 404 console errors.
         });
         
 

@@ -279,9 +279,9 @@
                                      <span class="material-symbols-outlined text-[20px]" style="font-weight: 300;">edit</span>
                                 </div>
                                 <div class="flex flex-col items-start leading-tight gap-0.5">
-                                    <span class="text-[12px] font-bold whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#23151B]' : 'text-on-surface'">Protez Tırnak</span>
-                                    <span class="text-[12px] font-bold whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#23151B]' : 'text-on-surface'">Jel Güçlendirme</span>
-                                    <span class="text-[12px] font-bold whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#23151B]' : 'text-on-surface'">Kalıcı Oje</span>
+                                    <span class="text-[12px] font-medium whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#23151B]' : 'text-on-surface'">Protez Tırnak</span>
+                                    <span class="text-[12px] font-medium whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#23151B]' : 'text-on-surface'">Jel Güçlendirme</span>
+                                    <span class="text-[12px] font-medium whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#23151B]' : 'text-on-surface'">Kalıcı Oje</span>
                                 </div>
                             </div>
                         </button>
@@ -297,8 +297,8 @@
                                     <span class="material-symbols-outlined text-[20px]" style="font-weight: 300;">close</span>
                                 </div>
                                 <div class="flex flex-col items-start leading-tight gap-0.5">
-                                    <span class="text-[12px] font-bold whitespace-nowrap" :class="serviceType === 'cikarma' ? 'text-[#23151B]' : 'text-on-surface'">Protez Tırnak</span>
-                                    <span class="text-[12px] font-bold whitespace-nowrap" :class="serviceType === 'cikarma' ? 'text-[#23151B]' : 'text-on-surface'">Çıkarma</span>
+                                    <span class="text-[12px] font-medium whitespace-nowrap" :class="serviceType === 'cikarma' ? 'text-[#23151B]' : 'text-on-surface'">Protez Tırnak</span>
+                                    <span class="text-[12px] font-medium whitespace-nowrap" :class="serviceType === 'cikarma' ? 'text-[#23151B]' : 'text-on-surface'">Çıkarma</span>
                                 </div>
                             </div>
                         </label>

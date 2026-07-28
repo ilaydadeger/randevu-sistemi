@@ -46,7 +46,7 @@ RUN npm install && npm run build
 # Bu sayede Render ortamında DB bağlantısı ve SSL hazır olduğunda migrate/optimize edilir.
 CMD php artisan optimize:clear --no-interaction && \
     php artisan migrate --force --no-interaction && \
-    php artisan db:seed --force --no-interaction --class=AdminUserSeeder && \
+    php artisan db:seed --force --no-interaction && \
     php artisan storage:link --no-interaction && \
     php artisan optimize --no-interaction && \
     php artisan event:cache --no-interaction && \

@@ -42,10 +42,11 @@ RUN composer install --no-dev --optimize-autoloader --classmap-authoritative
 
 # NPM bağımlılıklarını kur ve Vite build al
 RUN npm install && npm run build
-# Başlatma komutu
-CMD php artisan optimize:clear && \
-    php artisan migrate --force && \
-    php artisan storage:link && \
-    php artisan optimize && \
-    php artisan event:cache && \
+# Container başladığında (build değil, runtime'da) çalışır:
+# Bu sayede Render ortamında DB bağlantısı ve SSL hazır olduğunda migrate/optimize edilir.
+CMD php artisan optimize:clear --no-interaction && \
+    php artisan migrate --force --no-interaction && \
+    php artisan storage:link --no-interaction && \
+    php artisan optimize --no-interaction && \
+    php artisan event:cache --no-interaction && \
     apache2-foreground

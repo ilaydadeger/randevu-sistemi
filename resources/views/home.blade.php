@@ -71,23 +71,21 @@
 
         {{-- Premium Profile Header --}}
         <section
-            class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-sm flex flex-col items-center text-center gap-sm">
+            class="bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-8 border border-[#EAD5DE]/60 shadow-[0_4px_24px_rgba(149,117,130,0.10)] flex flex-col items-center text-center gap-4">
             @if($nailTech && $nailTech->profile_photo_path)
                 <div
-                    class="relative w-32 h-32 rounded-full overflow-hidden border-2 border-surface-container-highest shadow-sm">
+                    class="relative w-28 h-28 rounded-full overflow-hidden ring-4 ring-[#EAD5DE]/70 shadow-[0_8px_24px_rgba(149,117,130,0.18)]">
                     <img src="{{ str_starts_with($nailTech->profile_photo_path, 'http') ? $nailTech->profile_photo_path : asset('storage/' . $nailTech->profile_photo_path) }}"
                         alt="Uzman Profil" class="w-full h-full object-cover">
                 </div>
             @endif
-            <div class="space-y-xs">
+            <div class="space-y-1">
                 @if($nailTech && $nailTech->name)
-                    <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ $nailTech->name }}</h2>
+                    <h2 class="text-[20px] font-bold text-[#3B2030]" style="font-family:'Playfair Display',serif;">{{ $nailTech->name }}</h2>
                 @endif
-
             </div>
             @if($nailTech && $nailTech->bio)
-                <p class="mt-2 text-on-surface-variant font-body-md text-body-md px-4 text-center w-full"
-                    style="min-width: 280px;">
+                <p class="text-[13px] text-[#957582] leading-relaxed px-4 text-center w-full" style="min-width: 280px;">
                     {{ str_replace(["\r", "\n"], ' ', $nailTech->bio) }}
                 </p>
             @endif
@@ -252,15 +250,16 @@
         @endif
 
         {{-- Appointment Form --}}
-        <section class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-sm" x-data="bookingCalendar({
+        <section class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-[#EAD5DE]/60 shadow-[0_4px_24px_rgba(149,117,130,0.10)]" x-data="bookingCalendar({
                         blockedSlots: {{ json_encode($blockedSlots) }},
                         occupiedSlots: {{ json_encode($occupiedSlots) }},
                         hours: {{ json_encode($hours) }},
                         todayStr: '{{ today()->toDateString() }}'
                     })">
-            <div class="mb-6 border-b border-surface-variant pb-4 flex items-center justify-between">
+            <div class="mb-5 border-b border-[#EAD5DE]/40 pb-4 flex items-center justify-between">
                 <div>
-                    <h3 class="font-headline-sm text-headline-sm text-on-surface">Randevu Talebi Oluştur</h3>
+                    <p class="text-[10px] font-bold tracking-[0.15em] text-[#B496A1] uppercase mb-1">Adım 1</p>
+                    <h3 class="text-[17px] font-bold text-[#3B2030]" style="font-family:'Playfair Display',serif;">İşlem Türü Seçin</h3>
                 </div>
             </div>
 
@@ -274,34 +273,34 @@
                     <div class="grid grid-cols-2 gap-3">
                         <button type="button"
                             @click="serviceType = 'yapim'; updateBasePrice()"
-                            class="relative flex cursor-pointer rounded-[20px] border p-3 hover:bg-surface-container-low transition-colors"
-                            :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'border-[#95687A] bg-[#F4EDF0]' : 'border-outline-variant bg-transparent'">
-                            <div class="flex w-full items-center justify-center gap-2">
-                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                                     :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'bg-[#E1C4D1] text-[#23151B]' : 'bg-surface-container-low text-on-surface-variant'">
-                                     <span class="material-symbols-outlined text-[20px]" style="font-weight: 300;">edit</span>
+                            class="relative flex cursor-pointer rounded-2xl border-2 p-4 transition-all duration-200"
+                            :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'border-[#95687A] bg-gradient-to-br from-[#F9F0F4] to-[#F1E4EC] shadow-[0_4px_16px_rgba(149,117,130,0.18)]' : 'border-[#EAD5DE]/70 bg-white/60 hover:border-[#C4A0B4] hover:shadow-sm'">
+                            <div class="flex w-full items-center justify-center gap-2.5">
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all"
+                                     :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'bg-[#95687A] text-white shadow-sm' : 'bg-[#F2E7EA] text-[#957582]'">
+                                     <span class="material-symbols-outlined text-[20px]" style="font-weight: 300;">auto_fix_high</span>
                                 </div>
                                 <div class="flex flex-col items-start leading-tight gap-0.5">
-                                    <span class="text-[12px] font-medium whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#23151B]' : 'text-on-surface'">Protez Tırnak</span>
-                                    <span class="text-[12px] font-medium whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#23151B]' : 'text-on-surface'">Jel Güçlendirme</span>
-                                    <span class="text-[12px] font-medium whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#23151B]' : 'text-on-surface'">Kalıcı Oje</span>
+                                    <span class="text-[11px] font-bold tracking-wide" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#3B2030]' : 'text-[#6B4F5E]'">Protez Tırnak</span>
+                                    <span class="text-[11px] font-bold tracking-wide" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#3B2030]' : 'text-[#6B4F5E]'">Jel Güçlendirme</span>
+                                    <span class="text-[11px] font-bold tracking-wide" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#3B2030]' : 'text-[#6B4F5E]'">Kalıcı Oje</span>
                                 </div>
                             </div>
                         </button>
 
                         <label
-                            class="relative flex cursor-pointer rounded-[20px] border p-3 hover:bg-surface-container-low transition-colors"
-                            :class="serviceType === 'cikarma' ? 'border-[#95687A] bg-[#F4EDF0]' : 'border-outline-variant bg-transparent'">
+                            class="relative flex cursor-pointer rounded-2xl border-2 p-4 transition-all duration-200"
+                            :class="serviceType === 'cikarma' ? 'border-[#95687A] bg-gradient-to-br from-[#F9F0F4] to-[#F1E4EC] shadow-[0_4px_16px_rgba(149,117,130,0.18)]' : 'border-[#EAD5DE]/70 bg-white/60 hover:border-[#C4A0B4] hover:shadow-sm'">
                             <input type="radio" value="cikarma" x-model="serviceType"
                                 class="peer sr-only" @change="updateBasePrice()">
-                            <div class="flex w-full items-center justify-center gap-2">
-                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                                    :class="serviceType === 'cikarma' ? 'bg-[#E1C4D1] text-[#23151B]' : 'bg-[#F2E7EA] text-[#917B85]'">
-                                    <span class="material-symbols-outlined text-[20px]" style="font-weight: 300;">close</span>
+                            <div class="flex w-full items-center justify-center gap-2.5">
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all"
+                                    :class="serviceType === 'cikarma' ? 'bg-[#95687A] text-white shadow-sm' : 'bg-[#F2E7EA] text-[#957582]'">
+                                    <span class="material-symbols-outlined text-[20px]" style="font-weight: 300;">delete_sweep</span>
                                 </div>
                                 <div class="flex flex-col items-start leading-tight gap-0.5">
-                                    <span class="text-[12px] font-medium whitespace-nowrap" :class="serviceType === 'cikarma' ? 'text-[#23151B]' : 'text-on-surface'">Protez Tırnak</span>
-                                    <span class="text-[12px] font-medium whitespace-nowrap" :class="serviceType === 'cikarma' ? 'text-[#23151B]' : 'text-on-surface'">Çıkarma</span>
+                                    <span class="text-[11px] font-bold tracking-wide" :class="serviceType === 'cikarma' ? 'text-[#3B2030]' : 'text-[#6B4F5E]'">Protez Tırnak</span>
+                                    <span class="text-[11px] font-bold tracking-wide" :class="serviceType === 'cikarma' ? 'text-[#3B2030]' : 'text-[#6B4F5E]'">Çıkarma</span>
                                 </div>
                             </div>
                         </label>
@@ -312,41 +311,45 @@
 
                     {{-- Base fiyat gösterimi (görsel yüklenmeden önce) --}}
                     <div x-show="serviceType === 'yapim' && !aiPriceLoaded" x-transition class="mt-4 flex justify-end">
-                        <div class="flex items-center gap-3 bg-[#F1E6EB] px-4 py-2 rounded-xl">
-                            <span class="text-[13px] font-semibold text-[#B496A1]">Base Ücret</span>
-                            <span class="text-[15px] font-bold text-[#664956]" x-text="'₺' + basePriceDisplay"></span>
+                        <div class="flex items-center gap-3 bg-white border border-[#EAD5DE] px-4 py-2.5 rounded-xl shadow-sm">
+                            <span class="text-[12px] font-semibold text-[#957582]">Base Ücret</span>
+                            <span class="text-[15px] font-bold text-[#3B2030]" x-text="'₺' + basePriceDisplay"></span>
                         </div>
                     </div>
                 </div>
 
                 {{-- Yapım (Image Upload and AI Price Estimation) Section --}}
-                <div x-show="serviceType === 'yapim'" x-collapse class="space-y-6">
+                <div x-show="serviceType === 'yapim'" x-collapse class="space-y-5">
+
+                    {{-- Section heading --}}
+                    <div class="border-t border-[#EAD5DE]/40 pt-5">
+                        <p class="text-[10px] font-bold tracking-[0.15em] text-[#B496A1] uppercase mb-1">Adım 2 (İsteğe Bağlı)</p>
+                        <p class="text-[13px] text-[#957582]">İstediğiniz modelin fotoğrafını yükleyerek işleminizi hızlandırabilirsiniz.</p>
+                    </div>
 
                     {{-- Image Upload (Drag & Drop) --}}
                     <div class="space-y-2">
-                        <label class="font-label-caps text-label-caps text-on-surface-variant">TIRNAK MODELİ GÖRSELİ</label>
                         <div id="dropzone"
-                            class="relative w-full h-[220px] rounded-[24px] border border-dashed border-[#D2B4C1] bg-[#F1E6EB] hover:bg-[#EBE0E5] transition-all flex flex-col items-center justify-center cursor-pointer overflow-hidden group">
+                            class="relative w-full h-[200px] rounded-2xl border-2 border-dashed border-[#D2B4C1]/70 bg-gradient-to-br from-[#FBF5F8] to-[#F4E8EF] hover:from-[#F7EEF3] hover:to-[#EDD9E8] transition-all duration-300 flex flex-col items-center justify-center cursor-pointer overflow-hidden group shadow-inner">
 
                             <input type="file" name="design_image" id="fileInput"
                                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*">
 
                             <div id="uploadPlaceholder"
                                 class="flex flex-col items-center pointer-events-none transition-opacity duration-300">
-                                <div class="w-[60px] h-[60px] bg-white rounded-2xl flex items-center justify-center mb-4 shadow-sm">
+                                <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-3 shadow-[0_4px_12px_rgba(149,117,130,0.15)]">
                                     <span class="material-symbols-outlined text-[28px] text-[#95687A]" style="font-weight: 300;">cloud_upload</span>
                                 </div>
-                                <span class="text-[15px] text-[#23151B] font-bold">Fotoğraf Yükle</span>
-                                <span class="text-[13px] text-[#B496A1] mt-1 font-medium">JPEG, PNG desteklenir</span>
+                                <span class="text-[14px] text-[#3B2030] font-bold">Fotoğraf Yükle</span>
+                                <span class="text-[12px] text-[#B496A1] mt-1">JPG, PNG veya WEBP (Maks. 5MB)</span>
                             </div>
 
                             <img id="imagePreview" class="absolute inset-0 w-full h-full object-cover hidden" alt="Preview">
                         </div>
-                        <p class="text-xs text-on-surface-variant/70 italic mt-1">* Lütfen yaptırmak istediğiniz tırnak
-                            modelinin yakından ve belirgin bir görselini yükleyin.</p>
+                        <p class="text-[11px] text-[#B496A1] italic mt-1 text-center">* Lütfen yaptırmak istediğiniz tırnak modelinin yakından ve belirgin bir görselini yükleyin.</p>
                             
                         <div id="viewPriceBtnContainer" class="hidden mt-3 text-center">
-                            <button type="button" id="viewPriceBtn" class="bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 px-4 py-2.5 rounded-full text-[11px] md:text-xs font-bold font-label-caps transition-colors w-full flex items-center justify-center gap-2">
+                            <button type="button" id="viewPriceBtn" class="bg-[#95687A]/10 text-[#95687A] hover:bg-[#95687A]/20 border border-[#95687A]/25 px-4 py-2.5 rounded-full text-[11px] font-bold font-label-caps transition-all duration-200 w-full flex items-center justify-center gap-2 shadow-sm">
                                 <span class="material-symbols-outlined text-[18px]">calculate</span>
                                 YAPAY ZEKA İLE TAHMİNİ FİYAT OLUŞTUR
                             </button>
@@ -355,58 +358,57 @@
 
                     {{-- AI Price Estimation Section --}}
                     <div id="priceEstimationSection"
-                        class="fiyat-kutusu hidden bg-primary-container/20 rounded-xl p-4 border border-primary/20 flex flex-col gap-3">
+                        class="fiyat-kutusu hidden bg-gradient-to-br from-[#FBF5F8] to-[#F4E8EF] rounded-2xl p-4 border border-[#D2B4C1]/50 flex flex-col gap-3 shadow-sm">
                         {{-- Loading / Status Row --}}
                         <div class="flex items-start gap-3">
                             <div id="priceSpinner" class="shrink-0 mt-0.5">
-                                <span class="material-symbols-outlined text-primary animate-spin">progress_activity</span>
+                                <span class="material-symbols-outlined text-[#95687A] animate-spin">progress_activity</span>
                             </div>
                             <div class="flex-1">
-                                <div id="priceTitle" class="fiyat-gosterim font-body-md font-semibold text-primary">Fiyat
-                                    Oluşturuluyor...</div>
-                                <p id="priceDesc" class="hidden text-sm text-on-surface-variant mt-1"></p>
+                                <div id="priceTitle" class="fiyat-gosterim font-body-md font-semibold text-[#95687A]">Fiyat Oluşturuluyor...</div>
+                                <p id="priceDesc" class="hidden text-sm text-[#957582] mt-1"></p>
                             </div>
                         </div>
 
                         {{-- Price Display (Shown on success) --}}
                         <div id="serviceSelectorContainer"
-                            class="hidden flex flex-col gap-2 pt-2 border-t border-primary/10">
+                            class="hidden flex flex-col gap-2 pt-2 border-t border-[#D2B4C1]/30">
                             <div
-                                class="flex justify-between items-center bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/20 shadow-sm">
+                                class="flex justify-between items-center bg-white p-4 rounded-xl border border-[#EAD5DE]/60 shadow-sm">
                                 <span
-                                    class="text-xs font-bold text-on-surface-variant font-label-caps tracking-widest">Protez
-                                    Tırnak Toplam Fiyat:</span>
-                                <span id="singleTotalPrice" class="text-2xl font-black text-primary">₺0</span>
+                                    class="text-[11px] font-bold text-[#957582] tracking-wider uppercase">Tahmini Toplam:</span>
+                                <span id="singleTotalPrice" class="text-2xl font-black text-[#3B2030]">₺0</span>
                             </div>
-                            <p class="text-[11px] text-on-surface-variant/60 text-center italic mt-1">* Sadece tahmini
-                                fiyattır. Tırnak uzmanı randevu sırasında bu fiyat üzerinde değişiklik yapabilir.</p>
+                            <p class="text-[11px] text-[#B496A1] text-center italic mt-1">* Sadece tahminidir. Uzman randevu sırasında değiştirebilir.</p>
                         </div>
                     </div>
                 </div>
 
                 {{-- Çıkarma Price Display --}}
                 <div x-show="serviceType === 'cikarma'" x-transition class="mt-4 flex justify-end">
-                    <div class="flex items-center gap-3 bg-[#F1E6EB] px-4 py-2 rounded-xl">
-                        <span class="text-[13px] font-semibold text-[#B496A1]">Çıkarma Ücreti</span>
-                        <span class="text-[15px] font-bold text-[#664956]">₺{{ intval($baseCikarmaPrice) > 0 ? intval($baseCikarmaPrice) : '?' }}</span>
+                    <div class="flex items-center gap-3 bg-white border border-[#EAD5DE] px-4 py-2.5 rounded-xl shadow-sm">
+                        <span class="text-[12px] font-semibold text-[#957582]">Çıkarma Ücreti</span>
+                        <span class="text-[15px] font-bold text-[#3B2030]">₺{{ intval($baseCikarmaPrice) > 0 ? intval($baseCikarmaPrice) : '?' }}</span>
                     </div>
                 </div>
 
                 {{-- Client Details --}}
-
-                <div class="space-y-xs">
-                    <label class="font-label-caps text-label-caps text-on-surface-variant">AD SOYAD</label>
+                <div class="border-t border-[#EAD5DE]/40 pt-5 space-y-2">
+                    <p class="text-[10px] font-bold tracking-[0.15em] text-[#B496A1] uppercase mb-1">Adınız Soyadınız</p>
                     <input type="text" name="client_name" required
-                        class="w-full bg-transparent border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary px-4 py-3 text-on-surface rounded-xl"
-                        placeholder="Adınız Soyadınız">
+                        class="w-full bg-white/80 border border-[#EAD5DE]/70 focus:border-[#95687A] focus:ring-2 focus:ring-[#95687A]/20 px-4 py-3 text-[#3B2030] placeholder-[#C4A0B4] rounded-xl transition-all duration-200 outline-none text-[14px]"
+                        placeholder="Adınızı giriniz...">
                 </div>
 
                 {{-- Calendar Slot Picker --}}
-                <div class="space-y-xs">
-                    <label class="font-label-caps text-label-caps text-on-surface-variant">RANDEVU TARİHİ VE SAATİ</label>
+                <div class="border-t border-[#EAD5DE]/40 pt-5 space-y-4">
+                    <div>
+                        <p class="text-[10px] font-bold tracking-[0.15em] text-[#B496A1] uppercase mb-1">Adım 3</p>
+                        <p class="text-[15px] font-bold text-[#3B2030]" style="font-family:'Playfair Display',serif;">Tarih & Saat Seçin</p>
+                    </div>
 
                     {{-- Selected Slot Preview Alert --}}
-                    <div class="p-sm bg-primary-container/20 border border-primary/20 rounded-xl flex items-center justify-between text-primary font-medium text-xs transition-all duration-300 my-1"
+                    <div class="p-3 bg-[#95687A]/10 border border-[#95687A]/25 rounded-xl flex items-center justify-between text-[#95687A] font-medium text-xs transition-all duration-300"
                         x-show="selectedDate && selectedTime" x-transition.opacity style="display: none;">
                         <div class="flex items-center gap-2">
                             <span class="material-symbols-outlined text-[18px]">event_available</span>
@@ -422,114 +424,106 @@
                     <input type="hidden" name="appointment_time" :value="selectedTime" required>
                     <input type="hidden" name="estimated_price" id="estimatedPriceInput" value="0">
 
-                    <div class="bg-transparent rounded-xl p-4 border border-outline-variant">
+                    <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-5 border border-[#EAD5DE]/60 shadow-sm">
                         <!-- Month / Year with arrows inside calendar box -->
-                        <div class="relative flex items-center justify-center mb-4">
+                        <div class="relative flex items-center justify-center mb-5">
                             <button type="button" @click="prevMonth()" x-show="shouldShowPrevArrow()"
-                                class="absolute left-0 p-1 rounded-full bg-transparent hover:bg-surface-container-low text-on-surface transition-colors flex items-center justify-center w-8 h-8 z-10">
-                                <span class="material-symbols-outlined text-sm font-bold">chevron_left</span>
+                                class="absolute left-0 p-1.5 rounded-full bg-[#F4EDF0] hover:bg-[#EAD5DE] text-[#3B2030] transition-colors flex items-center justify-center w-8 h-8 z-10 shadow-sm">
+                                <span class="material-symbols-outlined text-sm">chevron_left</span>
                             </button>
 
-                            <div class="text-body-lg text-on-surface text-center font-semibold"
+                            <div class="text-[16px] font-bold text-[#3B2030]" style="font-family:'Playfair Display',serif;"
                                 x-text="monthName"></div>
 
                             <button type="button" @click="nextMonth()" x-show="shouldShowNextArrow()"
-                                class="absolute right-0 p-1 rounded-full bg-transparent hover:bg-surface-container-low text-on-surface transition-colors flex items-center justify-center w-8 h-8 z-10">
-                                <span class="material-symbols-outlined text-sm font-bold">chevron_right</span>
+                                class="absolute right-0 p-1.5 rounded-full bg-[#F4EDF0] hover:bg-[#EAD5DE] text-[#3B2030] transition-colors flex items-center justify-center w-8 h-8 z-10 shadow-sm">
+                                <span class="material-symbols-outlined text-sm">chevron_right</span>
                             </button>
                         </div>
 
                         <!-- Days Header -->
-                        <div class="grid grid-cols-7 gap-1 text-center mb-2">
-                            <div class="font-label-caps text-[10px] text-on-surface-variant">Pz</div>
-                            <div class="font-label-caps text-[10px] text-on-surface-variant">Pt</div>
-                            <div class="font-label-caps text-[10px] text-on-surface-variant">Sa</div>
-                            <div class="font-label-caps text-[10px] text-on-surface-variant">Ça</div>
-                            <div class="font-label-caps text-[10px] text-on-surface-variant">Pe</div>
-                            <div class="font-label-caps text-[10px] text-on-surface-variant">Cu</div>
-                            <div class="font-label-caps text-[10px] text-on-surface-variant">Ct</div>
+                        <div class="grid grid-cols-7 gap-1 text-center mb-3">
+                            <div class="font-bold text-[10px] text-[#B496A1]">Pt</div>
+                            <div class="font-bold text-[10px] text-[#B496A1]">Sa</div>
+                            <div class="font-bold text-[10px] text-[#B496A1]">Ça</div>
+                            <div class="font-bold text-[10px] text-[#B496A1]">Pe</div>
+                            <div class="font-bold text-[10px] text-[#B496A1]">Cu</div>
+                            <div class="font-bold text-[10px] text-[#B496A1]">Ct</div>
+                            <div class="font-bold text-[10px] text-[#B496A1]">Pz</div>
                         </div>
 
                         <!-- Calendar Grid -->
-                        <div class="grid grid-cols-7 gap-2 text-center font-body-md text-body-md">
+                        <div class="grid grid-cols-7 gap-1 text-center">
                             <template x-for="day in daysInGrid" :key="day.dateStr">
                                 <div @click="selectDay(day)" :class="{
-                                                'text-on-surface-variant opacity-30 cursor-not-allowed': !day.isSelectable,
-                                                'rounded-full bg-error/10 text-error/60 border border-error/20 line-through cursor-not-allowed': day.isSelectable && isDayFullyBooked(day.dateStr),
-                                                'rounded-full hover:bg-surface-container cursor-pointer transition-colors': day.isSelectable && !isDayFullyBooked(day.dateStr) && selectedDate !== day.dateStr,
-                                                'rounded-full bg-primary text-on-primary shadow-sm cursor-pointer font-semibold': day.isSelectable && !isDayFullyBooked(day.dateStr) && selectedDate === day.dateStr
+                                                'text-[#C4A0B4]/40 cursor-not-allowed': !day.isSelectable,
+                                                'rounded-full bg-red-50 text-red-300 border border-red-100 line-through cursor-not-allowed': day.isSelectable && isDayFullyBooked(day.dateStr),
+                                                'rounded-full hover:bg-[#F4EDF0] cursor-pointer transition-all text-[#3B2030]': day.isSelectable && !isDayFullyBooked(day.dateStr) && selectedDate !== day.dateStr,
+                                                'rounded-full bg-[#95687A] text-white shadow-[0_4px_12px_rgba(149,104,122,0.4)] cursor-pointer font-bold': day.isSelectable && !isDayFullyBooked(day.dateStr) && selectedDate === day.dateStr
                                             }"
-                                    class="py-2 relative select-none flex items-center justify-center w-9 h-9 mx-auto transition-colors">
+                                    class="py-1.5 relative select-none flex items-center justify-center w-9 h-9 mx-auto transition-all text-[13px]">
                                     <span x-text="day.dayNum"></span>
                                     <template x-if="day.hasDot">
                                         <span
-                                            class="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full"
-                                            :class="selectedDate === day.dateStr ? 'bg-on-primary' : 'bg-primary'"></span>
+                                            class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full"
+                                            :class="selectedDate === day.dateStr ? 'bg-white/80' : 'bg-[#95687A]'"></span>
                                     </template>
                                 </div>
                             </template>
                         </div>
 
                         {{-- Time Slots --}}
-                        <div class="mt-8 border-t border-outline-variant/20 pt-4" x-show="selectedDate">
-                            <div class="font-label-caps text-label-caps text-on-surface-variant mb-4 font-bold text-xs tracking-wider"
+                        <div class="mt-5 border-t border-[#EAD5DE]/40 pt-4" x-show="selectedDate">
+                            <div class="font-bold text-[10px] text-[#B496A1] mb-3 tracking-widest uppercase"
                                 x-text="formatFriendlySelectedDate() + ' TARİHİ İÇİN UYGUN SAATLER'"></div>
 
-                            <div class="flex overflow-x-auto no-scrollbar gap-sm pb-2">
+                            <div class="flex overflow-x-auto no-scrollbar gap-2 pb-2">
                                 <template x-for="slot in getAvailableSlotsForSelectedDate()" :key="slot.key">
                                     <button type="button"
                                         @click="if (slot.isAvailable) { selectedTime = slot.hour; activeSlotKey = slot.key; }"
                                         :disabled="!slot.isAvailable" :class="{
-                                                    'bg-surface-variant/20 text-on-surface-variant/30 border border-outline-variant/10 cursor-not-allowed opacity-50': !slot.isAvailable,
-                                                    'border border-outline-variant font-body-md text-body-md text-on-surface hover:bg-surface-container transition-colors': slot.isAvailable && selectedTime !== slot.hour,
-                                                    'bg-secondary text-on-secondary font-body-md text-body-md shadow-sm transition-colors': slot.isAvailable && selectedTime === slot.hour
+                                                    'bg-[#F4EDF0]/30 text-[#C4A0B4]/40 border border-[#EAD5DE]/20 cursor-not-allowed': !slot.isAvailable,
+                                                    'border border-[#EAD5DE] text-[#957582] hover:bg-[#F4EDF0] hover:border-[#C4A0B4] transition-all': slot.isAvailable && selectedTime !== slot.hour,
+                                                    'bg-[#95687A] text-white border border-[#95687A] shadow-[0_4px_12px_rgba(149,104,122,0.3)] font-bold': slot.isAvailable && selectedTime === slot.hour
                                                 }"
-                                        class="flex-none px-6 py-2 rounded-full transition-colors whitespace-nowrap">
+                                        class="flex-none px-4 py-2 rounded-full transition-all text-[12px] whitespace-nowrap">
                                         <span x-text="formatTimeLabel(slot.hour)"></span>
                                     </button>
                                 </template>
 
                                 <template x-if="getAvailableSlotsForSelectedDate().filter(s => s.isAvailable).length === 0">
-                                    <div class="text-xs text-on-surface-variant italic py-1">Bu tarihte uygun randevu saati
-                                        bulunmuyor.</div>
+                                    <div class="text-[12px] text-[#B496A1] italic py-1">Bu tarihte uygun randevu saati bulunmuyor.</div>
                                 </template>
                             </div>
                         </div>
 
                         {{-- Legend --}}
-                        <div
-                            class="flex justify-center gap-4 text-[9px] md:text-[10px] text-on-surface-variant pt-2 border-t border-outline-variant/20 mt-4">
-                            <div class="flex items-center gap-1">
-                                <span
-                                    class="w-2 h-2 rounded-full bg-surface-container border border-outline-variant/30 inline-block"></span>
+                        <div class="flex justify-center gap-4 text-[10px] text-[#B496A1] pt-3 border-t border-[#EAD5DE]/40 mt-4">
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-[#EAD5DE] inline-block"></span>
                                 <span>Müsait</span>
                             </div>
-                            <div class="flex items-center gap-1">
-                                <span class="w-2 h-2 rounded-full bg-primary inline-block"></span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-[#95687A] inline-block"></span>
                                 <span>Seçili</span>
                             </div>
-                            <div class="flex items-center gap-1">
-                                <span
-                                    class="w-2 h-2 rounded-full bg-surface-variant/20 border border-outline-variant/10 inline-block"></span>
-                                <span>Dolu / Kapalı</span>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <span
-                                    class="w-2.5 h-2.5 rounded bg-error/10 border border-error/20 inline-block line-through text-[7px] text-center leading-none text-error/60 font-bold">31</span>
-                                <span>Tamamen Dolu / Kapalı</span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-gray-200 inline-block"></span>
+                                <span>Dolu</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="pt-2">
+                <div class="pt-3">
                     <button type="submit" id="submitBtn"
-                        class="w-full bg-gradient-to-r from-primary to-[#8a6565] text-on-primary font-label-caps text-label-caps py-4 rounded-full shadow-[0px_10px_20px_rgba(122,85,85,0.2)] hover:opacity-90 transition-opacity flex justify-center items-center gap-2">
-                        RANDEVU TALEP ET
+                        class="w-full bg-gradient-to-r from-[#95687A] to-[#7B4F5F] text-white font-bold py-4 rounded-2xl shadow-[0_8px_24px_rgba(149,104,122,0.35)] hover:shadow-[0_12px_28px_rgba(149,104,122,0.45)] hover:from-[#8A5F70] hover:to-[#6E4555] transition-all duration-300 flex justify-center items-center gap-2 text-[13px] tracking-[0.12em] uppercase">
+                        Randevu Talep Et
                         <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                     </button>
-                    <p class="text-center text-[11px] text-on-surface-variant/70 mt-2 italic">
-                        💵 Ücretler nakit olarak alınmaktadır.
+                    <p class="text-center text-[11px] text-[#B496A1] mt-2.5 flex items-center justify-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">attach_money</span>
+                        Ödeme nakit alınmaktadır.
                     </p>
                 </div>
             </form>

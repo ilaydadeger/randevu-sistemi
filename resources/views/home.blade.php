@@ -268,44 +268,38 @@
 
                 {{-- Service Type Selection --}}
                 <div class="space-y-3">
-                    <div class="flex flex-col gap-3">
+                    <div class="grid grid-cols-2 gap-3">
                         <button type="button"
                             @click="serviceType = 'yapim'; updateBasePrice()"
-                            class="relative flex items-center justify-between cursor-pointer rounded-[20px] border p-4 transition-colors w-full"
+                            class="relative flex cursor-pointer rounded-[20px] border p-3 hover:bg-surface-container-low transition-colors"
                             :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'border-[#95687A] bg-[#F4EDF0]' : 'border-outline-variant bg-transparent'">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0"
-                                    :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'bg-[#E1C4D1] text-[#23151B]' : 'bg-surface-container-low text-on-surface-variant'">
-                                    <span class="material-symbols-outlined text-[22px]" style="font-weight: 300;">edit</span>
+                            <div class="flex w-full items-center justify-center gap-2">
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                                     :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'bg-[#E1C4D1] text-[#23151B]' : 'bg-surface-container-low text-on-surface-variant'">
+                                     <span class="material-symbols-outlined text-[20px]" style="font-weight: 300;">edit</span>
                                 </div>
-                                <div class="flex flex-col items-start text-left gap-1">
-                                    <span class="text-[15px] font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#23151B]' : 'text-on-surface'">Protez Tırnak</span>
-                                    <span class="text-[13px] font-medium" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#B496A1]' : 'text-on-surface-variant'">Jel Güçlendirme, Kalıcı Oje</span>
+                                <div class="flex flex-col items-start leading-tight gap-0.5">
+                                    <span class="text-[12px] font-bold whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#23151B]' : 'text-on-surface'">Protez Tırnak</span>
+                                    <span class="text-[12px] font-bold whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#23151B]' : 'text-on-surface'">Jel Güçlendirme</span>
+                                    <span class="text-[12px] font-bold whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#23151B]' : 'text-on-surface'">Kalıcı Oje</span>
                                 </div>
-                            </div>
-                            <div class="w-6 h-6 rounded flex items-center justify-center shrink-0 transition-colors"
-                                :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'bg-[#95687A]' : 'bg-transparent border border-outline-variant'">
-                                <span x-show="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici'" class="material-symbols-outlined text-white text-[16px] font-bold">check</span>
                             </div>
                         </button>
 
                         <label
-                            class="relative flex items-center justify-between cursor-pointer rounded-[20px] border p-4 transition-colors w-full"
+                            class="relative flex cursor-pointer rounded-[20px] border p-3 hover:bg-surface-container-low transition-colors"
                             :class="serviceType === 'cikarma' ? 'border-[#95687A] bg-[#F4EDF0]' : 'border-outline-variant bg-transparent'">
                             <input type="radio" value="cikarma" x-model="serviceType"
                                 class="peer sr-only" @change="updateBasePrice()">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0"
+                            <div class="flex w-full items-center justify-center gap-2">
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                                     :class="serviceType === 'cikarma' ? 'bg-[#E1C4D1] text-[#23151B]' : 'bg-[#F2E7EA] text-[#917B85]'">
-                                    <span class="material-symbols-outlined text-[24px]" style="font-weight: 300;">close</span>
+                                    <span class="material-symbols-outlined text-[20px]" style="font-weight: 300;">close</span>
                                 </div>
-                                <div class="flex flex-col items-start text-left gap-1">
-                                    <span class="text-[15px] font-bold" :class="serviceType === 'cikarma' ? 'text-[#23151B]' : 'text-on-surface'">Protez Tırnak Çıkarma</span>
+                                <div class="flex flex-col items-start leading-tight gap-0.5">
+                                    <span class="text-[12px] font-bold whitespace-nowrap" :class="serviceType === 'cikarma' ? 'text-[#23151B]' : 'text-on-surface'">Protez Tırnak</span>
+                                    <span class="text-[12px] font-bold whitespace-nowrap" :class="serviceType === 'cikarma' ? 'text-[#23151B]' : 'text-on-surface'">Çıkarma</span>
                                 </div>
-                            </div>
-                            <div class="w-6 h-6 rounded flex items-center justify-center shrink-0 transition-colors"
-                                :class="serviceType === 'cikarma' ? 'bg-[#95687A]' : 'bg-transparent border border-outline-variant'">
-                                <span x-show="serviceType === 'cikarma'" class="material-symbols-outlined text-white text-[16px] font-bold">check</span>
                             </div>
                         </label>
                     </div>

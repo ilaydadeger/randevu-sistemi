@@ -111,10 +111,13 @@
     <header x-data="{ scrolled: false }" @scroll.window="scrolled = (window.pageYOffset > 20)"
         :class="scrolled ? 'bg-[#ead5de]/70 backdrop-blur-xl shadow-[0_4px_30px_rgba(234,213,222,0.4)] border-b border-white/40' : 'bg-[#ead5de]/40 backdrop-blur-lg border-b border-white/20'"
         class="docked full-width top-0 sticky z-50 flex justify-center items-center w-full px-margin-mobile h-16 md:px-margin-desktop transition-all duration-300 border-t border-white/30">
-        <h1 class="text-[28px] sm:text-[32px] text-white text-center drop-shadow-md font-semibold flex items-center justify-center gap-1" style="font-family: 'Playfair Display', serif; letter-spacing: 0.03em;">
+        <h1 class="text-[28px] sm:text-[32px] text-[#6A4758] text-center font-semibold flex items-center justify-center gap-1" style="font-family: 'Playfair Display', serif; letter-spacing: 0.03em;">
             {{ request()->is('panel/*') ? (auth()->user()->salon_name ?? "L'ART DE L'ONGLE") : (($nailTech->salon_name ?? null) ?: "L'ART DE L'ONGLE") }}
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-white drop-shadow-md -mt-4 opacity-90">
-                <path d="M12 2C12 7.52 16.48 12 22 12C16.48 12 12 16.48 12 22C12 16.48 7.52 12 2 12C7.52 12 12 7.52 12 2Z" fill="currentColor"/>
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-[#6A4758] -mt-5 opacity-90 ml-1">
+                <!-- Large Outline Star -->
+                <path d="M12 2C12 9 17 14 24 14C17 14 12 19 12 26C12 19 7 14 0 14C7 14 12 9 12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <!-- Small Solid Star -->
+                <path d="M25 17C25 19.5 27 21.5 29.5 21.5C27 21.5 25 23.5 25 26C25 23.5 23 21.5 20.5 21.5C23 21.5 25 19.5 25 17Z" fill="currentColor"/>
             </svg>
         </h1>
     </header>

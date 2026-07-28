@@ -373,10 +373,10 @@
         </div>
 
         <div data-section="cancelled" class="{{ $status === 'cancelled' ? 'active' : '' }}">
-            <p class="headline">Randevunuz Reddedildi</p>
+            <p class="headline">Randevu İptal Edildi</p>
             <p class="body-text">
-                Üzgünüz, bu sefer uygun bir zaman dilimi bulunamadı.<br>
-                Farklı bir tarih veya saat seçerek tekrar randevu oluşturabilirsiniz.
+                Tırnak uzmanı bu randevuyu reddetti veya iptal etti.<br>
+                Farklı bir tarih seçerek tekrar randevu oluşturabilirsiniz.
             </p>
             <a href="{{ $backUrl }}" class="retry-btn">Yeni Randevu Oluştur</a>
         </div>

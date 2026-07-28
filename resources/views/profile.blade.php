@@ -370,7 +370,7 @@
 
                 {{-- Client Uploaded Image Preview --}}
                 <template x-if="activeApproveImage">
-                    <div class="rounded-xl overflow-hidden bg-surface-variant border border-outline-variant/30 flex items-center justify-center cursor-pointer max-h-48" @click="openImageModal(activeApproveImage)">
+                    <div class="relative rounded-xl overflow-hidden bg-surface-variant border border-outline-variant/30 flex items-center justify-center cursor-pointer max-h-48" @click="openImageModal(activeApproveImage)">
                         <img :src="activeApproveImage" class="w-full h-full object-contain" alt="Referans Görseli">
                         <div class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-black/20">
                             <span class="material-symbols-outlined text-white text-3xl drop-shadow-md">zoom_in</span>

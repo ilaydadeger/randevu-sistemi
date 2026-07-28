@@ -47,12 +47,14 @@
                     <div class="space-y-4" @if($isLength) x-show="!excludeLength" x-transition @elseif($isShape)
                     x-show="!excludeShape" x-transition @endif>
                         @foreach($groupCategories as $category)
-                            {{-- Tüm kategoriler gösterilecek --}}
+                            @if(in_array($category->name, ['Kalıcı Oje', 'Jel Güçlendirme']))
+                                @continue
+                            @endif
                             <div class="flex items-center justify-between gap-4">
                                 <label for="price_{{ $category->id }}" class="font-body-md text-on-surface-variant flex-1">
                                     @php
                                         $displayName = match ($category->name) {
-                                            'Jel Protez' => 'Protez Tırnak Yapımı',
+                                            'Jel Protez' => 'Base İşlem Ücreti (Protez / Kalıcı Oje / Jel)',
                                             'Jel Güçlendirme' => 'Jel Güçlendirme',
                                             'Çıkarma' => 'Protez Tırnak Çıkarma',
                                             default => $category->name

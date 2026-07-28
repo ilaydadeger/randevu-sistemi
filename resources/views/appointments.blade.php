@@ -312,7 +312,7 @@
                             });
                             const data = await response.json();
                             if (response.ok && data.success) {
-                                Toast.fire({ icon: 'success', title: data.message, iconColor: '#7a5555' });
+                                Toast.fire({ icon: 'success', title: data.message, iconColor: '#7b5068' });
                             } else {
                                 Toast.fire({ icon: 'error', title: data.message || 'Bir hata oluştu.', iconColor: '#ba1a1a' });
                             }
@@ -881,7 +881,7 @@
                         Toast.fire({
                             icon: 'success',
                             title: status === 'approved' ? 'Randevu onaylandı!' : 'Randevu reddedildi.',
-                            iconColor: '#7a5555'
+                            iconColor: '#7b5068'
                         });
                     } else {
                         spinner.classList.add('hidden');
@@ -977,7 +977,7 @@
                         Toast.fire({
                             icon: 'success',
                             title: data.message,
-                            iconColor: '#7a5555'
+                            iconColor: '#7b5068'
                         });
                         
                         this.fetchUpdates();
@@ -1067,7 +1067,7 @@
                         Toast.fire({
                             icon: 'success',
                             title: status === 'completed' ? 'Randevu tamamlandı olarak işaretlendi!' : 'Randevu iptal edildi.',
-                            iconColor: '#7a5555'
+                            iconColor: '#7b5068'
                         });
                         this.fetchUpdates();
                     } else {
@@ -1130,7 +1130,7 @@
                         Toast.fire({
                             icon: 'success',
                             title: data.message,
-                            iconColor: '#7a5555'
+                            iconColor: '#7b5068'
                         });
                     } else {
                         Toast.fire({
@@ -1198,7 +1198,7 @@
                         Toast.fire({
                             icon: 'success',
                             title: data.message,
-                            iconColor: '#7a5555'
+                            iconColor: '#7b5068'
                         });
                     } else {
                         Toast.fire({
@@ -1224,7 +1224,7 @@
                     text: 'Bu not kalıcı olarak silinecektir.',
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#7a5555',
+                    confirmButtonColor: '#7b5068',
                     cancelButtonColor: '#ba1a1a',
                     confirmButtonText: 'Evet, sil!',
                     cancelButtonText: 'Vazgeç',
@@ -1253,7 +1253,7 @@
                         Toast.fire({
                             icon: 'success',
                             title: data.message,
-                            iconColor: '#7a5555'
+                            iconColor: '#7b5068'
                         });
                     } else {
                         Toast.fire({
@@ -1353,7 +1353,7 @@
                         Toast.fire({
                             icon: 'success',
                             title: data.message,
-                            iconColor: '#7a5555'
+                            iconColor: '#7b5068'
                         });
                     } else {
                         Toast.fire({
@@ -1378,7 +1378,7 @@
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#ba1a1a',
-                    cancelButtonColor: '#7a5555',
+                    cancelButtonColor: '#7b5068',
                     confirmButtonText: 'Evet, Hepsini Sil',
                     cancelButtonText: 'İptal'
                 });
@@ -1399,7 +1399,7 @@
                             Toast.fire({
                                 icon: 'success',
                                 title: data.message,
-                                iconColor: '#7a5555'
+                                iconColor: '#7b5068'
                             });
                             this.upcomingAppointments = [];
                             this.completedAppointments = [];

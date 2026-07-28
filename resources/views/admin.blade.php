@@ -37,7 +37,7 @@
                         "on-surface": "#1b1c1c",
                         "on-surface-variant": "#504444",
                         "error-container": "#ffdad6",
-                        "primary": "#7a5555",
+                        "primary": "#7b5068",
                     },
                     "borderRadius": {
                         "DEFAULT": "0.25rem",
@@ -263,7 +263,7 @@
             Toast.fire({
                 icon: 'success',
                 title: "{{ session('success') }}",
-                iconColor: '#7a5555'
+                iconColor: '#7b5068'
             });
         @endif
 

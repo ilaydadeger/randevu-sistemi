@@ -550,7 +550,7 @@
                             icon: 'info',
                             title: 'Portföy Boş',
                             text: 'Henüz yüklenmiş bir portföy görseli bulunmuyor.',
-                            confirmButtonColor: '#7a5555'
+                            confirmButtonColor: '#7b5068'
                         });
                         return;
                     }
@@ -1022,7 +1022,7 @@
                             icon: 'warning',
                             title: 'Randevu Saati Seçin',
                             text: 'Lütfen takvimden uygun bir gün ve saat seçin.',
-                            confirmButtonColor: '#7a5555'
+                            confirmButtonColor: '#7b5068'
                         });
                         return;
                     }

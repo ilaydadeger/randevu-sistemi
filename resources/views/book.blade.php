@@ -148,7 +148,7 @@
                             Toast.fire({
                                 icon: 'success',
                                 title: data.message,
-                                iconColor: '#7a5555'
+                                iconColor: '#7b5068'
                             });
                         } else {
                             Toast.fire({

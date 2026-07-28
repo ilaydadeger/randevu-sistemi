@@ -109,7 +109,7 @@
 
     {{-- TopAppBar --}}
     <header class="docked full-width top-0 sticky z-50 bg-[#fdfaf8] flex justify-center items-center w-full px-margin-mobile h-12 sm:h-16 md:px-margin-desktop border-b border-surface-container-highest">
-        <h1 class="font-headline-sm text-headline-sm tracking-widest text-[#7a5555] font-medium text-center">
+        <h1 class="font-headline-sm text-headline-sm tracking-widest text-[#7b5068] font-medium text-center">
             {{ request()->is('panel/*') ? (auth()->user()->salon_name ?? "L'ART DE L'ONGLE") : (($nailTech->salon_name ?? null) ?: "L'ART DE L'ONGLE") }}
         </h1>
     </header>
@@ -117,22 +117,22 @@
     {{-- Desktop Navigation Bar (Sadece Tırnakçı Paneli İçin, Masaüstü) --}}
     @if(request()->is('panel/*'))
     <nav class="hidden md:flex justify-center items-center gap-10 py-3 bg-[#fdfaf8] border-b border-surface-container-highest w-full sticky top-16 z-40 shadow-sm">
-        <a href="{{ route('panel.preview') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.preview') ? 'text-[#7a5555] font-bold' : 'text-on-surface-variant hover:text-[#7a5555] transition-colors' }}">
+        <a href="{{ route('panel.preview') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.preview') ? 'text-[#7b5068] font-bold' : 'text-on-surface-variant hover:text-[#7b5068] transition-colors' }}">
             <span class="material-symbols-outlined" style="font-size: 20px; @if(request()->routeIs('panel.preview')) font-variation-settings: 'FILL' 1; @endif">home</span>
             <span class="font-label-caps tracking-wider text-xs">Önizleme</span>
         </a>
         
-        <a href="{{ route('panel.appointments') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.appointments') ? 'text-[#7a5555] font-bold' : 'text-on-surface-variant hover:text-[#7a5555] transition-colors' }}">
+        <a href="{{ route('panel.appointments') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.appointments') ? 'text-[#7b5068] font-bold' : 'text-on-surface-variant hover:text-[#7b5068] transition-colors' }}">
             <span class="material-symbols-outlined" style="font-size: 20px; @if(request()->routeIs('panel.appointments')) font-variation-settings: 'FILL' 1; @endif">calendar_today</span>
             <span class="font-label-caps tracking-wider text-xs">Randevular</span>
         </a>
         
-        <a href="{{ route('panel.book') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.book') ? 'text-[#7a5555] font-bold' : 'text-on-surface-variant hover:text-[#7a5555] transition-colors' }}">
+        <a href="{{ route('panel.book') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.book') ? 'text-[#7b5068] font-bold' : 'text-on-surface-variant hover:text-[#7b5068] transition-colors' }}">
             <span class="material-symbols-outlined" style="font-size: 20px; @if(request()->routeIs('panel.book')) font-variation-settings: 'FILL' 1; @endif">explore</span>
             <span class="font-label-caps tracking-wider text-xs">Fiyatlarım</span>
         </a>
         
-        <a href="{{ route('panel.profile') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.profile') ? 'text-[#7a5555] font-bold' : 'text-on-surface-variant hover:text-[#7a5555] transition-colors' }}">
+        <a href="{{ route('panel.profile') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.profile') ? 'text-[#7b5068] font-bold' : 'text-on-surface-variant hover:text-[#7b5068] transition-colors' }}">
             <span class="material-symbols-outlined" style="font-size: 20px; @if(request()->routeIs('panel.profile')) font-variation-settings: 'FILL' 1; @endif">person</span>
             <span class="font-label-caps tracking-wider text-xs">Profil</span>
         </a>

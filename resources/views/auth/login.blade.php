@@ -33,7 +33,7 @@
                     "on-secondary-container": "#6a635b",
                     "tertiary-fixed": "#eae1dc",
                     "outline": "#827473",
-                    "surface-tint": "#7a5555",
+                    "surface-tint": "#7b5068",
                     "on-surface": "#1b1c1c",
                     "primary-fixed": "#ffdad9",
                     "on-tertiary-container": "#403b38",
@@ -51,7 +51,7 @@
                     "on-tertiary-fixed": "#1f1b18",
                     "surface-container-highest": "#e5e2e1",
                     "surface": "#fcf9f8",
-                    "primary": "#7a5555",
+                    "primary": "#7b5068",
                     "surface-dim": "#dcd9d9",
                     "surface-bright": "#fcf9f8",
                     "inverse-surface": "#303030",
@@ -113,7 +113,7 @@
     }
     .soft-input:focus {
         outline: none;
-        border-bottom-color: #7a5555;
+        border-bottom-color: #7b5068;
         background-color: #f6f3f2;
     }
     body {

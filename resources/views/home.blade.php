@@ -1005,15 +1005,19 @@
                             // Açıklama metnini gizle
                             priceDesc.classList.add('hidden');
                         } else {
-                            throw new Error((data.debug_error ? 'DEBUG: ' + data.debug_error : '') || data.message || 'Analiz sırasında bir hata oluştu.');
+                            // Sadece kullanıcı dostu mesajı göster, debug_error'ı sadece konsola yaz
+                            if (data.debug_error) console.error("Backend Error:", data.debug_error);
+                            throw new Error(data.message || 'Analiz sırasında bir hata oluştu.');
                         }
                     })
                     .catch(error => {
                         console.error("===== HATA DETAYI =====", error.message || error);
                         priceSpinner.innerHTML = '<span class="material-symbols-outlined text-amber-500">warning</span>';
                         priceTitle.className = 'font-body-md font-semibold text-amber-600';
-                        priceTitle.innerText = 'Yapay zeka şuanda yanıt vermiyor.';
-                        priceDesc.classList.add('hidden');
+                        priceTitle.innerText = error.message || 'Yapay zeka şuanda yanıt vermiyor.';
+                        
+                        priceDesc.innerText = 'Çok fazla istek attıysanız veya sistem yoğunsa lütfen birkaç dakika sonra tekrar deneyin.';
+                        priceDesc.classList.remove('hidden');
 
                         const priceBreakdownEl = document.getElementById('priceBreakdown');
                         if (priceBreakdownEl) priceBreakdownEl.classList.add('hidden');

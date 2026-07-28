@@ -267,36 +267,45 @@
                 <input type="hidden" name="nail_tech_id" value="{{ $nailTech->id ?? 1 }}">
 
                 {{-- Service Type Selection --}}
-                <div class="space-y-2">
-                    <label class="font-label-caps text-label-caps text-on-surface-variant">İŞLEM TÜRÜ</label>
-                    <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-3">
+                    <div class="flex flex-col gap-3">
                         <button type="button"
                             @click="serviceType = 'yapim'; updateBasePrice()"
-                            class="relative flex cursor-pointer rounded-xl border p-3 hover:bg-surface-container-low transition-colors"
-                            :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'border-primary bg-primary-container/10' : 'border-outline-variant'">
-                            <div class="flex w-full items-center justify-center gap-2">
-                                <span class="material-symbols-outlined text-[20px] shrink-0"
-                                    :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface-variant'">brush</span>
-                                <div class="flex flex-col items-start leading-tight gap-0.5">
-                                    <span class="text-[11px] font-bold whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Protez Tırnak</span>
-                                    <span class="text-[11px] font-bold whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Jel Güçlendirme</span>
-                                    <span class="text-[11px] font-bold whitespace-nowrap" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-primary' : 'text-on-surface'">Kalıcı Oje</span>
+                            class="relative flex items-center justify-between cursor-pointer rounded-[20px] border p-4 transition-colors w-full"
+                            :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'border-[#95687A] bg-[#F4EDF0]' : 'border-outline-variant bg-transparent'">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0"
+                                    :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'bg-[#E1C4D1] text-[#23151B]' : 'bg-surface-container-low text-on-surface-variant'">
+                                    <span class="material-symbols-outlined text-[22px]" style="font-weight: 300;">edit</span>
                                 </div>
+                                <div class="flex flex-col items-start text-left gap-1">
+                                    <span class="text-[15px] font-bold" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#23151B]' : 'text-on-surface'">Protez Tırnak</span>
+                                    <span class="text-[13px] font-medium" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#B496A1]' : 'text-on-surface-variant'">Jel Güçlendirme, Kalıcı Oje</span>
+                                </div>
+                            </div>
+                            <div class="w-6 h-6 rounded flex items-center justify-center shrink-0 transition-colors"
+                                :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'bg-[#95687A]' : 'bg-transparent border border-outline-variant'">
+                                <span x-show="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici'" class="material-symbols-outlined text-white text-[16px] font-bold">check</span>
                             </div>
                         </button>
 
                         <label
-                            class="relative flex cursor-pointer rounded-xl border p-3 hover:bg-surface-container-low transition-colors"
-                            :class="serviceType === 'cikarma' ? 'border-primary bg-primary-container/10' : 'border-outline-variant'">
+                            class="relative flex items-center justify-between cursor-pointer rounded-[20px] border p-4 transition-colors w-full"
+                            :class="serviceType === 'cikarma' ? 'border-[#95687A] bg-[#F4EDF0]' : 'border-outline-variant bg-transparent'">
                             <input type="radio" value="cikarma" x-model="serviceType"
                                 class="peer sr-only" @change="updateBasePrice()">
-                            <div class="flex w-full items-center justify-center gap-2">
-                                <span class="material-symbols-outlined text-[20px] shrink-0"
-                                    :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface-variant'">backspace</span>
-                                <div class="flex flex-col items-start leading-tight gap-0.5">
-                                    <span class="text-[12px] font-bold" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface'">Protez Tırnak</span>
-                                    <span class="text-[12px] font-bold" :class="serviceType === 'cikarma' ? 'text-primary' : 'text-on-surface'">Çıkarma</span>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-[16px] flex items-center justify-center shrink-0"
+                                    :class="serviceType === 'cikarma' ? 'bg-[#E1C4D1] text-[#23151B]' : 'bg-[#F2E7EA] text-[#917B85]'">
+                                    <span class="material-symbols-outlined text-[24px]" style="font-weight: 300;">close</span>
                                 </div>
+                                <div class="flex flex-col items-start text-left gap-1">
+                                    <span class="text-[15px] font-bold" :class="serviceType === 'cikarma' ? 'text-[#23151B]' : 'text-on-surface'">Protez Tırnak Çıkarma</span>
+                                </div>
+                            </div>
+                            <div class="w-6 h-6 rounded flex items-center justify-center shrink-0 transition-colors"
+                                :class="serviceType === 'cikarma' ? 'bg-[#95687A]' : 'bg-transparent border border-outline-variant'">
+                                <span x-show="serviceType === 'cikarma'" class="material-symbols-outlined text-white text-[16px] font-bold">check</span>
                             </div>
                         </label>
                     </div>
@@ -305,9 +314,11 @@
                     <input type="hidden" name="service_type" :value="serviceType">
 
                     {{-- Base fiyat gösterimi (görsel yüklenmeden önce) --}}
-                    <div x-show="serviceType === 'yapim' && !aiPriceLoaded" x-transition class="mt-2 flex items-center justify-between bg-surface-container-low p-3 rounded-xl border border-outline-variant/30">
-                        <span class="text-xs font-bold text-on-surface-variant font-label-caps tracking-widest">Base Ücret:</span>
-                        <span class="text-xl font-black text-primary" x-text="'₺' + basePriceDisplay"></span>
+                    <div x-show="serviceType === 'yapim' && !aiPriceLoaded" x-transition class="mt-4 flex justify-end">
+                        <div class="flex items-center gap-3 bg-[#F1E6EB] px-4 py-2 rounded-xl">
+                            <span class="text-[13px] font-semibold text-[#B496A1]">Base Ücret</span>
+                            <span class="text-[15px] font-bold text-[#664956]" x-text="'₺' + basePriceDisplay"></span>
+                        </div>
                     </div>
                 </div>
 
@@ -316,21 +327,20 @@
 
                     {{-- Image Upload (Drag & Drop) --}}
                     <div class="space-y-2">
-                        <label class="font-label-caps text-label-caps text-on-surface-variant">TIRNAK MODELİ
-                            (GÖRSEL)</label>
+                        <label class="font-label-caps text-label-caps text-on-surface-variant">TIRNAK MODELİ GÖRSELİ</label>
                         <div id="dropzone"
-                            class="relative w-full h-28 rounded-xl border-2 border-dashed border-outline-variant bg-surface-container hover:bg-surface-container-high hover:border-primary transition-all flex flex-col items-center justify-center cursor-pointer overflow-hidden group">
+                            class="relative w-full h-[220px] rounded-[24px] border border-dashed border-[#D2B4C1] bg-[#F1E6EB] hover:bg-[#EBE0E5] transition-all flex flex-col items-center justify-center cursor-pointer overflow-hidden group">
 
                             <input type="file" name="design_image" id="fileInput"
                                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*">
 
                             <div id="uploadPlaceholder"
                                 class="flex flex-col items-center pointer-events-none transition-opacity duration-300">
-                                <span
-                                    class="material-symbols-outlined text-4xl text-outline mb-2 group-hover:text-primary transition-colors">cloud_upload</span>
-                                <span class="font-body-md text-on-surface-variant font-medium">Görseli sürükleyin veya
-                                    seçin</span>
-                                <span class="text-xs text-outline mt-1">PNG, JPG, WEBP (Max 5MB)</span>
+                                <div class="w-[60px] h-[60px] bg-white rounded-2xl flex items-center justify-center mb-4 shadow-sm">
+                                    <span class="material-symbols-outlined text-[28px] text-[#95687A]" style="font-weight: 300;">cloud_upload</span>
+                                </div>
+                                <span class="text-[15px] text-[#23151B] font-bold">Fotoğraf Yükle</span>
+                                <span class="text-[13px] text-[#B496A1] mt-1 font-medium">JPEG, PNG desteklenir</span>
                             </div>
 
                             <img id="imagePreview" class="absolute inset-0 w-full h-full object-cover hidden" alt="Preview">

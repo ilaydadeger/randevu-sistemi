@@ -17,7 +17,6 @@
             }
         }
 
-        // Fetch blocked slots and occupied slots directly inside the blade
         $blockedSlots = [];
         $occupiedSlots = [];
         if ($nailTech) {
@@ -25,28 +24,15 @@
             foreach ($scheduleBlocks as $block) {
                 $blockedSlots[$block->blocked_date . '_' . substr($block->blocked_time, 0, 5)] = true;
             }
-
             $appointments = $nailTech->appointments
                 ->whereIn('status', ['pending', 'approved'])
                 ->where('appointment_date', '>=', today()->toDateString())
                 ->values();
-
             foreach ($appointments as $appt) {
                 $occupiedSlots[$appt->appointment_date . '_' . substr($appt->appointment_time, 0, 5)] = true;
             }
         }
 
-        // Prepare next 28 days (4 weeks) grouped by week
-        $weeks = [];
-        for ($w = 0; $w < 4; $w++) {
-            $weekDays = [];
-            for ($d = 0; $d < 7; $d++) {
-                $weekDays[] = \Carbon\Carbon::today()->addDays(($w * 7) + $d);
-            }
-            $weeks[$w] = $weekDays;
-        }
-
-        // Prepare hours from customizable work hours settings
         $hours = $nailTech->work_hours ?? ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
         $nailTechPrices = $nailTech ? $nailTech->userPrices
@@ -54,155 +40,97 @@
                 return [$userPrice->serviceCategory->name => $userPrice->price];
             })->toArray() : [];
 
-        // Base prices for yapim sub-types
         $baseProthezPrice = $nailTechPrices['Jel Protez'] ?? $nailTechPrices['Protez Tırnak'] ?? 0;
-        // Jel Güçlendirme ve Kalıcı Oje de aynı fiyatı kullanır
-        $baseJelGucPrice  = $baseProthezPrice;
-        $baseKalyOjePrice = $baseProthezPrice;
         $baseCikarmaPrice = $nailTechPrices['Çıkarma'] ?? 0;
     @endphp
 
-    <main
-        class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] md:max-w-3xl lg:max-w-4xl mx-auto w-full"
-        x-data="galleryManager({ images: {{ json_encode($uploadedImages) }} })">
+    {{-- ── SAYFA WRAPPER ── --}}
+    <div class="min-h-screen bg-[#FDFBFB] pb-24 text-slate-800 font-sans selection:bg-rose-200"
+         x-data="galleryManager({ images: {{ json_encode($uploadedImages) }} })">
 
-        {{-- Extended Glass Background (Behind Header & Profile Box) --}}
-        <div class="absolute top-0 left-0 w-full h-[360px] bg-gradient-to-b from-[#FCFAFB]/60 via-[#ead5de]/40 to-transparent backdrop-blur-lg -z-10" style="border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;"></div>
+        <main class="px-5 pt-6 pb-8 space-y-8 max-w-lg mx-auto">
 
-        {{-- Premium Profile Header --}}
-        <section
-            class="bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-8 border border-[#EAD5DE]/60 shadow-[0_4px_24px_rgba(149,117,130,0.10)] flex flex-col items-center text-center gap-4">
-            @if($nailTech && $nailTech->profile_photo_path)
-                <div
-                    class="relative w-28 h-28 rounded-full overflow-hidden ring-4 ring-[#EAD5DE]/70 shadow-[0_8px_24px_rgba(149,117,130,0.18)]">
-                    <img src="{{ str_starts_with($nailTech->profile_photo_path, 'http') ? $nailTech->profile_photo_path : asset('storage/' . $nailTech->profile_photo_path) }}"
-                        alt="Uzman Profil" class="w-full h-full object-cover">
-                </div>
-            @endif
-            <div class="space-y-1">
-                @if($nailTech && $nailTech->name)
-                    <h2 class="text-[20px] font-bold text-[#3B2030]" style="font-family:'Playfair Display',serif;">{{ $nailTech->name }}</h2>
+            {{-- ── Profil Kartı ── --}}
+            <section class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] flex flex-col items-center text-center transition-transform hover:scale-[1.01]">
+                @if($nailTech && $nailTech->profile_photo_path)
+                    <div class="w-20 h-20 rounded-full overflow-hidden shrink-0 border-2 border-[#EAE1E3] p-0.5 mb-3">
+                        <img src="{{ str_starts_with($nailTech->profile_photo_path, 'http') ? $nailTech->profile_photo_path : asset('storage/' . $nailTech->profile_photo_path) }}"
+                             alt="Profile" class="w-full h-full object-cover rounded-full">
+                    </div>
                 @endif
-            </div>
-            @if($nailTech && $nailTech->bio)
-                <p class="text-[13px] text-[#957582] leading-relaxed px-4 text-center w-full" style="min-width: 280px;">
-                    {{ str_replace(["\r", "\n"], ' ', $nailTech->bio) }}
-                </p>
-            @endif
-        </section>
-
-        @if($nailTech && ($nailTech->show_portfolio ?? true))
-            {{-- Portfolio Bento Grid --}}
-            <section class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-sm space-y-md">
-                <h3 class="font-headline-sm text-headline-sm border-b border-surface-container-highest pb-2">Portfolio</h3>
-                <div class="grid grid-cols-2 gap-sm auto-rows-[160px]">
-
-                    {{-- Box 1 --}}
-                    <div class="rounded-xl overflow-hidden shadow-sm row-span-2 col-span-1 relative group cursor-pointer">
-                        @if($nailTech && $nailTech->portfolio_image_1)
-                            <img alt="Nail Art 1"
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                src="{{ str_starts_with($nailTech->portfolio_image_1, 'http') ? $nailTech->portfolio_image_1 : asset('storage/' . $nailTech->portfolio_image_1) }}" />
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3"
-                                @click="openLightbox(0)">
-                                <button type="button"
-                                    class="w-full py-2 bg-white/90 backdrop-blur-sm rounded-lg font-label-caps text-label-caps text-on-surface hover:bg-white transition-colors">Select
-                                    Design</button>
-                            </div>
-                        @else
-                            <div
-                                class="w-full h-full bg-surface-container/60 border border-dashed border-outline-variant/30 flex flex-col items-center justify-center p-4 text-center rounded-xl">
-                                <span class="material-symbols-outlined text-outline/50 text-2xl mb-1">add_a_photo</span>
-                                <span class="text-[10px] text-on-surface-variant/60 font-label-caps">Görsel Yok</span>
-                            </div>
-                        @endif
-                    </div>
-
-                    {{-- Box 2 --}}
-                    <div class="rounded-xl overflow-hidden shadow-sm col-span-1 relative group cursor-pointer">
-                        @if($nailTech && $nailTech->portfolio_image_2)
-                            <img alt="Nail Art 2"
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                src="{{ str_starts_with($nailTech->portfolio_image_2, 'http') ? $nailTech->portfolio_image_2 : asset('storage/' . $nailTech->portfolio_image_2) }}" />
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2"
-                                @click="openLightbox(1)">
-                                <button type="button"
-                                    class="w-full py-1.5 bg-white/90 backdrop-blur-sm rounded-lg font-label-caps text-label-caps text-on-surface hover:bg-white transition-colors text-[10px]">Select</button>
-                            </div>
-                        @else
-                            <div
-                                class="w-full h-full bg-surface-container/60 border border-dashed border-outline-variant/30 flex flex-col items-center justify-center rounded-xl">
-                                <span class="material-symbols-outlined text-outline/50 text-xl mb-1">add_a_photo</span>
-                                <span class="text-[9px] text-on-surface-variant/60 font-label-caps">Görsel Yok</span>
-                            </div>
-                        @endif
-                    </div>
-
-                    {{-- Box 3 --}}
-                    <div class="rounded-xl overflow-hidden shadow-sm col-span-1 relative group cursor-pointer">
-                        @if($nailTech && $nailTech->portfolio_image_3)
-                            <img alt="Nail Art 3"
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                src="{{ str_starts_with($nailTech->portfolio_image_3, 'http') ? $nailTech->portfolio_image_3 : asset('storage/' . $nailTech->portfolio_image_3) }}" />
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2"
-                                @click="openLightbox(2)">
-                                <button type="button"
-                                    class="w-full py-1.5 bg-white/90 backdrop-blur-sm rounded-lg font-label-caps text-label-caps text-on-surface hover:bg-white transition-colors text-[10px]">Select</button>
-                            </div>
-                        @else
-                            <div
-                                class="w-full h-full bg-surface-container/60 border border-dashed border-outline-variant/30 flex flex-col items-center justify-center rounded-xl">
-                                <span class="material-symbols-outlined text-outline/50 text-xl mb-1">add_a_photo</span>
-                                <span class="text-[9px] text-on-surface-variant/60 font-label-caps">Görsel Yok</span>
-                            </div>
-                        @endif
-                    </div>
-
+                <div>
+                    <h2 class="text-lg font-medium text-slate-700">{{ $nailTech->name ?? 'NailwMelis' }}</h2>
+                    @if($nailTech && $nailTech->bio)
+                        <p class="text-sm text-slate-500 leading-relaxed mt-1">{{ str_replace(["\r", "\n"], ' ', $nailTech->bio) }}</p>
+                    @else
+                        <p class="text-sm text-slate-500 leading-relaxed mt-1">Güzellik ve zarafetin buluştuğu nokta. Randevunuzu aşağıdan kolayca oluşturabilirsiniz.</p>
+                    @endif
                 </div>
-                <button type="button" @click="openGallery()"
-                    class="w-full py-3 border border-outline-variant rounded-full font-label-caps text-label-caps text-on-surface hover:bg-surface-container transition-colors mt-4">View
-                    Full Gallery</button>
             </section>
 
-            {{-- GALLERY MODAL --}}
-            <div x-cloak x-show="showModal"
-                class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-                x-transition.opacity>
-                <div class="bg-surface-container-lowest rounded-2xl w-full max-w-[450px] h-[520px] flex flex-col p-md shadow-2xl border border-outline-variant/30 relative"
-                    @click.away="closeGallery()">
-                    <!-- Close Button -->
-                    <button @click="closeGallery()"
-                        class="absolute top-4 right-4 text-on-surface-variant hover:opacity-80 p-1 rounded-full bg-surface-container">
-                        <span class="material-symbols-outlined text-[18px]">close</span>
+            {{-- ── Portföy ── --}}
+            @if($nailTech && ($nailTech->show_portfolio ?? true) && count($uploadedImages) > 0)
+            <section class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] space-y-4">
+                <h3 class="font-medium text-slate-700 border-b border-[#F2EAEB] pb-3">Portföy</h3>
+                <div class="grid grid-cols-2 gap-3 auto-rows-[160px]">
+                    @if($nailTech->portfolio_image_1)
+                    <div class="rounded-2xl overflow-hidden shadow-sm row-span-2 col-span-1 relative group cursor-pointer">
+                        <img alt="Nail Art 1" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                             src="{{ str_starts_with($nailTech->portfolio_image_1, 'http') ? $nailTech->portfolio_image_1 : asset('storage/' . $nailTech->portfolio_image_1) }}" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3" @click="openLightbox(0)">
+                            <button type="button" class="w-full py-2 bg-white/90 backdrop-blur-sm rounded-xl text-[11px] font-semibold text-slate-700 hover:bg-white transition-colors">Seç</button>
+                        </div>
+                    </div>
+                    @endif
+                    @if($nailTech->portfolio_image_2)
+                    <div class="rounded-2xl overflow-hidden shadow-sm col-span-1 relative group cursor-pointer">
+                        <img alt="Nail Art 2" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                             src="{{ str_starts_with($nailTech->portfolio_image_2, 'http') ? $nailTech->portfolio_image_2 : asset('storage/' . $nailTech->portfolio_image_2) }}" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2" @click="openLightbox(1)">
+                            <button type="button" class="w-full py-1.5 bg-white/90 backdrop-blur-sm rounded-xl text-[10px] font-semibold text-slate-700 hover:bg-white transition-colors">Seç</button>
+                        </div>
+                    </div>
+                    @endif
+                    @if($nailTech->portfolio_image_3)
+                    <div class="rounded-2xl overflow-hidden shadow-sm col-span-1 relative group cursor-pointer">
+                        <img alt="Nail Art 3" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                             src="{{ str_starts_with($nailTech->portfolio_image_3, 'http') ? $nailTech->portfolio_image_3 : asset('storage/' . $nailTech->portfolio_image_3) }}" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2" @click="openLightbox(2)">
+                            <button type="button" class="w-full py-1.5 bg-white/90 backdrop-blur-sm rounded-xl text-[10px] font-semibold text-slate-700 hover:bg-white transition-colors">Seç</button>
+                        </div>
+                    </div>
+                    @endif
+                </div>
+                <button type="button" @click="openGallery()"
+                    class="w-full py-3 border border-[#F2EAEB] hover:border-[#D2B6BD]/50 rounded-2xl text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors mt-2">
+                    Tüm Galeriyi Gör
+                </button>
+            </section>
+
+            {{-- Gallery Modal --}}
+            <div x-cloak x-show="showModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" x-transition.opacity>
+                <div class="bg-white rounded-3xl w-full max-w-[450px] h-[520px] flex flex-col p-6 shadow-2xl border border-[#F2EAEB] relative" @click.away="closeGallery()">
+                    <button @click="closeGallery()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-full bg-slate-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
                     </button>
-
-                    <h3 class="font-headline-sm text-headline-sm text-on-surface mb-sm">Portföy Galerisi</h3>
-
+                    <h3 class="font-semibold text-slate-700 text-lg mb-4">Portföy Galerisi</h3>
                     <template x-if="images.length === 0">
-                        <div class="flex-1 flex flex-col items-center justify-center text-on-surface-variant/60">
-                            <span class="material-symbols-outlined text-4xl mb-2">image_not_supported</span>
-                            <p class="font-body-md text-sm">Henüz portföy görseli eklenmemiş.</p>
+                        <div class="flex-1 flex flex-col items-center justify-center text-slate-400">
+                            <p class="text-sm">Henüz portföy görseli eklenmemiş.</p>
                         </div>
                     </template>
-
                     <template x-if="images.length > 0">
-                        <div class="flex-1 flex flex-col gap-md min-h-0">
-                            <!-- Main Large Display -->
-                            <div class="flex-1 relative rounded-xl overflow-hidden bg-surface-variant flex items-center justify-center border border-outline-variant/20 cursor-pointer group"
-                                @click="openLightbox(activeIdx)">
+                        <div class="flex-1 flex flex-col gap-4 min-h-0">
+                            <div class="flex-1 relative rounded-2xl overflow-hidden bg-slate-50 flex items-center justify-center border border-[#F2EAEB] cursor-pointer group" @click="openLightbox(activeIdx)">
                                 <img :src="images[activeIdx]" class="w-full h-full object-cover" />
-                                <div
-                                    class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-white text-3xl">zoom_in</span>
+                                <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg>
                                 </div>
                             </div>
-
-                            <!-- Bottom Thumbnail Slider -->
-                            <div
-                                class="flex gap-sm overflow-x-auto py-2 no-scrollbar border-t border-outline-variant/20 shrink-0">
+                            <div class="flex gap-3 overflow-x-auto py-1 no-scrollbar border-t border-[#F2EAEB] shrink-0">
                                 <template x-for="(img, idx) in images" :key="idx">
-                                    <div class="w-20 h-20 shrink-0 rounded-lg overflow-hidden border-2 cursor-pointer transition-all"
-                                        :class="activeIdx === idx ? 'border-primary scale-95 shadow-sm' : 'border-transparent hover:opacity-80'"
+                                    <div class="w-20 h-20 shrink-0 rounded-xl overflow-hidden border-2 cursor-pointer transition-all"
+                                        :class="activeIdx === idx ? 'border-[#D2B6BD] scale-95 shadow-sm' : 'border-transparent hover:opacity-80'"
                                         @click="activeIdx = idx">
                                         <img :src="img" class="w-full h-full object-cover" />
                                     </div>
@@ -213,327 +141,251 @@
                 </div>
             </div>
 
-            {{-- LIGHTBOX FULLSCREEN SLIDER --}}
-            <div x-cloak x-show="showLightbox"
-                class="fixed inset-0 z-[200] bg-black/95 flex flex-col items-center justify-center select-none"
-                x-transition.opacity @keydown.escape.window="closeLightbox()" @keydown.arrow-left.window="prevImage()"
-                @keydown.arrow-right.window="nextImage()">
-
-                <!-- Close Lightbox Button -->
-                <button @click="closeLightbox()"
-                    class="absolute top-6 right-6 text-white/80 hover:text-white p-2 rounded-full hover:bg-white/10 z-[210]">
-                    <span class="material-symbols-outlined text-3xl">close</span>
+            {{-- Lightbox --}}
+            <div x-cloak x-show="showLightbox" class="fixed inset-0 z-[200] bg-black/95 flex flex-col items-center justify-center select-none"
+                x-transition.opacity @keydown.escape.window="closeLightbox()" @keydown.arrow-left.window="prevImage()" @keydown.arrow-right.window="nextImage()">
+                <button @click="closeLightbox()" class="absolute top-6 right-6 text-white/80 hover:text-white p-2 rounded-full hover:bg-white/10 z-[210]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
                 </button>
-
-                <!-- Next/Prev Buttons (Desktop) -->
-                <button @click="prevImage()"
-                    class="absolute left-6 text-white/60 hover:text-white hover:bg-white/10 p-3 rounded-full z-[210] hidden md:block transition-colors">
-                    <span class="material-symbols-outlined text-4xl">chevron_left</span>
-                </button>
-                <button @click="nextImage()"
-                    class="absolute right-6 text-white/60 hover:text-white hover:bg-white/10 p-3 rounded-full z-[210] hidden md:block transition-colors">
-                    <span class="material-symbols-outlined text-4xl">chevron_right</span>
-                </button>
-
-                <!-- Large Image with Swipe handlers -->
-                <div class="w-full max-w-4xl max-h-[80vh] flex items-center justify-center p-4 relative"
-                    @touchstart="handleTouchStart($event)" @touchend="handleTouchEnd($event)">
-
-                    <img :src="images[activeIdx]"
-                        class="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl transition-all duration-300" />
-
-                    <!-- Index Counter -->
-                    <div class="absolute bottom-[-40px] text-white/70 font-label-caps text-label-caps tracking-widest"
-                        x-text="(activeIdx + 1) + ' / ' + images.length"></div>
+                <div class="w-full max-w-4xl max-h-[80vh] flex items-center justify-center p-4 relative" @touchstart="handleTouchStart($event)" @touchend="handleTouchEnd($event)">
+                    <img :src="images[activeIdx]" class="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl transition-all duration-300" />
+                    <div class="absolute bottom-[-40px] text-white/70 text-xs tracking-widest" x-text="(activeIdx + 1) + ' / ' + images.length"></div>
                 </div>
             </div>
-        @endif
+            @endif
 
-        {{-- Appointment Form --}}
-        <section class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-[#EAD5DE]/60 shadow-[0_4px_24px_rgba(149,117,130,0.10)]" x-data="bookingCalendar({
-                        blockedSlots: {{ json_encode($blockedSlots) }},
-                        occupiedSlots: {{ json_encode($occupiedSlots) }},
-                        hours: {{ json_encode($hours) }},
-                        todayStr: '{{ today()->toDateString() }}'
-                    })">
-            <div class="mb-5 border-b border-[#EAD5DE]/40 pb-4 flex items-center justify-between">
-                <div>
-                    <p class="text-[10px] font-bold tracking-[0.15em] text-[#B496A1] uppercase mb-1">Adım 1</p>
-                    <h3 class="text-[17px] font-bold text-[#3B2030]" style="font-family:'Playfair Display',serif;">İşlem Türü Seçin</h3>
-                </div>
-            </div>
+            {{-- ── RANDEVU FORMU ── --}}
+            <div x-data="bookingCalendar({
+                    blockedSlots: {{ json_encode($blockedSlots) }},
+                    occupiedSlots: {{ json_encode($occupiedSlots) }},
+                    hours: {{ json_encode($hours) }},
+                    todayStr: '{{ today()->toDateString() }}'
+                })">
 
-            <form action="{{ route('appointment.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6"
-                id="appointmentForm">
-                @csrf
-                <input type="hidden" name="nail_tech_id" value="{{ $nailTech->id ?? 1 }}">
+                <form action="{{ route('appointment.store') }}" method="POST" enctype="multipart/form-data" id="appointmentForm" class="space-y-8">
+                    @csrf
+                    <input type="hidden" name="nail_tech_id" value="{{ $nailTech->id ?? 1 }}">
 
-                {{-- Service Type Selection --}}
-                <div class="space-y-3">
-                    <div class="grid grid-cols-2 gap-3">
-                        <button type="button"
-                            @click="serviceType = 'yapim'; updateBasePrice()"
-                            class="relative flex cursor-pointer rounded-2xl border-2 p-4 transition-all duration-200"
-                            :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'border-[#95687A] bg-gradient-to-br from-[#F9F0F4] to-[#F1E4EC] shadow-[0_4px_16px_rgba(149,117,130,0.18)]' : 'border-[#EAD5DE]/70 bg-white/60 hover:border-[#C4A0B4] hover:shadow-sm'">
-                            <div class="flex w-full items-center justify-center gap-2.5">
-                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all"
-                                     :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'bg-[#95687A] text-white shadow-sm' : 'bg-[#F2E7EA] text-[#957582]'">
-                                     <span class="material-symbols-outlined text-[20px]" style="font-weight: 300;">auto_fix_high</span>
-                                </div>
-                                <div class="flex flex-col items-start leading-tight gap-0.5">
-                                    <span class="text-[11px] font-bold tracking-wide" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#3B2030]' : 'text-[#6B4F5E]'">Protez Tırnak</span>
-                                    <span class="text-[11px] font-bold tracking-wide" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#3B2030]' : 'text-[#6B4F5E]'">Jel Güçlendirme</span>
-                                    <span class="text-[11px] font-bold tracking-wide" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici' ? 'text-[#3B2030]' : 'text-[#6B4F5E]'">Kalıcı Oje</span>
-                                </div>
-                            </div>
-                        </button>
-
-                        <label
-                            class="relative flex cursor-pointer rounded-2xl border-2 p-4 transition-all duration-200"
-                            :class="serviceType === 'cikarma' ? 'border-[#95687A] bg-gradient-to-br from-[#F9F0F4] to-[#F1E4EC] shadow-[0_4px_16px_rgba(149,117,130,0.18)]' : 'border-[#EAD5DE]/70 bg-white/60 hover:border-[#C4A0B4] hover:shadow-sm'">
-                            <input type="radio" value="cikarma" x-model="serviceType"
-                                class="peer sr-only" @change="updateBasePrice()">
-                            <div class="flex w-full items-center justify-center gap-2.5">
-                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all"
-                                    :class="serviceType === 'cikarma' ? 'bg-[#95687A] text-white shadow-sm' : 'bg-[#F2E7EA] text-[#957582]'">
-                                    <span class="material-symbols-outlined text-[20px]" style="font-weight: 300;">delete_sweep</span>
-                                </div>
-                                <div class="flex flex-col items-start leading-tight gap-0.5">
-                                    <span class="text-[11px] font-bold tracking-wide" :class="serviceType === 'cikarma' ? 'text-[#3B2030]' : 'text-[#6B4F5E]'">Protez Tırnak</span>
-                                    <span class="text-[11px] font-bold tracking-wide" :class="serviceType === 'cikarma' ? 'text-[#3B2030]' : 'text-[#6B4F5E]'">Çıkarma</span>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-
-                    {{-- Hidden service_type input (real value) --}}
-                    <input type="hidden" name="service_type" :value="serviceType">
-
-                    {{-- Base fiyat gösterimi (görsel yüklenmeden önce) --}}
-                    <div x-show="serviceType === 'yapim' && !aiPriceLoaded" x-transition class="mt-4 flex justify-end">
-                        <div class="flex items-center gap-3 bg-white border border-[#EAD5DE] px-4 py-2.5 rounded-xl shadow-sm">
-                            <span class="text-[12px] font-semibold text-[#957582]">Base Ücret</span>
-                            <span class="text-[15px] font-bold text-[#3B2030]" x-text="'₺' + basePriceDisplay"></span>
+                    {{-- İşlem Türü --}}
+                    <section class="space-y-4">
+                        <h3 class="text-sm font-semibold tracking-wider text-slate-400 uppercase ml-1">İşlem Türü</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button type="button"
+                                @click="serviceType = 'yapim'; updateBasePrice()"
+                                :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici'
+                                    ? 'bg-[#D2B6BD] text-white border-[#D2B6BD] shadow-md shadow-[#D2B6BD]/30'
+                                    : 'bg-white text-slate-600 border-[#F2EAEB] hover:border-[#D2B6BD]/50'"
+                                class="py-3 px-3 rounded-2xl text-[13px] leading-relaxed font-medium transition-all duration-300 border flex items-center justify-center text-center min-h-[5rem]">
+                                Protez Tırnak, Jel Güçlendirme, Kalıcı Oje
+                            </button>
+                            <button type="button"
+                                @click="serviceType = 'cikarma'; updateBasePrice()"
+                                :class="serviceType === 'cikarma'
+                                    ? 'bg-[#D2B6BD] text-white border-[#D2B6BD] shadow-md shadow-[#D2B6BD]/30'
+                                    : 'bg-white text-slate-600 border-[#F2EAEB] hover:border-[#D2B6BD]/50'"
+                                class="py-3 px-3 rounded-2xl text-[13px] leading-relaxed font-medium transition-all duration-300 border flex items-center justify-center text-center min-h-[5rem]">
+                                Protez Tırnak Çıkarma
+                            </button>
                         </div>
-                    </div>
-                </div>
+                        <input type="hidden" name="service_type" :value="serviceType">
+                    </section>
 
-                {{-- Yapım (Image Upload and AI Price Estimation) Section --}}
-                <div x-show="serviceType === 'yapim'" x-collapse class="space-y-5">
+                    {{-- Base Ücret --}}
+                    <section class="bg-white rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] flex justify-between items-center">
+                        <span class="text-slate-500 font-medium">Base Ücret</span>
+                        <span class="text-xl font-semibold text-[#B3939B]" x-text="'₺' + basePriceDisplay"></span>
+                    </section>
 
-                    {{-- Section heading --}}
-                    <div class="border-t border-[#EAD5DE]/40 pt-5">
-                        <p class="text-[10px] font-bold tracking-[0.15em] text-[#B496A1] uppercase mb-1">Adım 2 (İsteğe Bağlı)</p>
-                        <p class="text-[13px] text-[#957582]">İstediğiniz modelin fotoğrafını yükleyerek işleminizi hızlandırabilirsiniz.</p>
-                    </div>
+                    {{-- Adınız Soyadınız --}}
+                    <section class="space-y-2">
+                        <label class="text-sm font-semibold tracking-wider text-slate-400 uppercase ml-1 block">Adınız Soyadınız</label>
+                        <input type="text" name="client_name" required
+                            placeholder="Adınızı giriniz..."
+                            class="w-full bg-white border border-[#F2EAEB] rounded-2xl py-4 px-5 text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#D2B6BD]/40 focus:border-[#D2B6BD] transition-all shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
+                    </section>
 
-                    {{-- Image Upload (Drag & Drop) --}}
-                    <div class="space-y-2">
+                    {{-- Tırnak Modeli --}}
+                    <section class="space-y-3" x-show="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici'" x-collapse>
+                        <div class="flex items-center justify-between ml-1">
+                            <h3 class="text-sm font-semibold tracking-wider text-slate-400 uppercase">Tırnak Modeli (İsteğe Bağlı)</h3>
+                        </div>
+
                         <div id="dropzone"
-                            class="relative w-full h-[200px] rounded-2xl border-2 border-dashed border-[#D2B4C1]/70 bg-gradient-to-br from-[#FBF5F8] to-[#F4E8EF] hover:from-[#F7EEF3] hover:to-[#EDD9E8] transition-all duration-300 flex flex-col items-center justify-center cursor-pointer overflow-hidden group shadow-inner">
-
+                            class="relative w-full flex flex-col items-center justify-center gap-3 py-10 bg-[#FAFAFA] border-2 border-dashed border-[#EAE1E3] rounded-3xl hover:bg-white hover:border-[#D2B6BD] transition-all group cursor-pointer overflow-hidden">
                             <input type="file" name="design_image" id="fileInput"
                                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*">
-
-                            <div id="uploadPlaceholder"
-                                class="flex flex-col items-center pointer-events-none transition-opacity duration-300">
-                                <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-3 shadow-[0_4px_12px_rgba(149,117,130,0.15)]">
-                                    <span class="material-symbols-outlined text-[28px] text-[#95687A]" style="font-weight: 300;">cloud_upload</span>
+                            <div id="uploadPlaceholder" class="flex flex-col items-center gap-3 pointer-events-none transition-opacity duration-300">
+                                <div class="w-12 h-12 rounded-full bg-[#F3ECEF] flex items-center justify-center group-hover:bg-[#EAE1E3] transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B3939B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+                                    </svg>
                                 </div>
-                                <span class="text-[14px] text-[#3B2030] font-bold">Fotoğraf Yükle</span>
-                                <span class="text-[12px] text-[#B496A1] mt-1">JPG, PNG veya WEBP (Maks. 5MB)</span>
+                                <div class="text-center">
+                                    <span class="block text-sm font-medium text-slate-600">Fotoğraf Yükle</span>
+                                    <span class="block text-xs text-slate-400 mt-1">JPG, PNG veya WEBP (Maks. 5MB)</span>
+                                </div>
                             </div>
-
                             <img id="imagePreview" class="absolute inset-0 w-full h-full object-cover hidden" alt="Preview">
                         </div>
-                        <p class="text-[11px] text-[#B496A1] italic mt-1 text-center">* Lütfen yaptırmak istediğiniz tırnak modelinin yakından ve belirgin bir görselini yükleyin.</p>
-                            
-                        <div id="viewPriceBtnContainer" class="hidden mt-3 text-center">
-                            <button type="button" id="viewPriceBtn" class="bg-[#95687A]/10 text-[#95687A] hover:bg-[#95687A]/20 border border-[#95687A]/25 px-4 py-2.5 rounded-full text-[11px] font-bold font-label-caps transition-all duration-200 w-full flex items-center justify-center gap-2 shadow-sm">
-                                <span class="material-symbols-outlined text-[18px]">calculate</span>
+
+                        <p class="text-xs text-slate-400 text-center px-4 leading-relaxed">
+                            İstediğiniz modelin fotoğrafını yükleyerek işleminizi hızlandırabilirsiniz.
+                        </p>
+
+                        <div id="viewPriceBtnContainer" class="hidden text-center">
+                            <button type="button" id="viewPriceBtn"
+                                class="w-full py-3 bg-[#F3ECEF] hover:bg-[#EAE1E3] text-[#B3939B] rounded-2xl text-[12px] font-semibold transition-all flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
                                 YAPAY ZEKA İLE TAHMİNİ FİYAT OLUŞTUR
                             </button>
                         </div>
-                    </div>
 
-                    {{-- AI Price Estimation Section --}}
-                    <div id="priceEstimationSection"
-                        class="fiyat-kutusu hidden bg-gradient-to-br from-[#FBF5F8] to-[#F4E8EF] rounded-2xl p-4 border border-[#D2B4C1]/50 flex flex-col gap-3 shadow-sm">
-                        {{-- Loading / Status Row --}}
-                        <div class="flex items-start gap-3">
-                            <div id="priceSpinner" class="shrink-0 mt-0.5">
-                                <span class="material-symbols-outlined text-[#95687A] animate-spin">progress_activity</span>
-                            </div>
-                            <div class="flex-1">
-                                <div id="priceTitle" class="fiyat-gosterim font-body-md font-semibold text-[#95687A]">Fiyat Oluşturuluyor...</div>
-                                <p id="priceDesc" class="hidden text-sm text-[#957582] mt-1"></p>
-                            </div>
-                        </div>
-
-                        {{-- Price Display (Shown on success) --}}
-                        <div id="serviceSelectorContainer"
-                            class="hidden flex flex-col gap-2 pt-2 border-t border-[#D2B4C1]/30">
-                            <div
-                                class="flex justify-between items-center bg-white p-4 rounded-xl border border-[#EAD5DE]/60 shadow-sm">
-                                <span
-                                    class="text-[11px] font-bold text-[#957582] tracking-wider uppercase">Tahmini Toplam:</span>
-                                <span id="singleTotalPrice" class="text-2xl font-black text-[#3B2030]">₺0</span>
-                            </div>
-                            <p class="text-[11px] text-[#B496A1] text-center italic mt-1">* Sadece tahminidir. Uzman randevu sırasında değiştirebilir.</p>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Çıkarma Price Display --}}
-                <div x-show="serviceType === 'cikarma'" x-transition class="mt-4 flex justify-end">
-                    <div class="flex items-center gap-3 bg-white border border-[#EAD5DE] px-4 py-2.5 rounded-xl shadow-sm">
-                        <span class="text-[12px] font-semibold text-[#957582]">Çıkarma Ücreti</span>
-                        <span class="text-[15px] font-bold text-[#3B2030]">₺{{ intval($baseCikarmaPrice) > 0 ? intval($baseCikarmaPrice) : '?' }}</span>
-                    </div>
-                </div>
-
-                {{-- Client Details --}}
-                <div class="border-t border-[#EAD5DE]/40 pt-5 space-y-2">
-                    <p class="text-[10px] font-bold tracking-[0.15em] text-[#B496A1] uppercase mb-1">Adınız Soyadınız</p>
-                    <input type="text" name="client_name" required
-                        class="w-full bg-white/80 border border-[#EAD5DE]/70 focus:border-[#95687A] focus:ring-2 focus:ring-[#95687A]/20 px-4 py-3 text-[#3B2030] placeholder-[#C4A0B4] rounded-xl transition-all duration-200 outline-none text-[14px]"
-                        placeholder="Adınızı giriniz...">
-                </div>
-
-                {{-- Calendar Slot Picker --}}
-                <div class="border-t border-[#EAD5DE]/40 pt-5 space-y-4">
-                    <div>
-                        <p class="text-[10px] font-bold tracking-[0.15em] text-[#B496A1] uppercase mb-1">Adım 3</p>
-                        <p class="text-[15px] font-bold text-[#3B2030]" style="font-family:'Playfair Display',serif;">Tarih & Saat Seçin</p>
-                    </div>
-
-                    {{-- Selected Slot Preview Alert --}}
-                    <div class="p-3 bg-[#95687A]/10 border border-[#95687A]/25 rounded-xl flex items-center justify-between text-[#95687A] font-medium text-xs transition-all duration-300"
-                        x-show="selectedDate && selectedTime" x-transition.opacity style="display: none;">
-                        <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[18px]">event_available</span>
-                            <span>Seçilen Randevu: <span class="font-bold"
-                                    x-text="formatDate(selectedDate) + ' - Saat ' + selectedTime"></span></span>
-                        </div>
-                        <button type="button" @click="selectedDate = ''; selectedTime = ''; activeSlotKey = ''"
-                            class="text-[10px] underline hover:opacity-85">Temizle</button>
-                    </div>
-
-                    {{-- Hidden Inputs for Form Submission --}}
-                    <input type="hidden" name="appointment_date" :value="selectedDate" required>
-                    <input type="hidden" name="appointment_time" :value="selectedTime" required>
-                    <input type="hidden" name="estimated_price" id="estimatedPriceInput" value="0">
-
-                    <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-5 border border-[#EAD5DE]/60 shadow-sm">
-                        <!-- Month / Year with arrows inside calendar box -->
-                        <div class="relative flex items-center justify-center mb-5">
-                            <button type="button" @click="prevMonth()" x-show="shouldShowPrevArrow()"
-                                class="absolute left-0 p-1.5 rounded-full bg-[#F4EDF0] hover:bg-[#EAD5DE] text-[#3B2030] transition-colors flex items-center justify-center w-8 h-8 z-10 shadow-sm">
-                                <span class="material-symbols-outlined text-sm">chevron_left</span>
-                            </button>
-
-                            <div class="text-[16px] font-bold text-[#3B2030]" style="font-family:'Playfair Display',serif;"
-                                x-text="monthName"></div>
-
-                            <button type="button" @click="nextMonth()" x-show="shouldShowNextArrow()"
-                                class="absolute right-0 p-1.5 rounded-full bg-[#F4EDF0] hover:bg-[#EAD5DE] text-[#3B2030] transition-colors flex items-center justify-center w-8 h-8 z-10 shadow-sm">
-                                <span class="material-symbols-outlined text-sm">chevron_right</span>
-                            </button>
-                        </div>
-
-                        <!-- Days Header -->
-                        <div class="grid grid-cols-7 gap-1 text-center mb-3">
-                            <div class="font-bold text-[10px] text-[#B496A1]">Pt</div>
-                            <div class="font-bold text-[10px] text-[#B496A1]">Sa</div>
-                            <div class="font-bold text-[10px] text-[#B496A1]">Ça</div>
-                            <div class="font-bold text-[10px] text-[#B496A1]">Pe</div>
-                            <div class="font-bold text-[10px] text-[#B496A1]">Cu</div>
-                            <div class="font-bold text-[10px] text-[#B496A1]">Ct</div>
-                            <div class="font-bold text-[10px] text-[#B496A1]">Pz</div>
-                        </div>
-
-                        <!-- Calendar Grid -->
-                        <div class="grid grid-cols-7 gap-1 text-center">
-                            <template x-for="day in daysInGrid" :key="day.dateStr">
-                                <div @click="selectDay(day)" :class="{
-                                                'text-[#C4A0B4]/40 cursor-not-allowed': !day.isSelectable,
-                                                'rounded-full bg-red-50 text-red-300 border border-red-100 line-through cursor-not-allowed': day.isSelectable && isDayFullyBooked(day.dateStr),
-                                                'rounded-full hover:bg-[#F4EDF0] cursor-pointer transition-all text-[#3B2030]': day.isSelectable && !isDayFullyBooked(day.dateStr) && selectedDate !== day.dateStr,
-                                                'rounded-full bg-[#95687A] text-white shadow-[0_4px_12px_rgba(149,104,122,0.4)] cursor-pointer font-bold': day.isSelectable && !isDayFullyBooked(day.dateStr) && selectedDate === day.dateStr
-                                            }"
-                                    class="py-1.5 relative select-none flex items-center justify-center w-9 h-9 mx-auto transition-all text-[13px]">
-                                    <span x-text="day.dayNum"></span>
-                                    <template x-if="day.hasDot">
-                                        <span
-                                            class="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full"
-                                            :class="selectedDate === day.dateStr ? 'bg-white/80' : 'bg-[#95687A]'"></span>
-                                    </template>
+                        <div id="priceEstimationSection" class="fiyat-kutusu hidden bg-[#FBF5F8] rounded-2xl p-4 border border-[#F2EAEB] flex flex-col gap-3">
+                            <div class="flex items-start gap-3">
+                                <div id="priceSpinner" class="shrink-0 mt-0.5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B3939B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
                                 </div>
-                            </template>
+                                <div class="flex-1">
+                                    <div id="priceTitle" class="fiyat-gosterim text-sm font-semibold text-[#B3939B]">Fiyat Oluşturuluyor...</div>
+                                    <p id="priceDesc" class="hidden text-xs text-slate-500 mt-1"></p>
+                                </div>
+                            </div>
+                            <div id="serviceSelectorContainer" class="hidden flex flex-col gap-2 pt-2 border-t border-[#F2EAEB]">
+                                <div class="flex justify-between items-center bg-white p-4 rounded-2xl border border-[#F2EAEB] shadow-sm">
+                                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tahmini Toplam:</span>
+                                    <span id="singleTotalPrice" class="text-2xl font-bold text-[#B3939B]">₺0</span>
+                                </div>
+                                <p class="text-[11px] text-slate-400 text-center italic">* Sadece tahminidir. Uzman randevu sırasında değiştirebilir.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    {{-- Takvim --}}
+                    <section class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] space-y-6">
+
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-semibold text-slate-700 text-lg" x-text="monthName">Takvim</h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D2B6BD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>
+                            </svg>
                         </div>
 
-                        {{-- Time Slots --}}
-                        <div class="mt-5 border-t border-[#EAD5DE]/40 pt-4" x-show="selectedDate">
-                            <div class="font-bold text-[10px] text-[#B496A1] mb-3 tracking-widest uppercase"
-                                x-text="formatFriendlySelectedDate() + ' TARİHİ İÇİN UYGUN SAATLER'"></div>
+                        <input type="hidden" name="appointment_date" :value="selectedDate" required>
+                        <input type="hidden" name="appointment_time" :value="selectedTime" required>
+                        <input type="hidden" name="estimated_price" id="estimatedPriceInput" value="0">
 
-                            <div class="flex overflow-x-auto no-scrollbar gap-2 pb-2">
+                        {{-- Selected preview --}}
+                        <div class="py-2 px-3 bg-[#F3ECEF] border border-[#D2B6BD]/30 rounded-2xl flex items-center justify-between text-[#B3939B] text-xs font-medium"
+                            x-show="selectedDate && selectedTime" x-transition.opacity style="display: none;">
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="m9 16 2 2 4-4"/></svg>
+                                <span>Seçilen: <span class="font-bold" x-text="formatDate(selectedDate) + ' — ' + selectedTime"></span></span>
+                            </div>
+                            <button type="button" @click="selectedDate = ''; selectedTime = ''; activeSlotKey = ''" class="text-[10px] underline hover:opacity-75">Temizle</button>
+                        </div>
+
+                        <div>
+                            {{-- Day headers --}}
+                            <div class="grid grid-cols-7 text-center mb-4">
+                                @foreach(['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz'] as $day)
+                                    <div class="text-xs font-semibold text-slate-400">{{ $day }}</div>
+                                @endforeach
+                            </div>
+
+                            {{-- Month nav --}}
+                            <div class="relative flex items-center justify-center mb-4">
+                                <button type="button" @click="prevMonth()" x-show="shouldShowPrevArrow()"
+                                    class="absolute left-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#F3ECEF] text-slate-400 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                                </button>
+                                <span class="text-sm font-semibold text-slate-600" x-text="monthName"></span>
+                                <button type="button" @click="nextMonth()" x-show="shouldShowNextArrow()"
+                                    class="absolute right-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#F3ECEF] text-slate-400 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                                </button>
+                            </div>
+
+                            {{-- Calendar grid --}}
+                            <div class="grid grid-cols-7 gap-y-3 gap-x-1">
+                                <template x-for="day in daysInGrid" :key="day.dateStr">
+                                    <button type="button"
+                                        @click="selectDay(day)"
+                                        :disabled="!day.isSelectable || isDayFullyBooked(day.dateStr)"
+                                        :class="{
+                                            'bg-[#B3939B] text-white font-semibold shadow-md shadow-[#B3939B]/30 scale-105': day.isSelectable && selectedDate === day.dateStr,
+                                            'text-slate-300 cursor-not-allowed': !day.isSelectable,
+                                            'bg-[#F8F9FA] text-slate-400 line-through decoration-slate-300 cursor-not-allowed': day.isSelectable && isDayFullyBooked(day.dateStr) && selectedDate !== day.dateStr,
+                                            'text-slate-600 hover:bg-[#F3ECEF] font-medium': day.isSelectable && !isDayFullyBooked(day.dateStr) && selectedDate !== day.dateStr
+                                        }"
+                                        class="h-10 w-10 mx-auto rounded-full flex items-center justify-center text-sm transition-all">
+                                        <span x-text="day.dayNum"></span>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+
+                        {{-- Time slots --}}
+                        <div class="border-t border-slate-100 pt-4" x-show="selectedDate" style="display:none;">
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3"
+                               x-text="formatFriendlySelectedDate() + ' TARİHİ İÇİN UYGUN SAATLER'"></p>
+                            <div class="flex overflow-x-auto no-scrollbar gap-2 pb-1">
                                 <template x-for="slot in getAvailableSlotsForSelectedDate()" :key="slot.key">
                                     <button type="button"
                                         @click="if (slot.isAvailable) { selectedTime = slot.hour; activeSlotKey = slot.key; }"
-                                        :disabled="!slot.isAvailable" :class="{
-                                                    'bg-[#F4EDF0]/30 text-[#C4A0B4]/40 border border-[#EAD5DE]/20 cursor-not-allowed': !slot.isAvailable,
-                                                    'border border-[#EAD5DE] text-[#957582] hover:bg-[#F4EDF0] hover:border-[#C4A0B4] transition-all': slot.isAvailable && selectedTime !== slot.hour,
-                                                    'bg-[#95687A] text-white border border-[#95687A] shadow-[0_4px_12px_rgba(149,104,122,0.3)] font-bold': slot.isAvailable && selectedTime === slot.hour
-                                                }"
-                                        class="flex-none px-4 py-2 rounded-full transition-all text-[12px] whitespace-nowrap">
+                                        :disabled="!slot.isAvailable"
+                                        :class="{
+                                            'bg-[#B3939B] text-white border-[#B3939B] shadow-md shadow-[#B3939B]/30 font-semibold': slot.isAvailable && selectedTime === slot.hour,
+                                            'text-slate-300 border-slate-100 cursor-not-allowed opacity-50': !slot.isAvailable,
+                                            'text-slate-600 border-[#F2EAEB] hover:border-[#D2B6BD]/50 hover:bg-[#F3ECEF]': slot.isAvailable && selectedTime !== slot.hour
+                                        }"
+                                        class="flex-none px-4 py-2 rounded-full border text-xs font-medium transition-all whitespace-nowrap">
                                         <span x-text="formatTimeLabel(slot.hour)"></span>
                                     </button>
                                 </template>
-
                                 <template x-if="getAvailableSlotsForSelectedDate().filter(s => s.isAvailable).length === 0">
-                                    <div class="text-[12px] text-[#B496A1] italic py-1">Bu tarihte uygun randevu saati bulunmuyor.</div>
+                                    <div class="text-xs text-slate-400 italic py-2">Bu tarihte uygun randevu saati bulunmuyor.</div>
                                 </template>
                             </div>
                         </div>
 
                         {{-- Legend --}}
-                        <div class="flex justify-center gap-4 text-[10px] text-[#B496A1] pt-3 border-t border-[#EAD5DE]/40 mt-4">
-                            <div class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-[#EAD5DE] inline-block"></span>
-                                <span>Müsait</span>
+                        <div class="flex items-center justify-center gap-6 pt-4 border-t border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
+                                <span class="text-xs text-slate-500 font-medium">Müsait</span>
                             </div>
-                            <div class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-[#95687A] inline-block"></span>
-                                <span>Seçili</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2.5 h-2.5 rounded-full bg-[#B3939B] shadow-sm shadow-[#B3939B]/40"></div>
+                                <span class="text-xs text-slate-500 font-medium">Seçili</span>
                             </div>
-                            <div class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-gray-200 inline-block"></span>
-                                <span>Dolu</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2.5 h-2.5 rounded-full bg-slate-100 border border-slate-200"></div>
+                                <span class="text-xs text-slate-400 font-medium line-through">Dolu</span>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </section>
 
-                <div class="pt-3">
-                    <button type="submit" id="submitBtn"
-                        class="w-full bg-gradient-to-r from-[#95687A] to-[#7B4F5F] text-white font-bold py-4 rounded-2xl shadow-[0_8px_24px_rgba(149,104,122,0.35)] hover:shadow-[0_12px_28px_rgba(149,104,122,0.45)] hover:from-[#8A5F70] hover:to-[#6E4555] transition-all duration-300 flex justify-center items-center gap-2 text-[13px] tracking-[0.12em] uppercase">
-                        Randevu Talep Et
-                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                    </button>
-                    <p class="text-center text-[11px] text-[#B496A1] mt-2.5 flex items-center justify-center gap-1">
-                        <span class="material-symbols-outlined text-[14px]">attach_money</span>
-                        Ödeme nakit alınmaktadır.
-                    </p>
-                </div>
-            </form>
-        </section>
-    </main>
+                    {{-- Randevu Butonu --}}
+                    <section class="pt-4 space-y-4">
+                        <button type="submit" id="submitBtn"
+                            class="w-full py-4 bg-[#B3939B] hover:bg-[#A3838B] active:scale-[0.98] text-white rounded-2xl font-semibold text-lg transition-all shadow-lg shadow-[#B3939B]/30 flex items-center justify-center gap-2">
+                            RANDEVU TALEP ET
+                        </button>
+                        <div class="flex items-center justify-center gap-1.5 text-slate-400">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            <span class="text-xs font-medium">Ödeme nakit alınmaktadır.</span>
+                        </div>
+                    </section>
+
+                </form>
+            </div>
+
+        </main>
+    </div>
 @endsection
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {{-- Alpine.js and Collapse Plugin --}}
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
@@ -543,62 +395,32 @@
                 showModal: false,
                 showLightbox: false,
                 activeIdx: 0,
-
                 touchStartX: 0,
                 touchEndX: 0,
 
                 openGallery() {
                     if (this.images.length === 0) {
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'Portföy Boş',
-                            text: 'Henüz yüklenmiş bir portföy görseli bulunmuyor.',
-                            confirmButtonColor: '#7b5068'
-                        });
+                        Swal.fire({ icon: 'info', title: 'Portföy Boş', text: 'Henüz yüklenmiş bir portföy görseli bulunmuyor.', confirmButtonColor: '#B3939B' });
                         return;
                     }
                     this.activeIdx = 0;
                     this.showModal = true;
                 },
-
-                closeGallery() {
-                    this.showModal = false;
-                },
-
+                closeGallery() { this.showModal = false; },
                 openLightbox(index) {
                     if (index >= this.images.length) return;
                     this.activeIdx = index;
                     this.showLightbox = true;
                 },
-
-                closeLightbox() {
-                    this.showLightbox = false;
-                },
-
-                nextImage() {
-                    this.activeIdx = (this.activeIdx + 1) % this.images.length;
-                },
-
-                prevImage() {
-                    this.activeIdx = (this.activeIdx - 1 + this.images.length) % this.images.length;
-                },
-
-                handleTouchStart(e) {
-                    this.touchStartX = e.changedTouches[0].screenX;
-                },
-
-                handleTouchEnd(e) {
-                    this.touchEndX = e.changedTouches[0].screenX;
-                    this.handleSwipe();
-                },
-
+                closeLightbox() { this.showLightbox = false; },
+                nextImage() { this.activeIdx = (this.activeIdx + 1) % this.images.length; },
+                prevImage() { this.activeIdx = (this.activeIdx - 1 + this.images.length) % this.images.length; },
+                handleTouchStart(e) { this.touchStartX = e.changedTouches[0].screenX; },
+                handleTouchEnd(e) { this.touchEndX = e.changedTouches[0].screenX; this.handleSwipe(); },
                 handleSwipe() {
                     const diff = this.touchEndX - this.touchStartX;
-                    if (diff > 50) {
-                        this.prevImage();
-                    } else if (diff < -50) {
-                        this.nextImage();
-                    }
+                    if (diff > 50) this.prevImage();
+                    else if (diff < -50) this.nextImage();
                 }
             }));
 
@@ -614,7 +436,6 @@
                 serviceType: 'yapim',
                 aiPriceLoaded: false,
 
-                // Base prices from nail tech profile (jel & kalici aynı protez fiyatını kullanır)
                 basePrices: {
                     yapim: {{ intval($baseProthezPrice) }},
                     yapim_jel: {{ intval($baseProthezPrice) }},
@@ -625,7 +446,6 @@
 
                 updateBasePrice() {
                     this.basePriceDisplay = this.basePrices[this.serviceType] || 0;
-                    // Reset AI price when sub-type changes
                     this.aiPriceLoaded = false;
                     const estInput = document.getElementById('estimatedPriceInput');
                     if (estInput) estInput.value = this.basePriceDisplay;
@@ -648,69 +468,40 @@
                 generateGrid() {
                     const firstDayOfMonth = new Date(this.currentYear, this.currentMonth, 1);
                     const lastDayOfMonth = new Date(this.currentYear, this.currentMonth + 1, 0);
-
                     let m = firstDayOfMonth.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' });
                     this.monthName = m.charAt(0).toUpperCase() + m.slice(1);
 
                     const days = [];
-
                     const startDayOfWeek = firstDayOfMonth.getDay();
                     const prevMonthLastDay = new Date(this.currentYear, this.currentMonth, 0).getDate();
+
                     for (let i = startDayOfWeek - 1; i >= 0; i--) {
                         const d = prevMonthLastDay - i;
-                        let pm = this.currentMonth - 1;
-                        let py = this.currentYear;
+                        let pm = this.currentMonth - 1, py = this.currentYear;
                         if (pm < 0) { pm = 11; py--; }
                         const dateStr = `${py}-${String(pm + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                        days.push({
-                            dateStr: dateStr,
-                            dayNum: d,
-                            isCurrentMonth: false,
-                            isSelectable: false,
-                            hasDot: false
-                        });
+                        days.push({ dateStr, dayNum: d, isCurrentMonth: false, isSelectable: false, hasDot: false });
                     }
 
                     const today = new Date(this.todayStr);
                     const maxAllowedDate = new Date(today);
                     maxAllowedDate.setDate(today.getDate() + 27);
 
-                    const totalDays = lastDayOfMonth.getDate();
-                    for (let d = 1; d <= totalDays; d++) {
+                    for (let d = 1; d <= lastDayOfMonth.getDate(); d++) {
                         const dateStr = `${this.currentYear}-${String(this.currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                         const dateObj = new Date(this.currentYear, this.currentMonth, d);
-
                         const isAfterOrEqualToday = dateObj >= new Date(today.getFullYear(), today.getMonth(), today.getDate());
                         const isBeforeOrEqualMax = dateObj <= new Date(maxAllowedDate.getFullYear(), maxAllowedDate.getMonth(), maxAllowedDate.getDate());
-                        let isSelectable = isAfterOrEqualToday && isBeforeOrEqualMax;
-
-                        const isTodayDate = dateStr === this.todayStr;
-
-                        days.push({
-                            dateStr: dateStr,
-                            dayNum: d,
-                            isCurrentMonth: true,
-                            isSelectable: isSelectable,
-                            hasDot: isTodayDate
-                        });
+                        days.push({ dateStr, dayNum: d, isCurrentMonth: true, isSelectable: isAfterOrEqualToday && isBeforeOrEqualMax, hasDot: dateStr === this.todayStr });
                     }
 
                     const totalCells = Math.ceil(days.length / 7) * 7;
-                    const leadingDaysNeeded = totalCells - days.length;
-                    for (let d = 1; d <= leadingDaysNeeded; d++) {
-                        let nm = this.currentMonth + 1;
-                        let ny = this.currentYear;
+                    for (let d = 1; d <= totalCells - days.length; d++) {
+                        let nm = this.currentMonth + 1, ny = this.currentYear;
                         if (nm > 11) { nm = 0; ny++; }
                         const dateStr = `${ny}-${String(nm + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                        days.push({
-                            dateStr: dateStr,
-                            dayNum: d,
-                            isCurrentMonth: false,
-                            isSelectable: false,
-                            hasDot: false
-                        });
+                        days.push({ dateStr, dayNum: d, isCurrentMonth: false, isSelectable: false, hasDot: false });
                     }
-
                     this.daysInGrid = days;
                 },
 
@@ -720,35 +511,26 @@
                     const limitDate = new Date(today.getFullYear(), today.getMonth(), 1);
                     if (viewDate > limitDate) {
                         this.currentMonth--;
-                        if (this.currentMonth < 0) {
-                            this.currentMonth = 11;
-                            this.currentYear--;
-                        }
+                        if (this.currentMonth < 0) { this.currentMonth = 11; this.currentYear--; }
                         this.generateGrid();
                     }
                 },
-
                 nextMonth() {
                     const today = new Date(this.todayStr);
-                    const viewDate = new Date(this.currentYear, this.currentMonth, 1);
                     const maxDate = new Date(today);
                     maxDate.setDate(today.getDate() + 27);
                     const limitDate = new Date(maxDate.getFullYear(), maxDate.getMonth(), 1);
+                    const viewDate = new Date(this.currentYear, this.currentMonth, 1);
                     if (viewDate < limitDate) {
                         this.currentMonth++;
-                        if (this.currentMonth > 11) {
-                            this.currentMonth = 0;
-                            this.currentYear++;
-                        }
+                        if (this.currentMonth > 11) { this.currentMonth = 0; this.currentYear++; }
                         this.generateGrid();
                     }
                 },
-
                 shouldShowPrevArrow() {
                     const today = new Date(this.todayStr);
                     return this.currentYear !== today.getFullYear() || this.currentMonth !== today.getMonth();
                 },
-
                 shouldShowNextArrow() {
                     const today = new Date(this.todayStr);
                     const lastDayOfTodayMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
@@ -756,92 +538,59 @@
                     const isCurrentlyShowingTodayMonth = this.currentYear === today.getFullYear() && this.currentMonth === today.getMonth();
                     return isTodayInLastWeek && isCurrentlyShowingTodayMonth;
                 },
-
                 selectDay(day) {
                     if (!day.isSelectable || this.isDayFullyBooked(day.dateStr)) return;
                     this.selectedDate = day.dateStr;
                     this.selectedTime = '';
                     this.activeSlotKey = '';
                 },
-
                 isDayFullyBooked(dateStr) {
-                    if (!dateStr) return false;
-                    if (this.hours.length === 0) return false;
-
+                    if (!dateStr || this.hours.length === 0) return false;
                     const isTodaySelected = dateStr === this.todayStr;
                     const now = new Date();
-
                     return this.hours.every(hour => {
                         const key = `${dateStr}_${hour}`;
-                        const isBlocked = !!this.blockedSlots[key];
-                        const isOccupied = !!this.occupiedSlots[key];
-
-                        let isPast = false;
+                        if (!!this.blockedSlots[key] || !!this.occupiedSlots[key]) return true;
                         if (isTodaySelected) {
                             const parts = dateStr.split('-');
                             const slotTime = new Date(parts[0], parts[1] - 1, parts[2]);
                             const [h, m] = hour.split(':');
                             slotTime.setHours(parseInt(h), parseInt(m), 0, 0);
-                            if (slotTime < now) {
-                                isPast = true;
-                            }
+                            if (slotTime < now) return true;
                         }
-
-                        return isBlocked || isOccupied || isPast;
+                        return false;
                     });
                 },
-
                 getAvailableSlotsForSelectedDate() {
                     if (!this.selectedDate) return [];
-
-                    const slots = [];
                     const isTodaySelected = this.selectedDate === this.todayStr;
                     const now = new Date();
-
-                    this.hours.forEach(hour => {
+                    return this.hours.map(hour => {
                         const key = `${this.selectedDate}_${hour}`;
                         const isBlocked = !!this.blockedSlots[key];
                         const isOccupied = !!this.occupiedSlots[key];
-
                         let isPast = false;
                         if (isTodaySelected) {
                             const parts = this.selectedDate.split('-');
                             const slotTime = new Date(parts[0], parts[1] - 1, parts[2]);
                             const [h, m] = hour.split(':');
                             slotTime.setHours(parseInt(h), parseInt(m), 0, 0);
-                            if (slotTime < now) {
-
-                                isPast = true;
-                            }
+                            if (slotTime < now) isPast = true;
                         }
-
-                        slots.push({
-                            hour: hour,
-                            key: key,
-                            isAvailable: !isBlocked && !isOccupied && !isPast
-                        });
+                        return { hour, key, isAvailable: !isBlocked && !isOccupied && !isPast };
                     });
-
-                    return slots;
                 },
-
                 formatFriendlySelectedDate() {
                     if (!this.selectedDate) return '';
                     const parts = this.selectedDate.split('-');
-                    const date = new Date(parts[0], parts[1] - 1, parts[2]);
-                    return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }).toUpperCase();
+                    return new Date(parts[0], parts[1] - 1, parts[2]).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }).toUpperCase();
                 },
-
                 formatDate(dateStr) {
                     if (!dateStr) return '';
                     const parts = dateStr.split('-');
-                    const date = new Date(parts[0], parts[1] - 1, parts[2]);
-                    return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'long' });
+                    return new Date(parts[0], parts[1] - 1, parts[2]).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'long' });
                 },
-
-                formatTimeLabel(hourStr) {
-                    return hourStr.substring(0, 5);
-                }
+                formatTimeLabel(hourStr) { return hourStr.substring(0, 5); }
             }));
         });
 
@@ -854,80 +603,43 @@
             const priceTitle = document.getElementById('priceTitle');
             const priceDesc = document.getElementById('priceDesc');
             const dropzone = document.getElementById('dropzone');
-
-
-            // Drag and drop styles
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropzone.addEventListener(eventName, preventDefaults, false);
-            });
-
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-
-            ['dragenter', 'dragover'].forEach(eventName => {
-                dropzone.addEventListener(eventName, highlight, false);
-            });
-
-            ['dragleave', 'drop'].forEach(eventName => {
-                dropzone.addEventListener(eventName, unhighlight, false);
-            });
-
-            function highlight(e) {
-                dropzone.classList.add('border-primary', 'bg-surface-container-high');
-            }
-
-            function unhighlight(e) {
-                dropzone.classList.remove('border-primary', 'bg-surface-container-high');
-            }
-
             const viewPriceBtnContainer = document.getElementById('viewPriceBtnContainer');
             const viewPriceBtn = document.getElementById('viewPriceBtn');
             const selectorContainer = document.getElementById('serviceSelectorContainer');
 
-            // Handle file selection
-            fileInput.addEventListener('change', function (e) {
+            if (!dropzone || !fileInput) return;
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => dropzone.addEventListener(e, ev => { ev.preventDefault(); ev.stopPropagation(); }, false));
+            ['dragenter', 'dragover'].forEach(e => dropzone.addEventListener(e, () => dropzone.classList.add('border-[#D2B6BD]', 'bg-white'), false));
+            ['dragleave', 'drop'].forEach(e => dropzone.addEventListener(e, () => dropzone.classList.remove('border-[#D2B6BD]', 'bg-white'), false));
+
+            fileInput.addEventListener('change', function () {
                 if (this.files && this.files[0]) {
                     const file = this.files[0];
-
-                    // Show preview
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         imagePreview.src = e.target.result;
                         imagePreview.classList.remove('hidden');
                         uploadPlaceholder.classList.add('hidden');
-                    }
+                    };
                     reader.readAsDataURL(file);
-
-                    // "Tahmini Fiyatı Gör" butonunu göster
                     if (viewPriceBtnContainer) viewPriceBtnContainer.classList.remove('hidden');
-                    
-                    // Fiyat kutusunu gizle
                     if (priceSection) priceSection.classList.add('hidden');
-                    
-                    // Önceki fiyattan kalma div'i gizle
                     if (selectorContainer) selectorContainer.classList.add('hidden');
-
-                    // Trigger AI Price Simulation in background
                     simulateAIPrice(file);
                 }
             });
 
             if (viewPriceBtn) {
-                viewPriceBtn.addEventListener('click', function(e) {
+                viewPriceBtn.addEventListener('click', function (e) {
                     e.preventDefault();
                     if (viewPriceBtnContainer) viewPriceBtnContainer.classList.add('hidden');
-                    if (priceSection) {
-                        priceSection.classList.remove('hidden');
-                        priceSection.classList.add('animate-in', 'fade-in', 'slide-in-from-bottom-2');
-                    }
+                    if (priceSection) priceSection.classList.remove('hidden');
                 });
             }
 
-            // Initialize estimated price with base protez price
             window.nihaiJP = 0;
-            (function() {
+            (function () {
                 const estInput = document.getElementById('estimatedPriceInput');
                 if (estInput && estInput.value === '0') {
                     estInput.value = {{ intval($baseProthezPrice) }};
@@ -943,82 +655,55 @@
             };
 
             function simulateAIPrice(file) {
-                const priceBreakdown = document.getElementById('priceBreakdown');
-                
-                // Arka planda başlarken yazıları resetle
-                priceSpinner.innerHTML = '<span class="material-symbols-outlined text-primary animate-spin">progress_activity</span>';
+                priceSpinner.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B3939B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';
                 priceTitle.innerText = 'Fiyat Oluşturuluyor...';
-                priceTitle.className = 'font-body-md font-semibold text-primary';
+                priceTitle.className = 'fiyat-gosterim text-sm font-semibold text-[#B3939B]';
                 priceDesc.classList.add('hidden');
-                if (priceBreakdown) priceBreakdown.classList.add('hidden');
 
                 const formData = new FormData();
                 formData.append('design_image', file);
-
                 const nailTechInput = document.querySelector('input[name="nail_tech_id"]');
-                if (nailTechInput) {
-                    formData.append('nail_tech_id', nailTechInput.value);
-                }
-
+                if (nailTechInput) formData.append('nail_tech_id', nailTechInput.value);
                 const csrfToken = document.querySelector('input[name="_token"]').value;
 
                 fetch('{{ route("tirnak.hesapla") }}', {
                     method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json'
-                    },
+                    headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
                     body: formData
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Spinner güncelle
-                            priceSpinner.innerHTML = '<span class="material-symbols-outlined text-green-600 dark:text-green-400">check_circle</span>';
-                            priceTitle.className = 'fiyat-gosterim font-body-md font-semibold text-green-600 dark:text-green-400';
-                            priceTitle.innerText = 'Fiyat Oluşturuldu! (yapayzeka yanlış sonuç verebilir)';
-
-                            window.nihaiJP = data.nihai_jp;
-
-                            if (selectorContainer) {
-                                selectorContainer.classList.remove('hidden');
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        priceSpinner.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>';
+                        priceTitle.className = 'fiyat-gosterim text-sm font-semibold text-green-600';
+                        priceTitle.innerText = 'Fiyat Oluşturuldu! (yapay zeka yanlış sonuç verebilir)';
+                        window.nihaiJP = data.nihai_jp;
+                        if (selectorContainer) selectorContainer.classList.remove('hidden');
+                        window.updatePriceDisplay();
+                        const bookingSection = document.getElementById('appointmentForm');
+                        if (bookingSection) {
+                            const sectionEl = bookingSection.closest('[x-data]');
+                            if (sectionEl && sectionEl._x_dataStack) {
+                                const alpineData = sectionEl._x_dataStack.find(d => 'aiPriceLoaded' in d);
+                                if (alpineData) alpineData.aiPriceLoaded = true;
                             }
-
-                            window.updatePriceDisplay();
-
-                            // Alpine'a AI fiyatı yüklendi sinyali ver (booking section'u hedefle)
-                            const bookingSection = document.getElementById('appointmentForm');
-                            if (bookingSection) {
-                                const sectionEl = bookingSection.closest('[x-data]');
-                                if (sectionEl && sectionEl._x_dataStack) {
-                                    const alpineData = sectionEl._x_dataStack.find(d => 'aiPriceLoaded' in d);
-                                    if (alpineData) alpineData.aiPriceLoaded = true;
-                                }
-                            }
-
-                            // Açıklama metnini gizle
-                            priceDesc.classList.add('hidden');
-                        } else {
-                            // Sadece kullanıcı dostu mesajı göster, debug_error'ı sadece konsola yaz
-                            if (data.debug_error) console.error("Backend Error:", data.debug_error);
-                            throw new Error(data.message || 'Analiz sırasında bir hata oluştu.');
                         }
-                    })
-                    .catch(error => {
-                        console.error("===== HATA DETAYI =====", error.message || error);
-                        priceSpinner.innerHTML = '<span class="material-symbols-outlined text-amber-500">warning</span>';
-                        priceTitle.className = 'font-body-md font-semibold text-amber-600';
-                        priceTitle.innerText = error.message || 'Yapay zeka şuanda yanıt vermiyor.';
-                        
-                        priceDesc.innerText = 'Çok fazla istek attıysanız veya sistem yoğunsa lütfen birkaç dakika sonra tekrar deneyin.';
-                        priceDesc.classList.remove('hidden');
-
-                        const priceBreakdownEl = document.getElementById('priceBreakdown');
-                        if (priceBreakdownEl) priceBreakdownEl.classList.add('hidden');
-                    });
+                        priceDesc.classList.add('hidden');
+                    } else {
+                        if (data.debug_error) console.error('Backend Error:', data.debug_error);
+                        throw new Error(data.message || 'Analiz sırasında bir hata oluştu.');
+                    }
+                })
+                .catch(error => {
+                    console.error('===== HATA DETAYI =====', error.message || error);
+                    priceSpinner.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></svg>';
+                    priceTitle.className = 'fiyat-gosterim text-sm font-semibold text-amber-600';
+                    priceTitle.innerText = error.message || 'Yapay zeka şuanda yanıt vermiyor.';
+                    priceDesc.innerText = 'Çok fazla istek attıysanız veya sistem yoğunsa lütfen birkaç dakika sonra tekrar deneyin.';
+                    priceDesc.classList.remove('hidden');
+                });
             }
 
-            // Form Validation for selectedDate and selectedTime
             const appointmentForm = document.getElementById('appointmentForm');
             if (appointmentForm) {
                 appointmentForm.addEventListener('submit', function (e) {
@@ -1026,26 +711,10 @@
                     const timeInput = appointmentForm.querySelector('input[name="appointment_time"]');
                     if (!dateInput.value || !timeInput.value) {
                         e.preventDefault();
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Randevu Saati Seçin',
-                            text: 'Lütfen takvimden uygun bir gün ve saat seçin.',
-                            confirmButtonColor: '#7b5068'
-                        });
+                        Swal.fire({ icon: 'warning', title: 'Randevu Saati Seçin', text: 'Lütfen takvimden uygun bir gün ve saat seçin.', confirmButtonColor: '#B3939B' });
                         return;
                     }
-
-
-                    // Immediately show loading popup in the middle of the screen
-                    Swal.fire({
-                        title: 'Randevu Talebiniz Gönderiliyor',
-                        text: 'Lütfen bekleyin...',
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
+                    Swal.fire({ title: 'Randevu Talebiniz Gönderiliyor', text: 'Lütfen bekleyin...', allowOutsideClick: false, showConfirmButton: false, didOpen: () => Swal.showLoading() });
                 });
             }
         });

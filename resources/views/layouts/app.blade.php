@@ -88,9 +88,8 @@
             max-width: 100%;
         }
         body {
-            background: linear-gradient(160deg, #FDF7FA 0%, #F9F0F5 50%, #FDF7FA 100%);
-            background-attachment: fixed;
-            color: #281820;
+            background-color: #FDFBFB;
+            color: #1e293b;
             min-height: 100dvh;
             overflow-x: hidden;
             max-width: 100%;
@@ -109,16 +108,12 @@
 <body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col relative selection:bg-primary-container selection:text-on-primary-container pb-20 sm:pb-24 md:pb-0">
 
     {{-- TopAppBar --}}
-    <header x-data="{ scrolled: false }" @scroll.window="scrolled = (window.pageYOffset > 20)"
-        :class="scrolled ? 'bg-white/75 backdrop-blur-2xl shadow-[0_2px_20px_rgba(140,95,114,0.12)] border-b border-[#E5CDD8]/60' : 'bg-white/40 backdrop-blur-xl border-b border-[#E5CDD8]/30'"
-        class="docked full-width top-0 sticky z-50 flex justify-center items-center w-full px-margin-mobile h-16 md:px-margin-desktop transition-all duration-500 rounded-b-[28px]">
-        <h1 class="text-[26px] sm:text-[30px] text-[#8C5F72] text-center font-semibold flex items-center justify-center gap-1" style="font-family: 'Playfair Display', serif; letter-spacing: 0.04em;">
+    <header
+        class="sticky top-0 z-20 w-full bg-gradient-to-r from-[#EADDD9] via-[#EAE1E3] to-[#E3D5DB] py-4 px-5 shadow-sm shadow-rose-900/5 backdrop-blur-md">
+        <h1 class="text-xl font-medium tracking-wide text-[#5C4D53] flex items-center justify-center gap-1.5" style="font-family: 'Playfair Display', serif;">
             {{ request()->is('panel/*') ? (auth()->user()->salon_name ?? "L'ART DE L'ONGLE") : (($nailTech->salon_name ?? null) ?: "L'ART DE L'ONGLE") }}
-            <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-[#C4A0B4] -mt-5 ml-1">
-                <!-- Large Outline Star -->
-                <path d="M12 2C12 9 17 14 24 14C17 14 12 19 12 26C12 19 7 14 0 14C7 14 12 9 12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-                <!-- Small Solid Star -->
-                <path d="M25 17C25 19.5 27 21.5 29.5 21.5C27 21.5 25 23.5 25 26C25 23.5 23 21.5 20.5 21.5C23 21.5 25 19.5 25 17Z" fill="currentColor"/>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
             </svg>
         </h1>
     </header>

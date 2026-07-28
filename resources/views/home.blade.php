@@ -388,7 +388,7 @@
                 <div class="space-y-xs">
                     <label class="font-label-caps text-label-caps text-on-surface-variant">AD SOYAD</label>
                     <input type="text" name="client_name" required
-                        class="w-full bg-surface-container-low border-0 border-b-2 border-surface-variant focus:border-primary focus:ring-0 px-4 py-3 text-on-surface rounded-t-DEFAULT"
+                        class="w-full bg-transparent border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary px-4 py-3 text-on-surface rounded-xl"
                         placeholder="Adınız Soyadınız">
                 </div>
 
@@ -413,19 +413,19 @@
                     <input type="hidden" name="appointment_time" :value="selectedTime" required>
                     <input type="hidden" name="estimated_price" id="estimatedPriceInput" value="0">
 
-                    <div class="bg-surface-container-low rounded-xl p-4 border border-outline-variant/30 shadow-inner">
+                    <div class="bg-transparent rounded-xl p-4 border border-outline-variant">
                         <!-- Month / Year with arrows inside calendar box -->
                         <div class="relative flex items-center justify-center mb-4">
                             <button type="button" @click="prevMonth()" x-show="shouldShowPrevArrow()"
-                                class="absolute left-0 p-1 rounded-full bg-surface-container hover:bg-surface-variant transition-colors flex items-center justify-center w-7 h-7 z-10">
+                                class="absolute left-0 p-1 rounded-full bg-transparent hover:bg-surface-container-low text-on-surface transition-colors flex items-center justify-center w-8 h-8 z-10">
                                 <span class="material-symbols-outlined text-sm font-bold">chevron_left</span>
                             </button>
 
-                            <div class="font-label-caps text-label-caps text-primary tracking-widest text-center text-xs font-bold"
+                            <div class="text-body-lg text-on-surface text-center font-semibold"
                                 x-text="monthName"></div>
 
                             <button type="button" @click="nextMonth()" x-show="shouldShowNextArrow()"
-                                class="absolute right-0 p-1 rounded-full bg-surface-container hover:bg-surface-variant transition-colors flex items-center justify-center w-7 h-7 z-10">
+                                class="absolute right-0 p-1 rounded-full bg-transparent hover:bg-surface-container-low text-on-surface transition-colors flex items-center justify-center w-8 h-8 z-10">
                                 <span class="material-symbols-outlined text-sm font-bold">chevron_right</span>
                             </button>
                         </div>
@@ -646,7 +646,8 @@
                     const firstDayOfMonth = new Date(this.currentYear, this.currentMonth, 1);
                     const lastDayOfMonth = new Date(this.currentYear, this.currentMonth + 1, 0);
 
-                    this.monthName = firstDayOfMonth.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' }).toUpperCase();
+                    let m = firstDayOfMonth.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' });
+                    this.monthName = m.charAt(0).toUpperCase() + m.slice(1);
 
                     const days = [];
 

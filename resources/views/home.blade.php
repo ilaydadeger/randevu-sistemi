@@ -382,9 +382,11 @@
                 </div>
 
                 {{-- Çıkarma Price Display --}}
-                <div x-show="serviceType === 'cikarma'" x-transition class="flex items-center justify-between bg-surface-container-low p-3 rounded-xl border border-outline-variant/30">
-                    <span class="text-xs font-bold text-on-surface-variant font-label-caps tracking-widest">Çıkarma Ücreti:</span>
-                    <span class="text-xl font-black text-primary">₺{{ intval($baseCikarmaPrice) > 0 ? intval($baseCikarmaPrice) : '?' }}</span>
+                <div x-show="serviceType === 'cikarma'" x-transition class="mt-4 flex justify-end">
+                    <div class="flex items-center gap-3 bg-[#F1E6EB] px-4 py-2 rounded-xl">
+                        <span class="text-[13px] font-semibold text-[#B496A1]">Çıkarma Ücreti</span>
+                        <span class="text-[15px] font-bold text-[#664956]">₺{{ intval($baseCikarmaPrice) > 0 ? intval($baseCikarmaPrice) : '?' }}</span>
+                    </div>
                 </div>
 
                 {{-- Client Details --}}

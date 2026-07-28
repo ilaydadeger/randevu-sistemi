@@ -67,7 +67,7 @@
         x-data="galleryManager({ images: {{ json_encode($uploadedImages) }} })">
 
         {{-- Extended Glass Background (Behind Header & Profile Box) --}}
-        <div class="absolute top-0 left-0 w-full h-[360px] bg-gradient-to-b from-[#7b5068]/15 to-[#7b5068]/5 backdrop-blur-sm -z-10" style="border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;"></div>
+        <div class="absolute top-0 left-0 w-full h-[360px] bg-gradient-to-b from-[#ead5de]/60 to-[#ead5de]/5 backdrop-blur-lg -z-10" style="border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;"></div>
 
         {{-- Premium Profile Header --}}
         <section

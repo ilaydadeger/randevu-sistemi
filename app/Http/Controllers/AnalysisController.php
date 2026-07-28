@@ -33,14 +33,23 @@ class AnalysisController extends Controller
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('AI API Hatası: ' . $e->getMessage());
             
+            $errorMessage = 'Yapay zeka servisi şu an ulaşılamıyor. Lütfen birkaç dakika sonra tekrar deneyin.';
+            $statusCode = 503;
+
+            // Eğer hata 429 (Too Many Requests) ise özel mesaj ver
+            if (str_contains($e->getMessage(), 'HTTP 429')) {
+                $errorMessage = 'Yapay zeka analiz limitine ulaştınız. Lütfen 1 dakika bekleyip tekrar deneyin.';
+                $statusCode = 429;
+            }
+
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Yapay zeka servisi şu an ulaşılamıyor. Lütfen birkaç dakika sonra tekrar deneyin.',
-                    'debug_error' => $e->getMessage() // Geçici olarak debug için ekliyoruz
-                ], 503);
+                    'message' => $errorMessage,
+                    'debug_error' => $e->getMessage()
+                ], $statusCode);
             }
-            return back()->with('error', 'Yapay zeka servisi ulaşılamıyor: ' . $e->getMessage());
+            return back()->with('error', $errorMessage);
         }
 
         // 3. Python'dan gelen yanıtı çözümlüyoruz

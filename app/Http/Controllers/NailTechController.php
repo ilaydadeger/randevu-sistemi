@@ -589,7 +589,7 @@ class NailTechController extends Controller
 
         $note = auth()->user()->notes()->create([
             'title' => $request->title,
-            'content' => $request->content,
+            'content' => $request->input('content'),
         ]);
 
         return response()->json([
@@ -614,7 +614,7 @@ class NailTechController extends Controller
         $note = auth()->user()->notes()->findOrFail($id);
         $note->update([
             'title' => $request->title,
-            'content' => $request->content,
+            'content' => $request->input('content'),
         ]);
 
         return response()->json([

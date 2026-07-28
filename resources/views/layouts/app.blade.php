@@ -207,11 +207,11 @@
                 };
             }
 
-            // Pre-warm Hugging Face AI API
+            // Pre-warm AI API (no-cors prevents CORS console errors)
             const aiUrl = '{{ config('services.ai.url') }}';
             if (aiUrl) {
-                fetch(aiUrl + '/').catch(e => {
-                    // Ignore CORS or network errors for pre-warming
+                fetch(aiUrl + '/', { mode: 'no-cors' }).catch(e => {
+                    // Ignore network errors for pre-warming
                 });
             }
         });

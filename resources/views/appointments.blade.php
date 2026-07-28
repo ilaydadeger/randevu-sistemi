@@ -281,8 +281,7 @@
             <h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">Çalışma Saatleri</h3>
             <p class="font-body-md text-on-surface-variant text-sm mb-4">Takviminizde gösterilecek günlük randevu saat dilimlerini düzenleyin.</p>
             
-            <form @submit.prevent="submitWorkHours" class="space-y-4">
-                <div class="flex flex-wrap gap-2 items-center" x-data="{ 
+            <form @submit.prevent="submitWorkHours" class="space-y-4" x-data="{ 
                     hours: {{ json_encode($hours) }}, 
                     newHour: '',
                     isSaving: false,
@@ -324,6 +323,7 @@
                         }
                     }
                 }">
+                <div class="flex flex-wrap gap-2 items-center">
                     <template x-for="(hour, index) in hours" :key="hour">
                         <div class="inline-flex items-center gap-1.5 bg-primary/10 text-primary border border-primary/20 px-3 py-1.5 rounded-full text-xs font-semibold">
                             <span x-text="hour"></span>
@@ -346,6 +346,7 @@
                     </div>
                 </div>
             </form>
+
         </div>
 
         {{-- Section: Availability Management --}}

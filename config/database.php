@@ -86,7 +86,9 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DB_URL'),
+            // DB_URL veya Render'ın otomatik enjekte ettiği DATABASE_URL kullanılır.
+            // URL set edilince host/port/database/username/password ignore edilir.
+            'url' => env('DB_URL', env('DATABASE_URL')),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'laravel'),
@@ -96,13 +98,9 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => 'public',
-            // Render ve diğer bulut PostgreSQL sağlayıcılarında SSL zorunludur.
-            // Yerel geliştirmede DB_SSLMODE=prefer, production'da DB_SSLMODE=require olarak ayarlayın.
             'sslmode' => env('DB_SSLMODE', 'prefer'),
             'options' => extension_loaded('pdo_pgsql') ? array_filter([
                 PDO::ATTR_PERSISTENT => false,
-                // Render PostgreSQL'de "SSL connection has been closed unexpectedly" hatasını önler.
-                // PDO prepared statement'ları SSL üzerinden bazen bağlantıyı düşürür.
                 PDO::PGSQL_ATTR_DISABLE_PREPARES => true,
             ]) : [],
         ],

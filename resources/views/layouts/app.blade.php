@@ -110,7 +110,7 @@
     {{-- TopAppBar --}}
     <header x-data="{ scrolled: false }" @scroll.window="scrolled = (window.pageYOffset > 20)"
         :class="scrolled ? 'bg-[#FCFAFB]/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(149,117,130,0.08)] border-b border-white/60' : 'bg-[#FCFAFB]/40 backdrop-blur-lg border-b border-white/30'"
-        class="docked full-width top-0 sticky z-50 flex justify-center items-center w-full px-margin-mobile h-16 md:px-margin-desktop transition-all duration-300 border-t border-white/40">
+        class="docked full-width top-0 sticky z-50 flex justify-center items-center w-full px-margin-mobile h-16 md:px-margin-desktop transition-all duration-300 border-t border-white/40 rounded-b-[32px]">
         <h1 class="text-[28px] sm:text-[32px] text-[#957582] text-center font-semibold flex items-center justify-center gap-1" style="font-family: 'Playfair Display', serif; letter-spacing: 0.03em;">
             {{ request()->is('panel/*') ? (auth()->user()->salon_name ?? "L'ART DE L'ONGLE") : (($nailTech->salon_name ?? null) ?: "L'ART DE L'ONGLE") }}
             <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-[#957582] -mt-5 opacity-90 ml-1">

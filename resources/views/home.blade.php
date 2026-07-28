@@ -66,6 +66,9 @@
         class="flex-1 px-margin-mobile pt-md pb-[100px] flex flex-col gap-md max-w-[600px] md:max-w-3xl lg:max-w-4xl mx-auto w-full"
         x-data="galleryManager({ images: {{ json_encode($uploadedImages) }} })">
 
+        {{-- Extended Glass Background (Behind Header & Profile Box) --}}
+        <div class="absolute top-0 left-0 w-full h-[360px] bg-gradient-to-b from-[#7b5068]/15 to-[#7b5068]/5 backdrop-blur-sm -z-10" style="border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;"></div>
+
         {{-- Premium Profile Header --}}
         <section
             class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant/30 shadow-sm flex flex-col items-center text-center gap-sm">

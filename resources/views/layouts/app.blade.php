@@ -11,7 +11,7 @@
     {{-- Google Fonts --}}
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
 
     {{-- Material Symbols --}}
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -108,8 +108,10 @@
 <body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col relative selection:bg-primary-container selection:text-on-primary-container pb-20 sm:pb-24 md:pb-0">
 
     {{-- TopAppBar --}}
-    <header class="docked full-width top-0 sticky z-50 bg-[#fdfaf8] flex justify-center items-center w-full px-margin-mobile h-12 sm:h-16 md:px-margin-desktop border-b border-surface-container-highest">
-        <h1 class="font-headline-sm text-headline-sm tracking-widest text-[#7b5068] font-medium text-center">
+    <header x-data="{ scrolled: false }" @scroll.window="scrolled = (window.pageYOffset > 20)"
+        :class="scrolled ? 'bg-[#7b5068]/15 backdrop-blur-md shadow-sm border-b border-[#7b5068]/10' : 'bg-transparent border-transparent'"
+        class="docked full-width top-0 sticky z-50 flex justify-center items-center w-full px-margin-mobile h-14 sm:h-16 md:px-margin-desktop transition-all duration-300">
+        <h1 class="text-2xl sm:text-[28px] text-[#7b5068] text-center drop-shadow-sm font-semibold" style="font-family: 'Playfair Display', serif; letter-spacing: 0.03em;">
             {{ request()->is('panel/*') ? (auth()->user()->salon_name ?? "L'ART DE L'ONGLE") : (($nailTech->salon_name ?? null) ?: "L'ART DE L'ONGLE") }}
         </h1>
     </header>

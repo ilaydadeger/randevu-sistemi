@@ -167,7 +167,7 @@ class NailTechController extends Controller
         $user->address = $request->address;
         $user->show_portfolio = $request->boolean('show_portfolio');
         
-        $cloudinary = new \Cloudinary\Cloudinary(env('CLOUDINARY_URL'));
+        $cloudinary = null;
 
         // Handle profile photo removal
         if ($request->boolean('remove_profile_photo')) {
@@ -175,6 +175,7 @@ class NailTechController extends Controller
                 $user->profile_photo_path = null;
             }
         } elseif ($request->hasFile('profile_photo')) {
+            $cloudinary = $cloudinary ?? new \Cloudinary\Cloudinary(env('CLOUDINARY_URL'));
             $upload = $cloudinary->uploadApi()->upload($request->file('profile_photo')->getRealPath(), [
                 'folder' => 'profile-photos'
             ]);
@@ -191,12 +192,14 @@ class NailTechController extends Controller
                     $user->$field = null;
                 }
             } elseif ($request->hasFile($field)) {
+                $cloudinary = $cloudinary ?? new \Cloudinary\Cloudinary(env('CLOUDINARY_URL'));
                 $upload = $cloudinary->uploadApi()->upload($request->file($field)->getRealPath(), [
                     'folder' => 'portfolio'
                 ]);
                 $user->$field = $upload['secure_url'];
             }
         }
+
         
         $user->save();
         

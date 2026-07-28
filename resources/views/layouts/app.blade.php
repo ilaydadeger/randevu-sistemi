@@ -18,8 +18,6 @@
 
     {{-- Vite Assets --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-
 
     {{-- Shared Styles --}}
     <style>
@@ -70,23 +68,15 @@
         .material-symbols-outlined.filled {
             font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .glass-panel {
             background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
-        html {
-            overflow-x: hidden;
-            max-width: 100%;
-        }
+        html { overflow-x: hidden; max-width: 100%; }
         body {
             background-color: #FDFBFB;
             color: #1e293b;
@@ -94,22 +84,17 @@
             overflow-x: hidden;
             max-width: 100%;
         }
-        .bottom-nav-safe {
-            padding-bottom: calc(8px + env(safe-area-inset-bottom));
-        }
-        [x-cloak] {
-            display: none !important;
-        }
+        .bottom-nav-safe { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
+        [x-cloak] { display: none !important; }
     </style>
 
     {{-- Page-specific styles --}}
     @stack('styles')
 </head>
-<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col relative selection:bg-primary-container selection:text-on-primary-container pb-20 sm:pb-24 md:pb-0">
+<body class="bg-[#FDFBFB] text-slate-800 antialiased min-h-screen w-full flex flex-col relative">
 
     {{-- TopAppBar --}}
-    <header
-        class="sticky top-0 z-20 w-full bg-gradient-to-r from-[#EADDD9] via-[#EAE1E3] to-[#E3D5DB] py-4 px-5 shadow-sm shadow-rose-900/5 backdrop-blur-md">
+    <header class="sticky top-0 z-20 w-full bg-gradient-to-r from-[#EADDD9] via-[#EAE1E3] to-[#E3D5DB] py-4 px-5 shadow-sm shadow-rose-900/5 backdrop-blur-md">
         <h1 class="text-xl font-medium tracking-wide text-[#5C4D53] flex items-center justify-center gap-1.5" style="font-family: 'Playfair Display', serif;">
             {{ request()->is('panel/*') ? (auth()->user()->salon_name ?? "L'ART DE L'ONGLE") : (($nailTech->salon_name ?? null) ?: "L'ART DE L'ONGLE") }}
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -120,91 +105,73 @@
 
     {{-- Desktop Navigation Bar (Sadece Tırnakçı Paneli İçin, Masaüstü) --}}
     @if(request()->is('panel/*'))
-    <nav class="hidden md:flex justify-center items-center gap-10 py-3 bg-[#fdfaf8] border-b border-surface-container-highest w-full sticky top-16 z-40 shadow-sm">
-        <a href="{{ route('panel.preview') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.preview') ? 'text-[#7b5068] font-bold' : 'text-on-surface-variant hover:text-[#7b5068] transition-colors' }}">
+    <nav class="hidden md:flex justify-center items-center gap-10 py-3 bg-white border-b border-[#F2EAEB] w-full sticky top-[56px] z-40 shadow-sm">
+        <a href="{{ route('panel.preview') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.preview') ? 'text-[#B3939B] font-bold' : 'text-slate-400 hover:text-[#B3939B] transition-colors' }}">
             <span class="material-symbols-outlined" style="font-size: 20px; @if(request()->routeIs('panel.preview')) font-variation-settings: 'FILL' 1; @endif">home</span>
-            <span class="font-label-caps tracking-wider text-xs">Önizleme</span>
+            <span class="text-xs tracking-wider">Önizleme</span>
         </a>
-        
-        <a href="{{ route('panel.appointments') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.appointments') ? 'text-[#7b5068] font-bold' : 'text-on-surface-variant hover:text-[#7b5068] transition-colors' }}">
+        <a href="{{ route('panel.appointments') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.appointments') ? 'text-[#B3939B] font-bold' : 'text-slate-400 hover:text-[#B3939B] transition-colors' }}">
             <span class="material-symbols-outlined" style="font-size: 20px; @if(request()->routeIs('panel.appointments')) font-variation-settings: 'FILL' 1; @endif">calendar_today</span>
-            <span class="font-label-caps tracking-wider text-xs">Randevular</span>
+            <span class="text-xs tracking-wider">Randevular</span>
         </a>
-        
-        <a href="{{ route('panel.book') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.book') ? 'text-[#7b5068] font-bold' : 'text-on-surface-variant hover:text-[#7b5068] transition-colors' }}">
+        <a href="{{ route('panel.book') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.book') ? 'text-[#B3939B] font-bold' : 'text-slate-400 hover:text-[#B3939B] transition-colors' }}">
             <span class="material-symbols-outlined" style="font-size: 20px; @if(request()->routeIs('panel.book')) font-variation-settings: 'FILL' 1; @endif">explore</span>
-            <span class="font-label-caps tracking-wider text-xs">Fiyatlarım</span>
+            <span class="text-xs tracking-wider">Fiyatlarım</span>
         </a>
-        
-        <a href="{{ route('panel.profile') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.profile') ? 'text-[#7b5068] font-bold' : 'text-on-surface-variant hover:text-[#7b5068] transition-colors' }}">
+        <a href="{{ route('panel.profile') }}" class="flex items-center gap-2 {{ request()->routeIs('panel.profile') ? 'text-[#B3939B] font-bold' : 'text-slate-400 hover:text-[#B3939B] transition-colors' }}">
             <span class="material-symbols-outlined" style="font-size: 20px; @if(request()->routeIs('panel.profile')) font-variation-settings: 'FILL' 1; @endif">person</span>
-            <span class="font-label-caps tracking-wider text-xs">Profil</span>
+            <span class="text-xs tracking-wider">Profil</span>
         </a>
     </nav>
     @endif
-
 
     {{-- Main Content --}}
     @yield('content')
 
     {{-- BottomNavBar (Mobile Only - Sadece Tırnakçı Paneli İçin) --}}
     @if(request()->is('panel/*'))
-    <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pt-3 bg-white/85 backdrop-blur-xl rounded-t-2xl shadow-[0_-2px_24px_rgba(140,95,114,0.12)] border-t border-[#E5CDD8]/50 md:hidden" style="padding-bottom: calc(10px + env(safe-area-inset-bottom));">
-        {{-- Home (Preview) --}}
-        <a href="{{ route('panel.preview') }}" class="flex flex-col items-center justify-center gap-1 px-4 py-1 rounded-xl transition-all duration-200 {{ request()->routeIs('panel.preview') ? 'text-[#8C5F72]' : 'text-[#9E8490] hover:text-[#8C5F72]' }}">
-            <span class="material-symbols-outlined" data-icon="home" style="font-size: 22px; @if(request()->routeIs('panel.preview')) font-variation-settings: 'FILL' 1; @endif">home</span>
-            <span class="text-[9px] font-bold tracking-wider {{ request()->routeIs('panel.preview') ? 'text-[#8C5F72]' : 'text-[#9E8490]' }}">ÖNİZLEME</span>
-            @if(request()->routeIs('panel.preview'))
-            <span class="absolute bottom-[calc(env(safe-area-inset-bottom)+6px)] w-4 h-0.5 rounded-full bg-[#8C5F72]"></span>
-            @endif
-        </a>
-        
-        {{-- Discover/Bookings --}}
-        <a href="{{ route('panel.appointments') }}" class="flex flex-col items-center justify-center gap-1 px-4 py-1 rounded-xl transition-all duration-200 {{ request()->routeIs('panel.appointments') ? 'text-[#8C5F72]' : 'text-[#9E8490] hover:text-[#8C5F72]' }}">
-            <span class="material-symbols-outlined" data-icon="calendar_today" style="font-size: 22px; @if(request()->routeIs('panel.appointments')) font-variation-settings: 'FILL' 1; @endif">calendar_today</span>
-            <span class="text-[9px] font-bold tracking-wider {{ request()->routeIs('panel.appointments') ? 'text-[#8C5F72]' : 'text-[#9E8490]' }}">RANDEVULAR</span>
-        </a>
-        
-        {{-- Fiyatlarım / Hizmetlerim --}}
-        <a href="{{ route('panel.book') }}" class="flex flex-col items-center justify-center gap-1 px-4 py-1 rounded-xl transition-all duration-200 {{ request()->routeIs('panel.book') ? 'text-[#8C5F72]' : 'text-[#9E8490] hover:text-[#8C5F72]' }}">
-            <span class="material-symbols-outlined" data-icon="explore" style="font-size: 22px; @if(request()->routeIs('panel.book')) font-variation-settings: 'FILL' 1; @endif">explore</span>
-            <span class="text-[9px] font-bold tracking-wider {{ request()->routeIs('panel.book') ? 'text-[#8C5F72]' : 'text-[#9E8490]' }}">FİYATLARIM</span>
-        </a>
-        
-        {{-- Profile --}}
-        <a href="{{ route('panel.profile') }}" class="flex flex-col items-center justify-center gap-1 px-4 py-1 rounded-xl transition-all duration-200 {{ request()->routeIs('panel.profile') ? 'text-[#8C5F72]' : 'text-[#9E8490] hover:text-[#8C5F72]' }}">
-            <span class="material-symbols-outlined" data-icon="person" style="font-size: 22px; @if(request()->routeIs('panel.profile')) font-variation-settings: 'FILL' 1; @endif">person</span>
-            <span class="text-[9px] font-bold tracking-wider {{ request()->routeIs('panel.profile') ? 'text-[#8C5F72]' : 'text-[#9E8490]' }}">PROFİL</span>
-        </a>
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-[#F2EAEB] pt-2 px-6 z-30 md:hidden"
+         style="padding-bottom: calc(16px + env(safe-area-inset-bottom));">
+        <div class="flex justify-between items-center max-w-lg mx-auto">
+            <a href="{{ route('panel.preview') }}" class="flex flex-col items-center gap-1.5 p-2 {{ request()->routeIs('panel.preview') ? 'text-[#B3939B]' : 'text-slate-400 hover:text-[#B3939B] transition-colors' }}">
+                <span class="material-symbols-outlined" style="font-size: 24px; @if(request()->routeIs('panel.preview')) font-variation-settings: 'FILL' 1; @endif">home</span>
+                <span class="text-[10px] {{ request()->routeIs('panel.preview') ? 'font-semibold' : 'font-medium' }} tracking-wide">Önizleme</span>
+            </a>
+            <a href="{{ route('panel.appointments') }}" class="flex flex-col items-center gap-1.5 p-2 {{ request()->routeIs('panel.appointments') ? 'text-[#B3939B]' : 'text-slate-400 hover:text-[#B3939B] transition-colors' }}">
+                <span class="material-symbols-outlined" style="font-size: 24px; @if(request()->routeIs('panel.appointments')) font-variation-settings: 'FILL' 1; @endif">calendar_today</span>
+                <span class="text-[10px] {{ request()->routeIs('panel.appointments') ? 'font-semibold' : 'font-medium' }} tracking-wide">Randevular</span>
+            </a>
+            <a href="{{ route('panel.book') }}" class="flex flex-col items-center gap-1.5 p-2 {{ request()->routeIs('panel.book') ? 'text-[#B3939B]' : 'text-slate-400 hover:text-[#B3939B] transition-colors' }}">
+                <span class="material-symbols-outlined" style="font-size: 24px; @if(request()->routeIs('panel.book')) font-variation-settings: 'FILL' 1; @endif">explore</span>
+                <span class="text-[10px] {{ request()->routeIs('panel.book') ? 'font-semibold' : 'font-medium' }} tracking-wide">Fiyatlarım</span>
+            </a>
+            <a href="{{ route('panel.profile') }}" class="flex flex-col items-center gap-1.5 p-2 {{ request()->routeIs('panel.profile') ? 'text-[#B3939B]' : 'text-slate-400 hover:text-[#B3939B] transition-colors' }}">
+                <span class="material-symbols-outlined" style="font-size: 24px; @if(request()->routeIs('panel.profile')) font-variation-settings: 'FILL' 1; @endif">person</span>
+                <span class="text-[10px] {{ request()->routeIs('panel.profile') ? 'font-semibold' : 'font-medium' }} tracking-wide">Profil</span>
+            </a>
+        </div>
     </nav>
     @endif
 
     {{-- Page-specific scripts --}}
     @stack('scripts')
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            
+
             // Native fetch interceptor to always add CSRF token
             if (csrfToken) {
                 const originalFetch = window.fetch;
                 window.fetch = async function () {
                     let [resource, config] = arguments;
-                    if(config === undefined) {
-                        config = {};
-                    }
-                    if(config.headers === undefined) {
-                        config.headers = {};
-                    }
-                    
+                    if(config === undefined) config = {};
+                    if(config.headers === undefined) config.headers = {};
+
                     if(config.method && !['GET', 'HEAD'].includes(config.method.toUpperCase())) {
-                        // Check if headers is Headers object
                         if (config.headers instanceof Headers) {
                             config.headers.append('X-CSRF-TOKEN', csrfToken);
-                            if (!config.headers.has('Accept')) {
-                                config.headers.append('Accept', 'application/json');
-                            }
+                            if (!config.headers.has('Accept')) config.headers.append('Accept', 'application/json');
                         } else {
                             config.headers['X-CSRF-TOKEN'] = csrfToken;
                             config.headers['Accept'] = 'application/json';
@@ -213,11 +180,7 @@
                     return originalFetch(resource, config);
                 };
             }
-
-            // Pre-warm AI API is removed to prevent 404 console errors.
         });
-        
-
     </script>
 </body>
 </html>

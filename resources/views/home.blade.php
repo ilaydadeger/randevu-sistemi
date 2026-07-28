@@ -45,7 +45,7 @@
     @endphp
 
     {{-- ── SAYFA WRAPPER ── --}}
-    <div class="min-h-screen bg-[#FDFBFB] pb-24 text-slate-800 font-sans selection:bg-rose-200"
+    <div class="w-full min-h-screen bg-[#FDFBFB] pb-24 text-slate-800 font-sans selection:bg-rose-200"
          x-data="galleryManager({ images: {{ json_encode($uploadedImages) }} })">
 
         <main class="px-5 pt-6 pb-8 space-y-8 max-w-lg mx-auto">

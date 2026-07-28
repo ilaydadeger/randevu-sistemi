@@ -48,7 +48,7 @@
     <div class="w-full min-h-screen bg-[#FDFBFB] pb-24 text-slate-800 font-sans selection:bg-rose-200"
          x-data="galleryManager({ images: {{ json_encode($uploadedImages) }} })">
 
-        <main class="px-5 pt-6 pb-8 space-y-8 max-w-lg mx-auto">
+        <main class="w-full px-5 pt-6 pb-8 space-y-8 max-w-lg mx-auto">
 
             {{-- ── Profil Kartı ── --}}
             <section class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] flex flex-col items-center text-center transition-transform hover:scale-[1.01]">

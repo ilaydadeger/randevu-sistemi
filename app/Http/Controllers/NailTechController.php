@@ -302,11 +302,16 @@ class NailTechController extends Controller
     public function resetAppointments(Request $request)
     {
         $user = auth()->user();
-        \App\Models\Appointment::where('artist_id', $user->id)->delete();
+        $today = now()->toDateString();
+        
+        // Sadece geçmiş tarihteki randevuları kalıcı olarak sil
+        $deletedCount = \App\Models\Appointment::where('artist_id', $user->id)
+            ->where('appointment_date', '<', $today)
+            ->delete();
         
         return response()->json([
             'success' => true,
-            'message' => 'Tüm randevular ve kazanç bilgileri başarıyla sıfırlandı.',
+            'message' => "Geçmiş tarihlere ait {$deletedCount} randevu başarıyla kalıcı olarak silindi.",
         ]);
     }
 

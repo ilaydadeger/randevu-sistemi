@@ -1374,12 +1374,12 @@
             async resetAllAppointments() {
                 const result = await Swal.fire({
                     title: 'Tüm Randevuları Sıfırla',
-                    text: 'Dikkat! Bu işlem onaylanmış, beklemede veya iptal edilmiş TÜM randevuları ve toplam kazanç verisini veritabanından kalıcı olarak silecektir. Emin misiniz?',
+                    text: 'Dikkat! Bu işlem sadece GEÇMİŞ tarihteki onaylanmış, beklemede veya iptal edilmiş tüm randevuları kalıcı olarak silecektir. Bugün ve sonraki günlerin randevuları etkilenmeyecektir. Emin misiniz?',
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#ba1a1a',
                     cancelButtonColor: '#7b5068',
-                    confirmButtonText: 'Evet, Hepsini Sil',
+                    confirmButtonText: 'Evet, Geçmişi Sil',
                     cancelButtonText: 'İptal'
                 });
 

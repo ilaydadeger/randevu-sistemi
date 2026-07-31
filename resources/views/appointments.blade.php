@@ -599,7 +599,7 @@
 
     {{-- Fullscreen Design Image Modal --}}
     <div x-cloak x-show="imageModalOpen" class="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" x-transition.opacity>
-        <div class="relative max-w-lg max-h-[80vh] w-full" @click.away="imageModalOpen = false">
+        <div class="relative max-w-[512px] max-h-[80vh] w-full" @click.away="imageModalOpen = false">
             <button @click="imageModalOpen = false" class="absolute -top-12 right-0 text-white hover:opacity-85 p-2 bg-black/30 rounded-full flex items-center justify-center">
                 <span class="material-symbols-outlined text-2xl">close</span>
             </button>

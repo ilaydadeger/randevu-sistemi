@@ -132,7 +132,7 @@
     @if(request()->is('panel/*'))
     <nav class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-[#F2EAEB] pt-2 px-6 z-30 md:hidden"
          style="padding-bottom: calc(16px + env(safe-area-inset-bottom));">
-        <div class="flex justify-between items-center max-w-lg mx-auto">
+        <div class="flex justify-between items-center max-w-[512px] mx-auto">
             <a href="{{ route('panel.preview') }}" class="flex flex-col items-center gap-1.5 p-2 {{ request()->routeIs('panel.preview') ? 'text-[#B3939B]' : 'text-slate-400 hover:text-[#B3939B] transition-colors' }}">
                 <span class="material-symbols-outlined" style="font-size: 24px; @if(request()->routeIs('panel.preview')) font-variation-settings: 'FILL' 1; @endif">home</span>
                 <span class="text-[10px] {{ request()->routeIs('panel.preview') ? 'font-semibold' : 'font-medium' }} tracking-wide">Önizleme</span>

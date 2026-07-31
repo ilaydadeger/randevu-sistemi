@@ -16,7 +16,7 @@
 </head>
 <body class="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-100 flex items-center justify-center p-4">
 
-    <div class="glass-panel rounded-3xl p-8 md:p-12 w-full max-w-lg shadow-2xl relative overflow-hidden">
+    <div class="glass-panel rounded-3xl p-8 md:p-12 w-full max-w-[512px] shadow-2xl relative overflow-hidden">
         <!-- Decoration -->
         <div class="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-pink-300 opacity-50 blur-2xl"></div>
         <div class="absolute bottom-0 left-0 -ml-8 -mb-8 w-32 h-32 rounded-full bg-purple-300 opacity-50 blur-2xl"></div>

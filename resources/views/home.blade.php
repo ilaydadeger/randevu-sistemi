@@ -45,20 +45,20 @@
     @endphp
 
     {{-- ── SAYFA WRAPPER ── --}}
-    <div class="w-full min-h-screen bg-[#FDFBFB] pb-24 text-slate-800 font-sans selection:bg-rose-200"
+    <div class="flex-1 w-full min-h-screen bg-[#FDFBFB] pb-24 text-slate-800 font-sans selection:bg-rose-200 flex flex-col"
          x-data="galleryManager({ images: {{ json_encode($uploadedImages) }} })">
 
-        <main class="w-full px-5 pt-6 pb-8 space-y-8 max-w-lg mx-auto">
+        <main class="w-full flex-1 px-5 pt-6 pb-8 space-y-8 max-w-lg mx-auto">
 
             {{-- ── Profil Kartı ── --}}
-            <section class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] flex flex-col items-center text-center transition-transform hover:scale-[1.01]">
+            <section class="w-full bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] flex flex-col items-center text-center transition-transform hover:scale-[1.01]">
                 @if($nailTech && $nailTech->profile_photo_path)
                     <div class="w-20 h-20 rounded-full overflow-hidden shrink-0 border-2 border-[#EAE1E3] p-0.5 mb-3">
                         <img src="{{ str_starts_with($nailTech->profile_photo_path, 'http') ? $nailTech->profile_photo_path : asset('storage/' . $nailTech->profile_photo_path) }}"
                              alt="Profile" class="w-full h-full object-cover rounded-full">
                     </div>
                 @endif
-                <div>
+                <div class="w-full">
                     <h2 class="text-lg font-medium text-slate-700">{{ $nailTech->name ?? 'NailwMelis' }}</h2>
                     @if($nailTech && $nailTech->bio)
                         <p class="text-sm text-slate-500 leading-relaxed mt-1">{{ str_replace(["\r", "\n"], ' ', $nailTech->bio) }}</p>
@@ -70,7 +70,7 @@
 
             {{-- ── Portföy ── --}}
             @if($nailTech && ($nailTech->show_portfolio ?? true) && count($uploadedImages) > 0)
-            <section class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] space-y-4">
+            <section class="w-full bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] space-y-4">
                 <h3 class="font-medium text-slate-700 border-b border-[#F2EAEB] pb-3">Portföy</h3>
                 <div class="grid grid-cols-2 gap-3 auto-rows-[160px]">
                     @if($nailTech->portfolio_image_1)
@@ -167,7 +167,7 @@
                     <input type="hidden" name="nail_tech_id" value="{{ $nailTech->id ?? 1 }}">
 
                     {{-- İşlem Türü --}}
-                    <section class="space-y-4">
+                    <section class="w-full space-y-4">
                         <h3 class="text-sm font-semibold tracking-wider text-slate-400 uppercase ml-1">İşlem Türü</h3>
                         <div class="grid grid-cols-2 gap-3">
                             <button type="button"
@@ -191,13 +191,13 @@
                     </section>
 
                     {{-- Base Ücret --}}
-                    <section class="bg-white rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] flex justify-between items-center">
+                    <section class="w-full bg-white rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] flex justify-between items-center">
                         <span class="text-slate-500 font-medium">Base Ücret</span>
                         <span class="text-xl font-semibold text-[#B3939B]" x-text="'₺' + basePriceDisplay"></span>
                     </section>
 
                     {{-- Adınız Soyadınız --}}
-                    <section class="space-y-2">
+                    <section class="w-full space-y-2">
                         <label class="text-sm font-semibold tracking-wider text-slate-400 uppercase ml-1 block">Adınız Soyadınız</label>
                         <input type="text" name="client_name" required
                             placeholder="Adınızı giriniz..."
@@ -205,7 +205,7 @@
                     </section>
 
                     {{-- Tırnak Modeli --}}
-                    <section class="space-y-3" x-show="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici'" x-collapse>
+                    <section class="w-full space-y-3" x-show="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici'" x-collapse>
                         <div class="flex items-center justify-between ml-1">
                             <h3 class="text-sm font-semibold tracking-wider text-slate-400 uppercase">Tırnak Modeli (İsteğe Bağlı)</h3>
                         </div>
@@ -261,7 +261,7 @@
                     </section>
 
                     {{-- Takvim --}}
-                    <section class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] space-y-6">
+                    <section class="w-full bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] space-y-6">
 
                         <div class="flex items-center justify-between">
                             <h3 class="font-semibold text-slate-700 text-lg">Takvim</h3>
@@ -366,7 +366,7 @@
                     </section>
 
                     {{-- Randevu Butonu --}}
-                    <section class="pt-4 space-y-4">
+                    <section class="w-full pt-4 space-y-4">
                         <button type="submit" id="submitBtn"
                             class="w-full py-4 bg-[#B3939B] hover:bg-[#A3838B] active:scale-[0.98] text-white rounded-2xl font-semibold text-lg transition-all shadow-lg shadow-[#B3939B]/30 flex items-center justify-center gap-2">
                             RANDEVU TALEP ET

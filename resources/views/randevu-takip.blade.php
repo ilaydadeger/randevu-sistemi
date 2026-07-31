@@ -357,7 +357,7 @@
                 </div>
                 @if($appointment->estimated_price > 0)
                 <div class="info-cell" style="grid-column: 1 / -1;">
-                    <div class="info-label">Tahmini Ücret</div>
+                    <div class="info-label">FİYAT</div>
                     <div class="info-value" id="appointmentPrice">
                         ₺{{ number_format($appointment->estimated_price, 0, ',', '.') }}
                     </div>

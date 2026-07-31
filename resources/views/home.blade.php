@@ -215,8 +215,8 @@
                                         : 'bg-white text-slate-600 border-[#F2EAEB] hover:border-[#D2B6BD]/50'"
                                 class="py-3 px-2 rounded-2xl font-medium transition-all duration-300 border flex items-center justify-center text-center min-h-[5rem]">
                                 <span class="flex flex-col items-center justify-center leading-[1.3] text-[12px] gap-0.5">
-                                    <span>Protez Tırnak,</span>
-                                    <span>Jel Güçlendirme,</span>
+                                    <span>Protez Tırnak</span>
+                                    <span>Jel Güçlendirme</span>
                                     <span>Kalıcı Oje</span>
                                 </span>
                             </button>

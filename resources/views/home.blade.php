@@ -60,7 +60,9 @@
                     </div>
                 @endif
                 <div class="w-full">
-                    <h2 class="text-lg font-medium text-slate-700">{{ !empty($nailTech->name) ? $nailTech->name : ($nailTech->salon_name ?? 'Nail Artist') }}</h2>
+                    @if(!empty($nailTech->name))
+                        <h2 class="text-lg font-medium text-slate-700">{{ $nailTech->name }}</h2>
+                    @endif
                     @if($nailTech && $nailTech->bio)
                         <p class="text-sm text-slate-500 leading-relaxed mt-1">
                             {{ str_replace(["\r", "\n"], ' ', $nailTech->bio) }}</p>

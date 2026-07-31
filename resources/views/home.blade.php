@@ -786,8 +786,12 @@
                         priceSpinner.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></svg>';
                         priceTitle.className = 'fiyat-gosterim text-sm font-semibold text-amber-600';
                         priceTitle.innerText = error.message || 'Yapay zeka şuanda yanıt vermiyor.';
-                        priceDesc.innerText = 'Çok fazla istek attıysanız veya sistem yoğunsa lütfen birkaç dakika sonra tekrar deneyin.';
-                        priceDesc.classList.remove('hidden');
+                        if (error.message === 'Yapay zeka bakımda 😴') {
+                            priceDesc.classList.add('hidden');
+                        } else {
+                            priceDesc.innerText = 'Çok fazla istek attıysanız veya sistem yoğunsa lütfen birkaç dakika sonra tekrar deneyin.';
+                            priceDesc.classList.remove('hidden');
+                        }
                     });
             }
 

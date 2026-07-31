@@ -38,7 +38,7 @@ class AnalysisController extends Controller
 
             // Eğer hata 429 (Too Many Requests) ise özel mesaj ver
             if (str_contains($e->getMessage(), 'HTTP 429')) {
-                $errorMessage = 'Yapay zeka analiz limitine ulaştınız. Lütfen 1 dakika bekleyip tekrar deneyin.';
+                $errorMessage = 'Yapay zeka bakımda 😴';
                 $statusCode = 429;
             }
 

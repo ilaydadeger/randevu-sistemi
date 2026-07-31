@@ -45,124 +45,162 @@
     @endphp
 
     {{-- ── SAYFA WRAPPER ── --}}
-    <div class="flex-1 w-full min-h-screen bg-[#FDFBFB] pb-24 text-slate-800 font-sans selection:bg-rose-200 flex flex-col" style="width: 100%;"
-         x-data="galleryManager({ images: {{ json_encode($uploadedImages) }} })">
+    <div class="flex-1 w-full min-h-screen bg-[#FDFBFB] pb-24 text-slate-800 font-sans selection:bg-rose-200 flex flex-col"
+        style="width: 100%;" x-data="galleryManager({ images: {{ json_encode($uploadedImages) }} })">
 
         <main class="w-full flex-1 px-5 pt-6 pb-8 space-y-8 max-w-[512px] mx-auto" style="width: 100%;">
 
             {{-- ── Profil Kartı ── --}}
-            <section class="w-full bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] flex flex-col items-center text-center transition-transform hover:scale-[1.01]">
+            <section
+                class="w-full bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] flex flex-col items-center text-center transition-transform hover:scale-[1.01]">
                 @if($nailTech && $nailTech->profile_photo_path)
                     <div class="w-20 h-20 rounded-full overflow-hidden shrink-0 border-2 border-[#EAE1E3] p-0.5 mb-3">
                         <img src="{{ str_starts_with($nailTech->profile_photo_path, 'http') ? $nailTech->profile_photo_path : asset('storage/' . $nailTech->profile_photo_path) }}"
-                             alt="Profile" class="w-full h-full object-cover rounded-full">
+                            alt="Profile" class="w-full h-full object-cover rounded-full">
                     </div>
                 @endif
                 <div class="w-full">
-                    <h2 class="text-lg font-medium text-slate-700">{{ $nailTech->name ?? 'NailwMelis' }}</h2>
+                    <h2 class="text-lg font-medium text-slate-700">{{ $nailTech->name }}</h2>
                     @if($nailTech && $nailTech->bio)
-                        <p class="text-sm text-slate-500 leading-relaxed mt-1">{{ str_replace(["\r", "\n"], ' ', $nailTech->bio) }}</p>
+                        <p class="text-sm text-slate-500 leading-relaxed mt-1">
+                            {{ str_replace(["\r", "\n"], ' ', $nailTech->bio) }}</p>
                     @else
-                        <p class="text-sm text-slate-500 leading-relaxed mt-1">Güzellik ve zarafetin buluştuğu nokta. Randevunuzu aşağıdan kolayca oluşturabilirsiniz.</p>
+                        <p class="text-sm text-slate-500 leading-relaxed mt-1">Güzellik ve zarafetin buluştuğu nokta.
+                            Randevunuzu aşağıdan kolayca oluşturabilirsiniz.</p>
                     @endif
                 </div>
             </section>
 
             {{-- ── Portföy ── --}}
             @if($nailTech && ($nailTech->show_portfolio ?? true) && count($uploadedImages) > 0)
-            <section class="w-full bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] space-y-4">
-                <h3 class="font-medium text-slate-700 border-b border-[#F2EAEB] pb-3">Portföy</h3>
-                <div class="grid grid-cols-2 gap-3 auto-rows-[160px]">
-                    @if($nailTech->portfolio_image_1)
-                    <div class="rounded-2xl overflow-hidden shadow-sm row-span-2 col-span-1 relative group cursor-pointer">
-                        <img alt="Nail Art 1" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                             src="{{ str_starts_with($nailTech->portfolio_image_1, 'http') ? $nailTech->portfolio_image_1 : asset('storage/' . $nailTech->portfolio_image_1) }}" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3" @click="openLightbox(0)">
-                            <button type="button" class="w-full py-2 bg-white/90 backdrop-blur-sm rounded-xl text-[11px] font-semibold text-slate-700 hover:bg-white transition-colors">Seç</button>
-                        </div>
-                    </div>
-                    @endif
-                    @if($nailTech->portfolio_image_2)
-                    <div class="rounded-2xl overflow-hidden shadow-sm col-span-1 relative group cursor-pointer">
-                        <img alt="Nail Art 2" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                             src="{{ str_starts_with($nailTech->portfolio_image_2, 'http') ? $nailTech->portfolio_image_2 : asset('storage/' . $nailTech->portfolio_image_2) }}" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2" @click="openLightbox(1)">
-                            <button type="button" class="w-full py-1.5 bg-white/90 backdrop-blur-sm rounded-xl text-[10px] font-semibold text-slate-700 hover:bg-white transition-colors">Seç</button>
-                        </div>
-                    </div>
-                    @endif
-                    @if($nailTech->portfolio_image_3)
-                    <div class="rounded-2xl overflow-hidden shadow-sm col-span-1 relative group cursor-pointer">
-                        <img alt="Nail Art 3" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                             src="{{ str_starts_with($nailTech->portfolio_image_3, 'http') ? $nailTech->portfolio_image_3 : asset('storage/' . $nailTech->portfolio_image_3) }}" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2" @click="openLightbox(2)">
-                            <button type="button" class="w-full py-1.5 bg-white/90 backdrop-blur-sm rounded-xl text-[10px] font-semibold text-slate-700 hover:bg-white transition-colors">Seç</button>
-                        </div>
-                    </div>
-                    @endif
-                </div>
-                <button type="button" @click="openGallery()"
-                    class="w-full py-3 border border-[#F2EAEB] hover:border-[#D2B6BD]/50 rounded-2xl text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors mt-2">
-                    Tüm Galeriyi Gör
-                </button>
-            </section>
-
-            {{-- Gallery Modal --}}
-            <div x-cloak x-show="showModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" x-transition.opacity>
-                <div class="bg-white rounded-3xl w-full max-w-[450px] h-[520px] flex flex-col p-6 shadow-2xl border border-[#F2EAEB] relative" @click.away="closeGallery()">
-                    <button @click="closeGallery()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-full bg-slate-100">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                    </button>
-                    <h3 class="font-semibold text-slate-700 text-lg mb-4">Portföy Galerisi</h3>
-                    <template x-if="images.length === 0">
-                        <div class="flex-1 flex flex-col items-center justify-center text-slate-400">
-                            <p class="text-sm">Henüz portföy görseli eklenmemiş.</p>
-                        </div>
-                    </template>
-                    <template x-if="images.length > 0">
-                        <div class="flex-1 flex flex-col gap-4 min-h-0">
-                            <div class="flex-1 relative rounded-2xl overflow-hidden bg-slate-50 flex items-center justify-center border border-[#F2EAEB] cursor-pointer group" @click="openLightbox(activeIdx)">
-                                <img :src="images[activeIdx]" class="w-full h-full object-cover" />
-                                <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg>
+                <section
+                    class="w-full bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] space-y-4">
+                    <h3 class="font-medium text-slate-700 border-b border-[#F2EAEB] pb-3">Portföy</h3>
+                    <div class="grid grid-cols-2 gap-3 auto-rows-[160px]">
+                        @if($nailTech->portfolio_image_1)
+                            <div class="rounded-2xl overflow-hidden shadow-sm row-span-2 col-span-1 relative group cursor-pointer">
+                                <img alt="Nail Art 1"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    src="{{ str_starts_with($nailTech->portfolio_image_1, 'http') ? $nailTech->portfolio_image_1 : asset('storage/' . $nailTech->portfolio_image_1) }}" />
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3"
+                                    @click="openLightbox(0)">
+                                    <button type="button"
+                                        class="w-full py-2 bg-white/90 backdrop-blur-sm rounded-xl text-[11px] font-semibold text-slate-700 hover:bg-white transition-colors">Seç</button>
                                 </div>
                             </div>
-                            <div class="flex gap-3 overflow-x-auto py-1 no-scrollbar border-t border-[#F2EAEB] shrink-0">
-                                <template x-for="(img, idx) in images" :key="idx">
-                                    <div class="w-20 h-20 shrink-0 rounded-xl overflow-hidden border-2 cursor-pointer transition-all"
-                                        :class="activeIdx === idx ? 'border-[#D2B6BD] scale-95 shadow-sm' : 'border-transparent hover:opacity-80'"
-                                        @click="activeIdx = idx">
-                                        <img :src="img" class="w-full h-full object-cover" />
-                                    </div>
-                                </template>
+                        @endif
+                        @if($nailTech->portfolio_image_2)
+                            <div class="rounded-2xl overflow-hidden shadow-sm col-span-1 relative group cursor-pointer">
+                                <img alt="Nail Art 2"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    src="{{ str_starts_with($nailTech->portfolio_image_2, 'http') ? $nailTech->portfolio_image_2 : asset('storage/' . $nailTech->portfolio_image_2) }}" />
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2"
+                                    @click="openLightbox(1)">
+                                    <button type="button"
+                                        class="w-full py-1.5 bg-white/90 backdrop-blur-sm rounded-xl text-[10px] font-semibold text-slate-700 hover:bg-white transition-colors">Seç</button>
+                                </div>
                             </div>
-                        </div>
-                    </template>
-                </div>
-            </div>
+                        @endif
+                        @if($nailTech->portfolio_image_3)
+                            <div class="rounded-2xl overflow-hidden shadow-sm col-span-1 relative group cursor-pointer">
+                                <img alt="Nail Art 3"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    src="{{ str_starts_with($nailTech->portfolio_image_3, 'http') ? $nailTech->portfolio_image_3 : asset('storage/' . $nailTech->portfolio_image_3) }}" />
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2"
+                                    @click="openLightbox(2)">
+                                    <button type="button"
+                                        class="w-full py-1.5 bg-white/90 backdrop-blur-sm rounded-xl text-[10px] font-semibold text-slate-700 hover:bg-white transition-colors">Seç</button>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                    <button type="button" @click="openGallery()"
+                        class="w-full py-3 border border-[#F2EAEB] hover:border-[#D2B6BD]/50 rounded-2xl text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors mt-2">
+                        Tüm Galeriyi Gör
+                    </button>
+                </section>
 
-            {{-- Lightbox --}}
-            <div x-cloak x-show="showLightbox" class="fixed inset-0 z-[200] bg-black/95 flex flex-col items-center justify-center select-none"
-                x-transition.opacity @keydown.escape.window="closeLightbox()" @keydown.arrow-left.window="prevImage()" @keydown.arrow-right.window="nextImage()">
-                <button @click="closeLightbox()" class="absolute top-6 right-6 text-white/80 hover:text-white p-2 rounded-full hover:bg-white/10 z-[210]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                </button>
-                <div class="w-full max-w-4xl max-h-[80vh] flex items-center justify-center p-4 relative" @touchstart="handleTouchStart($event)" @touchend="handleTouchEnd($event)">
-                    <img :src="images[activeIdx]" class="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl transition-all duration-300" />
-                    <div class="absolute bottom-[-40px] text-white/70 text-xs tracking-widest" x-text="(activeIdx + 1) + ' / ' + images.length"></div>
+                {{-- Gallery Modal --}}
+                <div x-cloak x-show="showModal"
+                    class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                    x-transition.opacity>
+                    <div class="bg-white rounded-3xl w-full max-w-[450px] h-[520px] flex flex-col p-6 shadow-2xl border border-[#F2EAEB] relative"
+                        @click.away="closeGallery()">
+                        <button @click="closeGallery()"
+                            class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-full bg-slate-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 6L6 18M6 6l12 12" />
+                            </svg>
+                        </button>
+                        <h3 class="font-semibold text-slate-700 text-lg mb-4">Portföy Galerisi</h3>
+                        <template x-if="images.length === 0">
+                            <div class="flex-1 flex flex-col items-center justify-center text-slate-400">
+                                <p class="text-sm">Henüz portföy görseli eklenmemiş.</p>
+                            </div>
+                        </template>
+                        <template x-if="images.length > 0">
+                            <div class="flex-1 flex flex-col gap-4 min-h-0">
+                                <div class="flex-1 relative rounded-2xl overflow-hidden bg-slate-50 flex items-center justify-center border border-[#F2EAEB] cursor-pointer group"
+                                    @click="openLightbox(activeIdx)">
+                                    <img :src="images[activeIdx]" class="w-full h-full object-cover" />
+                                    <div
+                                        class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                            fill="none" stroke="white" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <circle cx="11" cy="11" r="8" />
+                                            <path d="m21 21-4.3-4.3" />
+                                            <path d="M11 8v6M8 11h6" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3 overflow-x-auto py-1 no-scrollbar border-t border-[#F2EAEB] shrink-0">
+                                    <template x-for="(img, idx) in images" :key="idx">
+                                        <div class="w-20 h-20 shrink-0 rounded-xl overflow-hidden border-2 cursor-pointer transition-all"
+                                            :class="activeIdx === idx ? 'border-[#D2B6BD] scale-95 shadow-sm' : 'border-transparent hover:opacity-80'"
+                                            @click="activeIdx = idx">
+                                            <img :src="img" class="w-full h-full object-cover" />
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
                 </div>
-            </div>
+
+                {{-- Lightbox --}}
+                <div x-cloak x-show="showLightbox"
+                    class="fixed inset-0 z-[200] bg-black/95 flex flex-col items-center justify-center select-none"
+                    x-transition.opacity @keydown.escape.window="closeLightbox()" @keydown.arrow-left.window="prevImage()"
+                    @keydown.arrow-right.window="nextImage()">
+                    <button @click="closeLightbox()"
+                        class="absolute top-6 right-6 text-white/80 hover:text-white p-2 rounded-full hover:bg-white/10 z-[210]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                    </button>
+                    <div class="w-full max-w-4xl max-h-[80vh] flex items-center justify-center p-4 relative"
+                        @touchstart="handleTouchStart($event)" @touchend="handleTouchEnd($event)">
+                        <img :src="images[activeIdx]"
+                            class="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl transition-all duration-300" />
+                        <div class="absolute bottom-[-40px] text-white/70 text-xs tracking-widest"
+                            x-text="(activeIdx + 1) + ' / ' + images.length"></div>
+                    </div>
+                </div>
             @endif
 
             {{-- ── RANDEVU FORMU ── --}}
             <div class="w-full" style="width: 100%;" x-data="bookingCalendar({
-                    blockedSlots: {{ json_encode($blockedSlots) }},
-                    occupiedSlots: {{ json_encode($occupiedSlots) }},
-                    hours: {{ json_encode($hours) }},
-                    todayStr: '{{ today()->toDateString() }}'
-                })">
+                        blockedSlots: {{ json_encode($blockedSlots) }},
+                        occupiedSlots: {{ json_encode($occupiedSlots) }},
+                        hours: {{ json_encode($hours) }},
+                        todayStr: '{{ today()->toDateString() }}'
+                    })">
 
-                <form action="{{ route('appointment.store') }}" method="POST" enctype="multipart/form-data" id="appointmentForm" class="w-full space-y-8" style="width: 100%;">
+                <form action="{{ route('appointment.store') }}" method="POST" enctype="multipart/form-data"
+                    id="appointmentForm" class="w-full space-y-8" style="width: 100%;">
                     @csrf
                     <input type="hidden" name="nail_tech_id" value="{{ $nailTech->id ?? 1 }}">
 
@@ -170,19 +208,19 @@
                     <section class="w-full space-y-4">
                         <h3 class="text-sm font-semibold tracking-wider text-slate-400 uppercase ml-1">İşlem Türü</h3>
                         <div class="grid grid-cols-2 gap-3">
-                            <button type="button"
-                                @click="serviceType = 'yapim'; updateBasePrice()"
-                                :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici'
-                                    ? 'bg-[#D2B6BD] text-white border-[#D2B6BD] shadow-md shadow-[#D2B6BD]/30'
-                                    : 'bg-white text-slate-600 border-[#F2EAEB] hover:border-[#D2B6BD]/50'"
-                                class="py-3 px-3 rounded-2xl text-[13px] leading-relaxed font-medium transition-all duration-300 border flex items-center justify-center text-center min-h-[5rem]">
-                                Protez Tırnak, Jel Güçlendirme, Kalıcı Oje
+                            <button type="button" @click="serviceType = 'yapim'; updateBasePrice()" :class="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici'
+                                        ? 'bg-[#D2B6BD] text-white border-[#D2B6BD] shadow-md shadow-[#D2B6BD]/30'
+                                        : 'bg-white text-slate-600 border-[#F2EAEB] hover:border-[#D2B6BD]/50'"
+                                class="py-3 px-2 rounded-2xl font-medium transition-all duration-300 border flex items-center justify-center text-center min-h-[5rem]">
+                                <span class="flex flex-col items-center justify-center leading-[1.3] text-[12px] gap-0.5">
+                                    <span>Protez Tırnak,</span>
+                                    <span>Jel Güçlendirme,</span>
+                                    <span>Kalıcı Oje</span>
+                                </span>
                             </button>
-                            <button type="button"
-                                @click="serviceType = 'cikarma'; updateBasePrice()"
-                                :class="serviceType === 'cikarma'
-                                    ? 'bg-[#D2B6BD] text-white border-[#D2B6BD] shadow-md shadow-[#D2B6BD]/30'
-                                    : 'bg-white text-slate-600 border-[#F2EAEB] hover:border-[#D2B6BD]/50'"
+                            <button type="button" @click="serviceType = 'cikarma'; updateBasePrice()" :class="serviceType === 'cikarma'
+                                        ? 'bg-[#D2B6BD] text-white border-[#D2B6BD] shadow-md shadow-[#D2B6BD]/30'
+                                        : 'bg-white text-slate-600 border-[#F2EAEB] hover:border-[#D2B6BD]/50'"
                                 class="py-3 px-3 rounded-2xl text-[13px] leading-relaxed font-medium transition-all duration-300 border flex items-center justify-center text-center min-h-[5rem]">
                                 Protez Tırnak Çıkarma
                             </button>
@@ -191,33 +229,43 @@
                     </section>
 
                     {{-- Base Ücret --}}
-                    <section class="w-full bg-white rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] flex justify-between items-center">
+                    <section
+                        class="w-full bg-white rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] flex justify-between items-center">
                         <span class="text-slate-500 font-medium">Base Ücret</span>
                         <span class="text-xl font-semibold text-[#B3939B]" x-text="'₺' + basePriceDisplay"></span>
                     </section>
 
                     {{-- Adınız Soyadınız --}}
                     <section class="w-full space-y-2">
-                        <label class="text-sm font-semibold tracking-wider text-slate-400 uppercase ml-1 block">Adınız Soyadınız</label>
-                        <input type="text" name="client_name" required
-                            placeholder="Adınızı giriniz..."
+                        <label class="text-sm font-semibold tracking-wider text-slate-400 uppercase ml-1 block">Adınız
+                            Soyadınız</label>
+                        <input type="text" name="client_name" required placeholder="Adınızı giriniz..."
                             class="w-full bg-white border border-[#F2EAEB] rounded-2xl py-4 px-5 text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#D2B6BD]/40 focus:border-[#D2B6BD] transition-all shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
                     </section>
 
                     {{-- Tırnak Modeli --}}
-                    <section class="w-full space-y-3" x-show="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici'" x-collapse>
+                    <section class="w-full space-y-3"
+                        x-show="serviceType === 'yapim' || serviceType === 'yapim_jel' || serviceType === 'yapim_kalici'"
+                        x-collapse>
                         <div class="flex items-center justify-between ml-1">
-                            <h3 class="text-sm font-semibold tracking-wider text-slate-400 uppercase">Tırnak Modeli (İsteğe Bağlı)</h3>
+                            <h3 class="text-sm font-semibold tracking-wider text-slate-400 uppercase">Tırnak Modeli (İsteğe
+                                Bağlı)</h3>
                         </div>
 
                         <div id="dropzone"
                             class="relative w-full flex flex-col items-center justify-center gap-3 py-10 bg-[#FAFAFA] border-2 border-dashed border-[#EAE1E3] rounded-3xl hover:bg-white hover:border-[#D2B6BD] transition-all group cursor-pointer overflow-hidden">
                             <input type="file" name="design_image" id="fileInput"
                                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*">
-                            <div id="uploadPlaceholder" class="flex flex-col items-center gap-3 pointer-events-none transition-opacity duration-300">
-                                <div class="w-12 h-12 rounded-full bg-[#F3ECEF] flex items-center justify-center group-hover:bg-[#EAE1E3] transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B3939B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+                            <div id="uploadPlaceholder"
+                                class="flex flex-col items-center gap-3 pointer-events-none transition-opacity duration-300">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-[#F3ECEF] flex items-center justify-center group-hover:bg-[#EAE1E3] transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="#B3939B" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                        <polyline points="17 8 12 3 7 8" />
+                                        <line x1="12" x2="12" y1="3" y2="15" />
                                     </svg>
                                 </div>
                                 <div class="text-center">
@@ -235,38 +283,58 @@
                         <div id="viewPriceBtnContainer" class="hidden text-center">
                             <button type="button" id="viewPriceBtn"
                                 class="w-full py-3 bg-[#F3ECEF] hover:bg-[#EAE1E3] text-[#B3939B] rounded-2xl text-[12px] font-semibold transition-all flex items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M12 16v-4M12 8h.01" />
+                                </svg>
                                 YAPAY ZEKA İLE TAHMİNİ FİYAT OLUŞTUR
                             </button>
                         </div>
 
-                        <div id="priceEstimationSection" class="fiyat-kutusu hidden bg-[#FBF5F8] rounded-2xl p-4 border border-[#F2EAEB] flex flex-col gap-3">
+                        <div id="priceEstimationSection"
+                            class="fiyat-kutusu hidden bg-[#FBF5F8] rounded-2xl p-4 border border-[#F2EAEB] flex flex-col gap-3">
                             <div class="flex items-start gap-3">
                                 <div id="priceSpinner" class="shrink-0 mt-0.5">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B3939B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="#B3939B" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="animate-spin">
+                                        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                                    </svg>
                                 </div>
                                 <div class="flex-1">
-                                    <div id="priceTitle" class="fiyat-gosterim text-sm font-semibold text-[#B3939B]">Fiyat Oluşturuluyor...</div>
+                                    <div id="priceTitle" class="fiyat-gosterim text-sm font-semibold text-[#B3939B]">Fiyat
+                                        Oluşturuluyor...</div>
                                     <p id="priceDesc" class="hidden text-xs text-slate-500 mt-1"></p>
                                 </div>
                             </div>
-                            <div id="serviceSelectorContainer" class="hidden flex flex-col gap-2 pt-2 border-t border-[#F2EAEB]">
-                                <div class="flex justify-between items-center bg-white p-4 rounded-2xl border border-[#F2EAEB] shadow-sm">
-                                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tahmini Toplam:</span>
+                            <div id="serviceSelectorContainer"
+                                class="hidden flex flex-col gap-2 pt-2 border-t border-[#F2EAEB]">
+                                <div
+                                    class="flex justify-between items-center bg-white p-4 rounded-2xl border border-[#F2EAEB] shadow-sm">
+                                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tahmini
+                                        Toplam:</span>
                                     <span id="singleTotalPrice" class="text-2xl font-bold text-[#B3939B]">₺0</span>
                                 </div>
-                                <p class="text-[11px] text-slate-400 text-center italic">* Sadece tahminidir. Uzman randevu sırasında değiştirebilir.</p>
+                                <p class="text-[11px] text-slate-400 text-center italic">* Sadece tahminidir. Uzman randevu
+                                    sırasında değiştirebilir.</p>
                             </div>
                         </div>
                     </section>
 
                     {{-- Takvim --}}
-                    <section class="w-full bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] space-y-6">
+                    <section
+                        class="w-full bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-[#F2EAEB] space-y-6">
 
                         <div class="flex items-center justify-between">
                             <h3 class="font-semibold text-slate-700 text-lg">Takvim</h3>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D2B6BD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="#D2B6BD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                                <line x1="16" x2="16" y1="2" y2="6" />
+                                <line x1="8" x2="8" y1="2" y2="6" />
+                                <line x1="3" x2="21" y1="10" y2="10" />
                             </svg>
                         </div>
 
@@ -278,10 +346,18 @@
                         <div class="py-2 px-3 bg-[#F3ECEF] border border-[#D2B6BD]/30 rounded-2xl flex items-center justify-between text-[#B3939B] text-xs font-medium"
                             x-show="selectedDate && selectedTime" x-transition.opacity style="display: none;">
                             <div class="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="m9 16 2 2 4-4"/></svg>
-                                <span>Seçilen: <span class="font-bold" x-text="formatDate(selectedDate) + ' — ' + selectedTime"></span></span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+                                    <path d="m9 16 2 2 4-4" />
+                                </svg>
+                                <span>Seçilen: <span class="font-bold"
+                                        x-text="formatDate(selectedDate) + ' — ' + selectedTime"></span></span>
                             </div>
-                            <button type="button" @click="selectedDate = ''; selectedTime = ''; activeSlotKey = ''" class="text-[10px] underline hover:opacity-75">Temizle</button>
+                            <button type="button" @click="selectedDate = ''; selectedTime = ''; activeSlotKey = ''"
+                                class="text-[10px] underline hover:opacity-75">Temizle</button>
                         </div>
 
                         <div>
@@ -296,27 +372,33 @@
                             <div class="relative flex items-center justify-center mb-4">
                                 <button type="button" @click="prevMonth()" x-show="shouldShowPrevArrow()"
                                     class="absolute left-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#F3ECEF] text-slate-400 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="m15 18-6-6 6-6" />
+                                    </svg>
                                 </button>
                                 <span class="text-sm font-semibold text-slate-600" x-text="monthName"></span>
                                 <button type="button" @click="nextMonth()" x-show="shouldShowNextArrow()"
                                     class="absolute right-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#F3ECEF] text-slate-400 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="m9 18 6-6-6-6" />
+                                    </svg>
                                 </button>
                             </div>
 
                             {{-- Calendar grid --}}
                             <div class="grid grid-cols-7 gap-y-3 gap-x-1">
                                 <template x-for="day in daysInGrid" :key="day.dateStr">
-                                    <button type="button"
-                                        @click="selectDay(day)"
-                                        :disabled="!day.isSelectable || isDayFullyBooked(day.dateStr)"
-                                        :class="{
-                                            'bg-[#B3939B] text-white font-semibold shadow-md shadow-[#B3939B]/30 scale-105': day.isSelectable && selectedDate === day.dateStr,
-                                            'text-slate-300 cursor-not-allowed': !day.isSelectable,
-                                            'bg-[#F8F9FA] text-slate-400 line-through decoration-slate-300 cursor-not-allowed': day.isSelectable && isDayFullyBooked(day.dateStr) && selectedDate !== day.dateStr,
-                                            'text-slate-600 hover:bg-[#F3ECEF] font-medium': day.isSelectable && !isDayFullyBooked(day.dateStr) && selectedDate !== day.dateStr
-                                        }"
+                                    <button type="button" @click="selectDay(day)"
+                                        :disabled="!day.isSelectable || isDayFullyBooked(day.dateStr)" :class="{
+                                                'bg-[#B3939B] text-white font-semibold shadow-md shadow-[#B3939B]/30 scale-105': day.isSelectable && selectedDate === day.dateStr,
+                                                'text-slate-300 cursor-not-allowed': !day.isSelectable,
+                                                'bg-[#F8F9FA] text-slate-400 line-through decoration-slate-300 cursor-not-allowed': day.isSelectable && isDayFullyBooked(day.dateStr) && selectedDate !== day.dateStr,
+                                                'text-slate-600 hover:bg-[#F3ECEF] font-medium': day.isSelectable && !isDayFullyBooked(day.dateStr) && selectedDate !== day.dateStr
+                                            }"
                                         class="h-10 w-10 mx-auto rounded-full flex items-center justify-center text-sm transition-all">
                                         <span x-text="day.dayNum"></span>
                                     </button>
@@ -327,23 +409,23 @@
                         {{-- Time slots --}}
                         <div class="border-t border-slate-100 pt-4" x-show="selectedDate" style="display:none;">
                             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3"
-                               x-text="formatFriendlySelectedDate() + ' TARİHİ İÇİN UYGUN SAATLER'"></p>
+                                x-text="formatFriendlySelectedDate() + ' TARİHİ İÇİN UYGUN SAATLER'"></p>
                             <div class="flex overflow-x-auto no-scrollbar gap-2 pb-1">
                                 <template x-for="slot in getAvailableSlotsForSelectedDate()" :key="slot.key">
                                     <button type="button"
                                         @click="if (slot.isAvailable) { selectedTime = slot.hour; activeSlotKey = slot.key; }"
-                                        :disabled="!slot.isAvailable"
-                                        :class="{
-                                            'bg-[#B3939B] text-white border-[#B3939B] shadow-md shadow-[#B3939B]/30 font-semibold': slot.isAvailable && selectedTime === slot.hour,
-                                            'text-slate-300 border-slate-100 cursor-not-allowed opacity-50': !slot.isAvailable,
-                                            'text-slate-600 border-[#F2EAEB] hover:border-[#D2B6BD]/50 hover:bg-[#F3ECEF]': slot.isAvailable && selectedTime !== slot.hour
-                                        }"
+                                        :disabled="!slot.isAvailable" :class="{
+                                                'bg-[#B3939B] text-white border-[#B3939B] shadow-md shadow-[#B3939B]/30 font-semibold': slot.isAvailable && selectedTime === slot.hour,
+                                                'text-slate-300 border-slate-100 cursor-not-allowed opacity-50': !slot.isAvailable,
+                                                'text-slate-600 border-[#F2EAEB] hover:border-[#D2B6BD]/50 hover:bg-[#F3ECEF]': slot.isAvailable && selectedTime !== slot.hour
+                                            }"
                                         class="flex-none px-4 py-2 rounded-full border text-xs font-medium transition-all whitespace-nowrap">
                                         <span x-text="formatTimeLabel(slot.hour)"></span>
                                     </button>
                                 </template>
                                 <template x-if="getAvailableSlotsForSelectedDate().filter(s => s.isAvailable).length === 0">
-                                    <div class="text-xs text-slate-400 italic py-2">Bu tarihte uygun randevu saati bulunmuyor.</div>
+                                    <div class="text-xs text-slate-400 italic py-2">Bu tarihte uygun randevu saati
+                                        bulunmuyor.</div>
                                 </template>
                             </div>
                         </div>
@@ -372,7 +454,10 @@
                             RANDEVU TALEP ET
                         </button>
                         <div class="flex items-center justify-center gap-1.5 text-slate-400">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                            </svg>
                             <span class="text-xs font-medium">Ödeme nakit alınmaktadır.</span>
                         </div>
                     </section>
@@ -441,7 +526,7 @@
                     yapim_jel: {{ intval($baseProthezPrice) }},
                     yapim_kalici: {{ intval($baseProthezPrice) }},
                     cikarma: {{ intval($baseCikarmaPrice) }}
-                },
+                    },
                 basePriceDisplay: {{ intval($baseProthezPrice) }},
 
                 updateBasePrice() {
@@ -671,37 +756,37 @@
                     headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
                     body: formData
                 })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        priceSpinner.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>';
-                        priceTitle.className = 'fiyat-gosterim text-sm font-semibold text-green-600';
-                        priceTitle.innerText = 'Fiyat Oluşturuldu! (yapay zeka yanlış sonuç verebilir)';
-                        window.nihaiJP = data.nihai_jp;
-                        if (selectorContainer) selectorContainer.classList.remove('hidden');
-                        window.updatePriceDisplay();
-                        const bookingSection = document.getElementById('appointmentForm');
-                        if (bookingSection) {
-                            const sectionEl = bookingSection.closest('[x-data]');
-                            if (sectionEl && sectionEl._x_dataStack) {
-                                const alpineData = sectionEl._x_dataStack.find(d => 'aiPriceLoaded' in d);
-                                if (alpineData) alpineData.aiPriceLoaded = true;
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            priceSpinner.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>';
+                            priceTitle.className = 'fiyat-gosterim text-sm font-semibold text-green-600';
+                            priceTitle.innerText = 'Fiyat Oluşturuldu! (yapay zeka yanlış sonuç verebilir)';
+                            window.nihaiJP = data.nihai_jp;
+                            if (selectorContainer) selectorContainer.classList.remove('hidden');
+                            window.updatePriceDisplay();
+                            const bookingSection = document.getElementById('appointmentForm');
+                            if (bookingSection) {
+                                const sectionEl = bookingSection.closest('[x-data]');
+                                if (sectionEl && sectionEl._x_dataStack) {
+                                    const alpineData = sectionEl._x_dataStack.find(d => 'aiPriceLoaded' in d);
+                                    if (alpineData) alpineData.aiPriceLoaded = true;
+                                }
                             }
+                            priceDesc.classList.add('hidden');
+                        } else {
+                            if (data.debug_error) console.error('Backend Error:', data.debug_error);
+                            throw new Error(data.message || 'Analiz sırasında bir hata oluştu.');
                         }
-                        priceDesc.classList.add('hidden');
-                    } else {
-                        if (data.debug_error) console.error('Backend Error:', data.debug_error);
-                        throw new Error(data.message || 'Analiz sırasında bir hata oluştu.');
-                    }
-                })
-                .catch(error => {
-                    console.error('===== HATA DETAYI =====', error.message || error);
-                    priceSpinner.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></svg>';
-                    priceTitle.className = 'fiyat-gosterim text-sm font-semibold text-amber-600';
-                    priceTitle.innerText = error.message || 'Yapay zeka şuanda yanıt vermiyor.';
-                    priceDesc.innerText = 'Çok fazla istek attıysanız veya sistem yoğunsa lütfen birkaç dakika sonra tekrar deneyin.';
-                    priceDesc.classList.remove('hidden');
-                });
+                    })
+                    .catch(error => {
+                        console.error('===== HATA DETAYI =====', error.message || error);
+                        priceSpinner.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></svg>';
+                        priceTitle.className = 'fiyat-gosterim text-sm font-semibold text-amber-600';
+                        priceTitle.innerText = error.message || 'Yapay zeka şuanda yanıt vermiyor.';
+                        priceDesc.innerText = 'Çok fazla istek attıysanız veya sistem yoğunsa lütfen birkaç dakika sonra tekrar deneyin.';
+                        priceDesc.classList.remove('hidden');
+                    });
             }
 
             const appointmentForm = document.getElementById('appointmentForm');

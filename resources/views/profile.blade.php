@@ -365,7 +365,7 @@
                 {{-- Selected Slot Preview --}}
                 <div class="p-sm bg-primary-container/20 border border-primary/20 rounded-xl flex items-center gap-2 text-primary font-medium text-xs">
                     <span class="material-symbols-outlined text-[18px]">event_available</span>
-                    <span>Randevu Zamanı: <span class="font-bold" x-text="formatDate(selectedDate) + ' - Saat ' + selectedTime"></span></span>
+                    <span>Randevu Zamanı: <span class="font-bold" x-text="formatDate(selectedDate) + (selectedTime ? ' - Saat ' + selectedTime : ' (Lütfen Saat Seçin)')"></span></span>
                 </div>
 
                 {{-- Client Uploaded Image Preview --}}
@@ -521,7 +521,7 @@
                         'client_name'    => str_replace(' (Protez Tırnak)', '', $a->client_name),
                         'tracking_code'  => $a->tracking_code,
                         'date'           => $a->appointment_date,
-                        'time'           => $a->appointment_time,
+                        'time'           => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                         'date_formatted' => \Carbon\Carbon::parse($a->appointment_date)->locale('tr')->translatedFormat('d M, Y'),
                         'time_formatted' => \Carbon\Carbon::parse($a->appointment_time)->format('H:i'),
                         'price'          => floatval($a->estimated_price),
